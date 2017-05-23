@@ -10,9 +10,11 @@
 //
 //     bids.newport_weekend.push({ 'user_01': 155 });
 
-let bids = {
-    newport_weekend: [ { null: 150 } ],
-    wine_tasting: [ { null: 30 } ],
-    dancing_lessons: [ { null: 75 } ],
-    game_night: [ { null: 40 } ],
-}
+let data:any = {
+    newport_weekend: { bids: [ { min: 150 } ] },
+    wine_tasting: { bids: [ { min: 30 } ] },
+    dancing_lessons: { bids: [ { min: 75 } ] },
+    game_night: { bids: [ { min: 40 } ] },
+};
+
+export default data;
