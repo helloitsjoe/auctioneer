@@ -121,6 +121,8 @@ are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
   font-size: 62.5%; }
 body {
+    padding: 0;
+    margin: 0;
   font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 400;
@@ -191,14 +193,17 @@ input[type="button"] {
 button:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
-input[type="button"]:hover,
+input[type="button"]:hover {
+    color: #333;
+    border-color: #888;
+    outline: 0; }
 .button:focus,
 button:focus,
 input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="button"]:focus {
-  color: #333;
-  border-color: #888;
+  /* color: #333;
+  border-color: #888; */
   outline: 0; }
 .button.button-primary,
 button.button-primary,
@@ -392,39 +397,106 @@ hr {
 
 .nav-tab {
     display: inline;
-    border: 1px solid black;
-    border-radius: 3px;
-    text-transform: capitalize;
-    padding: 10px;
-}
+    margin: 0 5px;
+    border: 1px solid #888;
+    border-radius: 3px 3px 0 0;
+    text-transform: uppercase;
+    font-size: 80%;
+    background-color: #ddd;
+    padding: 10px 70px; }
+
+.nav-bg {
+    padding-top: 19px;
+    height: 50px;
+    background-color: #ddd;
+    border-bottom: 1px solid #888;
+    box-sizing: border-box; }
 
 .active {
-    border-bottom: 0;
-}
+    border-bottom: 1px solid #fcfcfc;
+    background-color: #fcfcfc; }
 
 .list {
     display: block;
-    margin-top: 50px;
+    /*padding: 10px;*/
     /*width: 50%;*/
     /*height: 600px;*/
     text-align: center;
-}
+    background-color: #fcfcfc; }
+
+.item-group {
+    border-bottom: 1px solid #ccc; }
 
 .item-container {
     display: block;
+    padding: 10px;
     /*width: 500px;*/
-    height: 100px;
-    /*width: 50%;*/
-}
+    height: 40px;
+    /*width: 50%;*/ }
 
 .item-title {
     padding: 10px;
-    display: inline;
-}
+    font-weight: 300;
+    font-size: 120%;
+    display: inline; }
 
 .centered {
-    text-align: center;
+    text-align: center; }
+
+.bid {
+    background-color: green;
+    color: white;
+    border: none;
 }
+
+.bid:hover {
+    background-color: limegreen;
+    color: white;
+    border: none;
+}
+
+.btn {
+    min-width: 100px;
+    margin: 0 10px; }
+
+.bid-bg {
+    background-color: palegreen;
+}
+
+.your-bid {
+    text-transform: uppercase;
+    padding: 0;
+    color: #999;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0; }
+
+.hidden {
+    display: none; }
+
+.description {
+    transition: height 0.2s;
+    text-align: left;
+    margin: 0 40px;
+    font-size: 90%;
+    color: #888;
+    height: 0;
+    display: block;
+    overflow: hidden; }
+
+.open {
+    transition: height 0.2s;
+    margin: 0 40px;
+    height: 150px;
+    display: block; }
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 
 
 
