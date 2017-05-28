@@ -150,7 +150,7 @@ var Item = (function (_super) {
     function Item(props) {
         var _this = _super.call(this) || this;
         _this.quickBid = _this.quickBid.bind(_this);
-        _this.handleClick = _this.handleClick.bind(_this);
+        _this.toggleDescription = _this.toggleDescription.bind(_this);
         _this.bids = props.bids;
         _this.state = {
             highBid: _this.getHighBid()
@@ -158,12 +158,12 @@ var Item = (function (_super) {
         return _this;
     }
     Item.prototype.render = function () {
-        return (React.createElement("div", { className: "item-group clearfix", onClick: this.handleClick },
+        return (React.createElement("div", { className: "item-group clearfix", onClick: this.toggleDescription },
             React.createElement("div", { className: "item-container" },
                 React.createElement("div", { className: "item-title u-pull-left" },
                     React.createElement("span", null, this.props.title)),
                 React.createElement("div", { className: "button-box u-pull-right" },
-                    React.createElement("span", { className: "your-bid hidden", id: this.props.id }, "Your bid:"),
+                    React.createElement("span", { className: "your-bid hidden", id: "your-bid-text" + this.props.id }, "Your bid:"),
                     React.createElement("button", { className: "btn", id: "your-bid-" + this.props.id }, this.state.highBid),
                     React.createElement("button", { className: "bid btn", onClick: this.quickBid }, "Bid +$5"))),
             React.createElement("div", { className: "description", id: "description-" + this.props.id }, this.props.description)));
@@ -176,15 +176,14 @@ var Item = (function (_super) {
         e.stopPropagation();
         this.bids.push(this.getHighBid() + 5);
         this.setState({ highBid: this.getHighBid() });
-        document.getElementById(this.props.id).classList.remove('hidden');
+        document.getElementById("your-bid-text" + this.props.id).classList.remove('hidden');
         document.getElementById('your-bid-' + this.props.id).classList.add('bid-bg');
         // TODO: Update DB
     };
-    Item.prototype.handleClick = function (e) {
+    Item.prototype.toggleDescription = function (e) {
         e.stopPropagation();
-        console.log(this.props.description);
         document.getElementById('description-' + this.props.id).classList.toggle('open');
-        // If tap on title, open up description/photos
+        // TODO: Add photos
     };
     return Item;
 }(React.Component));
