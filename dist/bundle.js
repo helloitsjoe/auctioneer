@@ -97,23 +97,20 @@ var App = (function (_super) {
     __extends(App, _super);
     function App() {
         var _this = _super.call(this) || this;
+        _this.updateData = _this.updateData.bind(_this);
         _this.state = { data: data_1.default };
         return _this;
     }
-    // componentDidMount() {
-    //     this.refresh = setInterval(() => {
-    //         // Will this update the data from data.ts?
-    //         this.setState({ data });
-    //     }, 3000);
-    // }
-    App.prototype.clicked = function () {
-        // this.setState({ data.bids })
+    App.prototype.updateData = function (newData, i) {
+        var data = this.state.data.slice();
+        data[i] = newData;
+        this.setState({ data: data });
     };
     App.prototype.render = function () {
         return (React.createElement("div", { className: "container" },
             React.createElement("div", { className: "twelve columns well" },
                 React.createElement(Nav_1.default, null),
-                React.createElement(List_1.default, { data: this.state.data, onQuickBid: this.clicked }))));
+                React.createElement(List_1.default, { data: this.state.data, updateData: this.updateData }))));
     };
     return App;
 }(React.Component));
@@ -144,14 +141,16 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-// import data from '../data';
 var Item = (function (_super) {
     __extends(Item, _super);
     function Item(props) {
         var _this = _super.call(this) || this;
         _this.quickBid = _this.quickBid.bind(_this);
         _this.toggleDescription = _this.toggleDescription.bind(_this);
-        _this.bids = props.bids;
+        _this.bids = [];
+        for (var j = 0; j < props.data.bids.length; j++) {
+            _this.bids.push(props.data.bids[j].bid);
+        }
         _this.state = {
             highBid: _this.getHighBid()
         };
@@ -161,12 +160,14 @@ var Item = (function (_super) {
         return (React.createElement("div", { className: "item-group clearfix", onClick: this.toggleDescription },
             React.createElement("div", { className: "item-container" },
                 React.createElement("div", { className: "item-title u-pull-left" },
-                    React.createElement("span", null, this.props.title)),
+                    React.createElement("span", null, this.props.data.title)),
                 React.createElement("div", { className: "button-box u-pull-right" },
-                    React.createElement("span", { className: "your-bid hidden", id: "your-bid-text" + this.props.id }, "Your bid:"),
+                    React.createElement("span", { className: "high-bid", id: "your-bid-text" + this.props.id }, "High bid:"),
                     React.createElement("button", { className: "btn", id: "your-bid-" + this.props.id }, this.state.highBid),
-                    React.createElement("button", { className: "bid btn", onClick: this.quickBid }, "Bid +$5"))),
-            React.createElement("div", { className: "description", id: "description-" + this.props.id }, this.props.description)));
+                    React.createElement("button", { className: "bid btn", onClick: this.quickBid },
+                        "Bid ",
+                        this.state.highBid + 5))),
+            React.createElement("div", { className: "description", id: "description-" + this.props.id }, this.props.data.description)));
     };
     ;
     Item.prototype.getHighBid = function () {
@@ -174,15 +175,21 @@ var Item = (function (_super) {
     };
     Item.prototype.quickBid = function (e) {
         e.stopPropagation();
-        this.bids.push(this.getHighBid() + 5);
+        var newBid = this.getHighBid() + 5;
+        this.bids.push(newBid);
+        this.props.data.bids.push({ name: 'user01', bid: newBid });
         this.setState({ highBid: this.getHighBid() });
-        document.getElementById("your-bid-text" + this.props.id).classList.remove('hidden');
         document.getElementById('your-bid-' + this.props.id).classList.add('bid-bg');
+        var yourBid = document.getElementById('your-bid-text' + this.props.id);
+        yourBid.innerHTML = 'Your bid:';
+        yourBid.classList.add('yours');
+        this.props.updateData(this.props.data, this.props.id);
         // TODO: Update DB
     };
     Item.prototype.toggleDescription = function (e) {
         e.stopPropagation();
-        document.getElementById('description-' + this.props.id).classList.toggle('open');
+        var description = document.getElementById('description-' + this.props.id);
+        description.classList.toggle('open');
         // TODO: Add photos
     };
     return Item;
@@ -209,24 +216,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var Item_1 = __webpack_require__(3);
-// import data from '../data';
 var List = (function (_super) {
     __extends(List, _super);
     function List() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     List.prototype.render = function () {
-        var data = this.props.data;
         var items = [];
-        for (var i = 0, datum = void 0; datum = data[i]; i++) {
-            var bids = [];
-            for (var j = 0; j < datum.bids.length; j++) {
-                bids.push(datum.bids[j].bid);
-            }
-            console.log('BIDS', bids);
-            var highBid = Math.max.apply(null, bids);
-            console.log(highBid);
-            items.push(React.createElement(Item_1.default, { title: datum.title, description: datum.description, key: i, id: i, bids: bids, highBid: highBid }));
+        for (var i = 0, datum = void 0; datum = this.props.data[i]; i++) {
+            items.push(React.createElement(Item_1.default, { data: datum, key: i, id: i, updateData: this.props.updateData }));
         }
         return (React.createElement("div", { className: "list" }, items));
     };

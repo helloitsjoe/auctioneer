@@ -1,26 +1,15 @@
 import * as React from 'react';
 import Item from './Item';
-// import data from '../data';
 
 export default class List extends React.Component<any, any> {
     render() {
-        let data = this.props.data;
         let items = [];
-        for (let i = 0, datum; datum = data[i]; i++) {
-            let bids = [];
-            for (let j = 0; j < datum.bids.length; j++) {
-                bids.push(datum.bids[j].bid);
-            }
-            console.log('BIDS', bids);
-            let highBid = Math.max.apply(null, bids);
-            console.log(highBid);
+        for (let i = 0, datum; datum = this.props.data[i]; i++) {
             items.push(<Item
-                title={datum.title}
-                description={datum.description}
+                data={datum}
                 key={i}
                 id={i}
-                bids={bids}
-                highBid={highBid} />);
+                updateData={this.props.updateData} />);
         }
         return (
             <div className="list">

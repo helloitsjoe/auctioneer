@@ -1,4 +1,5 @@
-const staticData = import * from './data';
+const staticData = import data from './data';
+// const staticData = require('./data');
 
 export default class DataModel {
     let data = [];
@@ -7,10 +8,6 @@ export default class DataModel {
         // will this keep overwriting data? How many times does this class get initialized?
         this.data = staticData;
     }
-
-    // init() {
-    //     return this.data;
-    // }
 
     getData() {
         return this.data;

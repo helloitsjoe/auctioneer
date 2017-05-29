@@ -5,21 +5,18 @@ import data from '../data';
 
 export class App extends React.Component<any, any> {
     private refresh:any;
+    private data:any;
 
     constructor() {
         super();
+        this.updateData = this.updateData.bind(this);
         this.state = { data };
     }
 
-    // componentDidMount() {
-    //     this.refresh = setInterval(() => {
-    //         // Will this update the data from data.ts?
-    //         this.setState({ data });
-    //     }, 3000);
-    // }
-
-    clicked() {
-        // this.setState({ data.bids })
+    updateData(newData, i) {
+        let data = this.state.data.slice();
+        data[i] = newData;
+        this.setState({ data });
     }
 
     render() {
@@ -27,7 +24,7 @@ export class App extends React.Component<any, any> {
             <div className="container">
                 <div className="twelve columns well">
                     <Nav />
-                    <List data={this.state.data} onQuickBid={this.clicked}/>
+                    <List data={this.state.data} updateData={this.updateData}/>
                 </div>
             </div>
         );
