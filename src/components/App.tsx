@@ -12,9 +12,8 @@ export class App extends React.Component<any, any> {
     constructor() {
         super();
         this.updateData = this.updateData.bind(this);
-        this.url = 'http://localhost:3001/data';
-        // this.url = 'https://server-nmpfdegzrw.now.sh/';
-        // this.getData();
+        // this.url = 'http://localhost:3001/data';
+        this.url = 'https://server-nmpfdegzrw.now.sh/';
         this.state = { data: this.getData() };
     }
 
