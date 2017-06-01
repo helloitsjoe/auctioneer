@@ -174,7 +174,7 @@ input[type="reset"],
 input[type="button"] {
   display: inline-block;
   height: 38px;
-  padding: 0 30px;
+  padding: 0 10px;
   color: #555;
   text-align: center;
   font-size: 11px;
@@ -456,21 +456,26 @@ hr {
 }
 
 .btn {
-    min-width: 120px;
+    width: 80px;
     margin: 0 10px; }
 
 .bid-bg {
     background-color: #cefdce;
 }
 
-.high-bid {
+.bid-text {
     text-transform: uppercase;
     padding: 0;
     color: #ccc;
     text-align: center;
     font-size: 11px;
     font-weight: 600;
-    margin: 0; }
+    margin: 0 10px; }
+
+.high-bid {
+    /*margin: 0 10px;*/
+    text-align: center;
+    width: 60px; }
 
 .yours {
     color: limegreen;

@@ -92,25 +92,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var Nav_1 = __webpack_require__(5);
 var List_1 = __webpack_require__(4);
-var data_1 = __webpack_require__(6);
+// import data from '../data';
+// import auctionData from '../data.json';
 var App = (function (_super) {
     __extends(App, _super);
     function App() {
         var _this = _super.call(this) || this;
         _this.updateData = _this.updateData.bind(_this);
-        _this.state = { data: data_1.default };
+        _this.url = 'http://localhost:3001/data';
+        // this.url = 'https://server-nmpfdegzrw.now.sh/';
+        // this.getData();
+        _this.state = { data: _this.getData() };
         return _this;
     }
+    App.prototype.getData = function () {
+        var _this = this;
+        return fetch(this.url).then(function (response) {
+            console.log(response.status);
+            response.json().then(function (jsonData) {
+                console.log(jsonData);
+                _this.setState({ data: jsonData });
+            });
+        });
+    };
     App.prototype.updateData = function (newData, i) {
+        var _this = this;
         var data = this.state.data.slice();
         data[i] = newData;
-        this.setState({ data: data });
+        return fetch(this.url, {
+            method: 'POST',
+            body: data
+        }).then(function (res) {
+            console.log(res);
+            _this.setState({ data: data });
+        });
     };
     App.prototype.render = function () {
-        return (React.createElement("div", { className: "container" },
-            React.createElement("div", { className: "twelve columns well" },
-                React.createElement(Nav_1.default, null),
-                React.createElement(List_1.default, { data: this.state.data, updateData: this.updateData }))));
+        return (React.createElement("div", { className: "u-full-width well" },
+            React.createElement(Nav_1.default, null),
+            React.createElement(List_1.default, { data: this.state.data, updateData: this.updateData })));
     };
     return App;
 }(React.Component));
@@ -162,8 +182,8 @@ var Item = (function (_super) {
                 React.createElement("div", { className: "item-title u-pull-left" },
                     React.createElement("span", null, this.props.data.title)),
                 React.createElement("div", { className: "button-box u-pull-right" },
-                    React.createElement("span", { className: "high-bid", id: "your-bid-text" + this.props.id }, "High bid:"),
-                    React.createElement("button", { className: "btn", id: "your-bid-" + this.props.id }, this.state.highBid),
+                    React.createElement("span", { className: "bid-text", id: "bid-text" + this.props.id }, "High bid:"),
+                    React.createElement("button", { className: "high-bid", id: "high-bid-" + this.props.id }, this.state.highBid),
                     React.createElement("button", { className: "bid btn", onClick: this.quickBid },
                         "Bid ",
                         this.state.highBid + 5))),
@@ -179,8 +199,8 @@ var Item = (function (_super) {
         this.bids.push(newBid);
         this.props.data.bids.push({ name: 'user01', bid: newBid });
         this.setState({ highBid: this.getHighBid() });
-        document.getElementById('your-bid-' + this.props.id).classList.add('bid-bg');
-        var yourBid = document.getElementById('your-bid-text' + this.props.id);
+        document.getElementById('high-bid-' + this.props.id).classList.add('bid-bg');
+        var yourBid = document.getElementById('bid-text' + this.props.id);
         yourBid.innerHTML = 'Your bid:';
         yourBid.classList.add('yours');
         this.props.updateData(this.props.data, this.props.id);
@@ -267,53 +287,7 @@ exports.default = Nav;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// Initial setup:
-//     Collection of items up for bid, each with an array of bids, initialized with minimum bid
-//     How to connect names with bids? Add { name: bid } to array? Or [ name, bid ]?
-//
-//     Something like:
-//         let bids = {
-//             newport_weekend: [ { null: 150 } ],
-//             wine_tasting: [ { null: 30 } ],
-//         }
-//
-//     bids.newport_weekend.push({ 'user_01': 155 });
-Object.defineProperty(exports, "__esModule", { value: true });
-var data = [
-    {
-        bids: [{ name: 'min', bid: 150 }],
-        title: 'Lowell Weekend',
-        description: "Enjoy a relaxing weekend in beautiful Lowell Massachussets. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        photos: null
-    },
-    {
-        bids: [{ name: 'min', bid: 30 }],
-        title: 'Ice Cream Tasting',
-        description: "Taste some delicious ice cream! Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        photos: null
-    },
-    {
-        bids: [{ name: 'min', bid: 75 }],
-        title: 'Wrestling Lessons',
-        description: "Learn how to wrestle from the semi-pros! Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        photos: null
-    },
-    {
-        bids: [{ name: 'min', bid: 40 }],
-        title: 'Game Night',
-        description: "Fun and games! Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        photos: null
-    },
-];
-exports.default = data;
-
-
-/***/ }),
+/* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 

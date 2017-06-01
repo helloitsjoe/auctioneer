@@ -27,8 +27,8 @@ export default class Item extends React.Component<any, any> {
                         <span>{this.props.data.title}</span>
                     </div>
                     <div className="button-box u-pull-right">
-                    <span className="high-bid" id={"your-bid-text"+this.props.id}>High bid:</span>
-                        <button className="btn" id={"your-bid-"+this.props.id}>{this.state.highBid}</button>
+                    <span className="bid-text" id={"bid-text"+this.props.id}>High bid:</span>
+                        <button className="high-bid" id={"high-bid-"+this.props.id}>{this.state.highBid}</button>
                         <button className="bid btn" onClick={this.quickBid}>Bid {this.state.highBid + 5}</button>
                     </div>
                 </div>
@@ -48,8 +48,8 @@ export default class Item extends React.Component<any, any> {
         this.props.data.bids.push({name: 'user01', bid: newBid})
         this.setState({ highBid: this.getHighBid() });
 
-        document.getElementById('your-bid-'+this.props.id).classList.add('bid-bg');
-        let yourBid = document.getElementById('your-bid-text'+this.props.id);
+        document.getElementById('high-bid-'+this.props.id).classList.add('bid-bg');
+        let yourBid = document.getElementById('bid-text'+this.props.id);
         yourBid.innerHTML = 'Your bid:';
         yourBid.classList.add('yours');
         this.props.updateData(this.props.data, this.props.id)
