@@ -99,9 +99,8 @@ var App = (function (_super) {
     function App() {
         var _this = _super.call(this) || this;
         _this.updateData = _this.updateData.bind(_this);
-        _this.url = 'http://localhost:3001/data';
-        // this.url = 'https://server-nmpfdegzrw.now.sh/';
-        // this.getData();
+        // this.url = 'http://localhost:3001/data';
+        _this.url = 'https://server-nmpfdegzrw.now.sh/';
         _this.state = { data: _this.getData() };
         return _this;
     }
