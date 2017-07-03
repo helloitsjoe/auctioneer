@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -99,8 +99,8 @@ var App = (function (_super) {
     function App() {
         var _this = _super.call(this) || this;
         _this.updateData = _this.updateData.bind(_this);
-        // this.url = 'http://localhost:3001/data';
-        _this.url = 'https://server-nmpfdegzrw.now.sh/';
+        _this.url = 'http://localhost:3001/data';
+        // this.url = 'https://server-nmpfdegzrw.now.sh/';
         _this.state = { data: _this.getData() };
         return _this;
     }
@@ -119,8 +119,11 @@ var App = (function (_super) {
         var data = this.state.data.slice();
         data[i] = newData;
         return fetch(this.url, {
-            method: 'POST',
-            body: data
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            method: 'post',
+            body: JSON.stringify(data),
         }).then(function (res) {
             console.log(res);
             _this.setState({ data: data });
@@ -286,8 +289,7 @@ exports.default = Nav;
 
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

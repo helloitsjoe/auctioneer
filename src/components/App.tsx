@@ -12,8 +12,8 @@ export class App extends React.Component<any, any> {
     constructor() {
         super();
         this.updateData = this.updateData.bind(this);
-        // this.url = 'http://localhost:3001/data';
-        this.url = 'https://server-nmpfdegzrw.now.sh/';
+        this.url = 'http://localhost:3001/data';
+        // this.url = 'https://server-nmpfdegzrw.now.sh/';
         this.state = { data: this.getData() };
     }
 
@@ -31,8 +31,11 @@ export class App extends React.Component<any, any> {
         let data = this.state.data.slice();
         data[i] = newData;
         return fetch(this.url, {
-            method: 'POST',
-            body: data
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            method: 'post',
+            body: JSON.stringify(data),
         }).then((res) => {
             console.log(res);
             this.setState({ data });

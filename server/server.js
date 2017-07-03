@@ -2,6 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
+// const router = express.Router();
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.text());
+// app.use(router);
+
+
 
 // const data = require('./data.json');
 const dataPath = path.join(__dirname, './data.json');
@@ -16,14 +23,14 @@ app.get('/data', function(req, res) {
 });
 
 // // On data change, push changes to all observers
-app.post('/data', function(req, res) {
-    console.log(req.body);
+app.post('/data', function(req, res){
     fs.writeFile(dataPath, req.body, (err) => {
         if (err) {
             console.error(err);
         } else {
             console.log('Saved!');
-            res.send(body);
+            res.set('Access-Control-Allow-Origin', '*');
+            res.sendStatus(200);
         }
     });
     // How to push to all observers?
