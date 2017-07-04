@@ -31,9 +31,9 @@ export class App extends React.Component<any, any> {
         let data = this.state.data.slice();
         data[i] = newData;
         return fetch(this.url, {
-            headers: {
-                'Content-Type': 'text/plain'
-            },
+            // headers: {
+            //     'Content-Type': 'text/plain'
+            // },
             method: 'post',
             body: JSON.stringify(data),
         }).then((res) => {

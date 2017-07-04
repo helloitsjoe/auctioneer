@@ -119,9 +119,9 @@ var App = (function (_super) {
         var data = this.state.data.slice();
         data[i] = newData;
         return fetch(this.url, {
-            headers: {
-                'Content-Type': 'text/plain'
-            },
+            // headers: {
+            //     'Content-Type': 'text/plain'
+            // },
             method: 'post',
             body: JSON.stringify(data),
         }).then(function (res) {
@@ -201,12 +201,14 @@ var Item = (function (_super) {
         this.bids.push(newBid);
         this.props.data.bids.push({ name: 'user01', bid: newBid });
         this.setState({ highBid: this.getHighBid() });
+        this.styleYourBid();
+        this.props.updateData(this.props.data, this.props.id);
+    };
+    Item.prototype.styleYourBid = function () {
         document.getElementById('high-bid-' + this.props.id).classList.add('bid-bg');
         var yourBid = document.getElementById('bid-text' + this.props.id);
         yourBid.innerHTML = 'Your bid:';
         yourBid.classList.add('yours');
-        this.props.updateData(this.props.data, this.props.id);
-        // TODO: Update DB
     };
     Item.prototype.toggleDescription = function (e) {
         e.stopPropagation();

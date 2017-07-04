@@ -46,14 +46,17 @@ export default class Item extends React.Component<any, any> {
         let newBid = this.getHighBid() + 5;
         this.bids.push(newBid);
         this.props.data.bids.push({name: 'user01', bid: newBid})
-        this.setState({ highBid: this.getHighBid() });
 
+        this.setState({ highBid: this.getHighBid() });
+        this.styleYourBid();
+        this.props.updateData(this.props.data, this.props.id)
+    }
+
+    styleYourBid() {
         document.getElementById('high-bid-'+this.props.id).classList.add('bid-bg');
         let yourBid = document.getElementById('bid-text'+this.props.id);
         yourBid.innerHTML = 'Your bid:';
         yourBid.classList.add('yours');
-        this.props.updateData(this.props.data, this.props.id)
-        // TODO: Update DB
     }
 
     toggleDescription(e) {
