@@ -5,17 +5,22 @@ export default class Item extends React.Component<any, any> {
 
     constructor(props) {
         super();
+        this.props = props;
 
         this.quickBid = this.quickBid.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
 
-        this.bids = [];
-        for (let j = 0; j < props.data.bids.length; j++) {
-            this.bids.push(props.data.bids[j].bid);
-        }
+        this.bids = props.data.bids;
 
-        this.state = {
-            highBid: this.getHighBid()
+        // TODO: Can this be done more clearly/better?
+        this.state = this.getHighBid();
+    }
+
+    componentDidMount() {
+        console.log(this.props.data.bids);
+        if(this.state.highBidder === /*this.props.currentUser.name*/ 'user01') {
+            console.log('high')
+            this.styleYourBid();
         }
     }
 
@@ -38,18 +43,34 @@ export default class Item extends React.Component<any, any> {
     };
 
     getHighBid() {
-        return Math.max.apply(null, this.bids);
+        // let bidNums = [];
+        let highBid = 0;
+        let highBidder = '';
+
+        for (let j = 0; j < this.props.data.bids.length; j++) {
+            // bidNums.push(bids[j].bid);
+            if(this.props.data.bids[j].bid > highBid) {
+                highBid = this.props.data.bids[j].bid;
+                highBidder = this.props.data.bids[j].name;
+            }
+        }
+        return { highBid, highBidder }
+        // this.setState({highBidder: highBidder})
+        // return highBid
+        // return Math.max(...bidNums);
     }
 
     quickBid(e) {
         e.stopPropagation();
-        let newBid = this.getHighBid() + 5;
+        let newBid = this.getHighBid().highBid + 5;
         this.bids.push(newBid);
-        this.props.data.bids.push({name: 'user01', bid: newBid})
+        this.props.data.bids.push({name: 'user01', bid: newBid});
+        // TODO: Is there a better place to do this, so I can get rid of this.props.id altogether?
+        this.props.data.id = this.props.id;
 
-        this.setState({ highBid: this.getHighBid() });
+        this.setState({ highBid: this.getHighBid().highBid });
         this.styleYourBid();
-        this.props.updateData(this.props.data, this.props.id)
+        this.props.updateData(this.props.data/*, this.props.id*/)
     }
 
     styleYourBid() {
