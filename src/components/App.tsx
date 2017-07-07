@@ -18,24 +18,26 @@ export class App extends React.Component<any, any> {
     }
 
     getData() {
-        return fetch(this.url).then((response) => {
+        return fetch(this.url)
+        .then((response) => {
             console.log(response.status);
-            response.json().then((jsonData) => {
+            response.json()
+            .then((jsonData) => {
                 console.log(jsonData);
                 this.setState({ data: jsonData });
             });
         });
     }
 
-    updateData(newData, i) {
+    updateData(itemData/*, i*/) {
         let data = this.state.data.slice();
-        data[i] = newData;
+        data[itemData.id] = itemData;
         return fetch(this.url, {
-            // headers: {
-            //     'Content-Type': 'text/plain'
-            // },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'post',
-            body: JSON.stringify(data),
+            body: JSON.stringify(itemData), // TODO: Why do I need to stringify itemData?
         }).then((res) => {
             console.log(res);
             this.setState({ data });

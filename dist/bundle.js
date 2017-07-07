@@ -106,24 +106,26 @@ var App = (function (_super) {
     }
     App.prototype.getData = function () {
         var _this = this;
-        return fetch(this.url).then(function (response) {
+        return fetch(this.url)
+            .then(function (response) {
             console.log(response.status);
-            response.json().then(function (jsonData) {
+            response.json()
+                .then(function (jsonData) {
                 console.log(jsonData);
                 _this.setState({ data: jsonData });
             });
         });
     };
-    App.prototype.updateData = function (newData, i) {
+    App.prototype.updateData = function (itemData /*, i*/) {
         var _this = this;
         var data = this.state.data.slice();
-        data[i] = newData;
+        data[itemData.id] = itemData;
         return fetch(this.url, {
-            // headers: {
-            //     'Content-Type': 'text/plain'
-            // },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'post',
-            body: JSON.stringify(data),
+            body: JSON.stringify(itemData),
         }).then(function (res) {
             console.log(res);
             _this.setState({ data: data });
@@ -167,17 +169,21 @@ var Item = (function (_super) {
     __extends(Item, _super);
     function Item(props) {
         var _this = _super.call(this) || this;
+        _this.props = props;
         _this.quickBid = _this.quickBid.bind(_this);
         _this.toggleDescription = _this.toggleDescription.bind(_this);
-        _this.bids = [];
-        for (var j = 0; j < props.data.bids.length; j++) {
-            _this.bids.push(props.data.bids[j].bid);
-        }
-        _this.state = {
-            highBid: _this.getHighBid()
-        };
+        _this.bids = props.data.bids;
+        // TODO: Can this be done more clearly/better?
+        _this.state = _this.getHighBid();
         return _this;
     }
+    Item.prototype.componentDidMount = function () {
+        console.log(this.props.data.bids);
+        if (this.state.highBidder === 'user01') {
+            console.log('high');
+            this.styleYourBid();
+        }
+    };
     Item.prototype.render = function () {
         return (React.createElement("div", { className: "item-group clearfix", onClick: this.toggleDescription },
             React.createElement("div", { className: "item-container" },
@@ -193,16 +199,31 @@ var Item = (function (_super) {
     };
     ;
     Item.prototype.getHighBid = function () {
-        return Math.max.apply(null, this.bids);
+        // let bidNums = [];
+        var highBid = 0;
+        var highBidder = '';
+        for (var j = 0; j < this.props.data.bids.length; j++) {
+            // bidNums.push(bids[j].bid);
+            if (this.props.data.bids[j].bid > highBid) {
+                highBid = this.props.data.bids[j].bid;
+                highBidder = this.props.data.bids[j].name;
+            }
+        }
+        return { highBid: highBid, highBidder: highBidder };
+        // this.setState({highBidder: highBidder})
+        // return highBid
+        // return Math.max(...bidNums);
     };
     Item.prototype.quickBid = function (e) {
         e.stopPropagation();
-        var newBid = this.getHighBid() + 5;
+        var newBid = this.getHighBid().highBid + 5;
         this.bids.push(newBid);
         this.props.data.bids.push({ name: 'user01', bid: newBid });
-        this.setState({ highBid: this.getHighBid() });
+        // TODO: Is there a better place to do this, so I can get rid of this.props.id altogether?
+        this.props.data.id = this.props.id;
+        this.setState({ highBid: this.getHighBid().highBid });
         this.styleYourBid();
-        this.props.updateData(this.props.data, this.props.id);
+        this.props.updateData(this.props.data /*, this.props.id*/);
     };
     Item.prototype.styleYourBid = function () {
         document.getElementById('high-bid-' + this.props.id).classList.add('bid-bg');
