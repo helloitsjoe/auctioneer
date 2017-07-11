@@ -1,3 +1,22 @@
+TODO:
+• User login
+• Custom bid input
+• 'My bids' page
+• 'You've been outbid' styling
+    • if (user in bids array) {
+        if (user bid === top bid) {
+            top bid style
+        } else {
+            outbid style
+        }
+    }
+• Admin
+    • Update information, bids, photos
+    • Start auction
+    • Close auction
+• Overall styling
+    • Narrow container if large window
+
 Central DB, stores info for each item up for bid
     Top bidder (or bidders if multiple slots available)
     Number of slots available

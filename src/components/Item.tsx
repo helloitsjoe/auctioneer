@@ -63,7 +63,7 @@ export default class Item extends React.Component<any, any> {
     quickBid(e) {
         e.stopPropagation();
         let newBid = this.getHighBid().highBid + 5;
-        this.bids.push(newBid);
+        // this.bids.push(newBid);
         this.props.data.bids.push({name: 'user01', bid: newBid});
         // TODO: Is there a better place to do this, so I can get rid of this.props.id altogether?
         this.props.data.id = this.props.id;
