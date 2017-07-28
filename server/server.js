@@ -13,11 +13,16 @@ const dataPath = path.join(__dirname, './data.json');
 let auctionData = null;
 
 // Read file once, keep in memory
-getData((data) => {
-    auctionData = data;
-    app.listen(3001, () => {
-        console.log('Listening on port 3001');
-    });
+fs.readFile(dataPath, (err,  data) => {
+    if (err) {
+        console.error(err);
+        done(err);
+    } else {
+        auctionData = JSON.parse(data);
+        app.listen(3001, () => {
+            console.log('Listening on port 3001');
+        });
+    }
 });
 
 // Listen for get request to '/', send main page back
@@ -33,19 +38,20 @@ app.get('/data', (req, res) => {
 
 // On data post, push changes to all observers
 // How to only update one particular item's data instead of the whole json obj?
-app.post('/data', (req, res) => {
+app.put('/data', (req, res) => {
     let body = req.body;
     let id = body.id;
+    console.log(body.bids);
     auctionData[id].bids = body.bids;
     console.log(`High bid for ${auctionData[id].id}: ${auctionData[id].bids[auctionData[id].bids.length - 1].bid}`);
     // TODO: Create new file after each post?
-    // fs.writeFile(dataPath, JSON.stringify(auctionData), (err) => {
-    //     if (err) {
-    //         console.error(err);
-    //     } else {
-    //         console.log('Saved!');
-    //     }
-    // });
+    fs.writeFile(dataPath, JSON.stringify(auctionData), (err) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log('Saved!');
+        }
+    });
     // res.set('Access-Control-Allow-Origin', '*');
     res.sendStatus(200);
 });
@@ -54,18 +60,5 @@ app.post('/data', (req, res) => {
 app.post('/data/:0', (req, res) => {
     console.log(req.body.params.id);
 });
-
-
-function getData(done) {
-    fs.readFile(dataPath, (err,  data) => {
-        if (err) {
-            console.error(err);
-            done(err);
-        } else {
-            // console.log(data);
-            done(JSON.parse(data));
-        }
-    });
-}
 
 // and/or listen for request to '/userID', send user_bids data back

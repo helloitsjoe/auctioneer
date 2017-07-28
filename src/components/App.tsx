@@ -36,7 +36,7 @@ export class App extends React.Component<any, any> {
             headers: {
                 'Content-Type': 'application/json'
             },
-            method: 'post',
+            method: 'put',
             body: JSON.stringify(itemData), // TODO: Why do I need to stringify itemData?
         }).then((res) => {
             console.log(res);
