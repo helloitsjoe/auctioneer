@@ -37,14 +37,13 @@ app.get('/data', (req, res) => {
 });
 
 // On data post, push changes to all observers
-// How to only update one particular item's data instead of the whole json obj?
 app.put('/data', (req, res) => {
     let body = req.body;
     let id = body.id;
     console.log(body.bids);
     auctionData[id].bids = body.bids;
     console.log(`High bid for ${auctionData[id].id}: ${auctionData[id].bids[auctionData[id].bids.length - 1].bid}`);
-    // TODO: Create new file after each post?
+    // TODO: Create new file after each post, so there's a history?
     fs.writeFile(dataPath, JSON.stringify(auctionData), (err) => {
         if (err) {
             console.error(err);
