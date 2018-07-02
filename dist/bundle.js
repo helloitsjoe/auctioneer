@@ -2046,48 +2046,52 @@ var App = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.updateData = _this.updateData.bind(_this);
         _this.url = 'http://localhost:3001/data';
-        _this.state = { data: _this.getData() };
+        _this.state = {
+            data: null,
+            isLoaded: false,
+        };
         return _this;
     }
-    App.prototype.getData = function () {
+    App.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
             var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getData()];
+                    case 1:
+                        data = _a.sent();
+                        console.log(data);
+                        this.setState({ data: data, isLoaded: true });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    App.prototype.getData = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, axios_1.default.get(this.url)];
                     case 1:
-                        data = _a.sent();
-                        console.log('state data:', data);
-                        this.setState(data);
-                        return [2 /*return*/];
+                        response = _a.sent();
+                        console.log('state data:', response.data);
+                        return [2 /*return*/, response ? response.data : null];
                 }
             });
         });
     };
-    App.prototype.updateData = function (itemData /*, i*/) {
-        return __awaiter(this, void 0, void 0, function () {
-            var data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        data = this.state.data.slice();
-                        data[itemData.id] = itemData;
-                        return [4 /*yield*/, axios_1.default.put(this.url, {
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(itemData),
-                            })];
-                    case 1:
-                        _a.sent();
-                        this.setState({ data: data });
-                        return [2 /*return*/];
-                }
-            });
+    App.prototype.updateData = function (itemData) {
+        var data = this.state.data.slice();
+        data[itemData.id] = itemData;
+        this.setState({ data: data });
+        // Fire-and-forget
+        axios_1.default.put(this.url, {
+            body: JSON.stringify(itemData),
         });
     };
     App.prototype.render = function () {
-        return (React.createElement("div", { className: "u-full-width well" },
+        return !this.state.isLoaded ? React.createElement("div", null, "Loading...") : (React.createElement("div", { className: "u-full-width well" },
             React.createElement(Nav_1.default, null),
             React.createElement(List_1.default, { data: this.state.data, updateData: this.updateData })));
     };
@@ -2123,7 +2127,11 @@ var Item = /** @class */ (function (_super) {
     __extends(Item, _super);
     function Item(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = _this.getHighBid();
+        var _a = _this.getHighBid(_this.props.data.bids), highBid = _a.highBid, highBidder = _a.highBidder;
+        _this.state = {
+            highBid: highBid,
+            highBidder: highBidder
+        };
         _this.quickBid = _this.quickBid.bind(_this);
         _this.toggleDescription = _this.toggleDescription.bind(_this);
         _this.bids = props.data.bids;
@@ -2132,7 +2140,6 @@ var Item = /** @class */ (function (_super) {
     Item.prototype.componentDidMount = function () {
         console.log(this.props.data.bids);
         if (this.state.highBidder === /*this.props.currentUser.name*/ 'user01') {
-            console.log('high');
             this.styleYourBid();
         }
     };
@@ -2150,30 +2157,25 @@ var Item = /** @class */ (function (_super) {
             React.createElement("div", { className: "description", id: "description-" + this.props.id }, this.props.data.description)));
     };
     ;
-    Item.prototype.getHighBid = function () {
-        // let bidNums = [];
+    Item.prototype.getHighBid = function (bids) {
         var highBid = 0;
         var highBidder = '';
-        for (var j = 0; j < this.props.data.bids.length; j++) {
-            // bidNums.push(bids[j].bid);
-            if (this.props.data.bids[j].bid > highBid) {
-                highBid = this.props.data.bids[j].bid;
-                highBidder = this.props.data.bids[j].name;
+        for (var j = 0; j < bids.length; j++) {
+            if (bids[j].bid > highBid) {
+                highBid = bids[j].bid;
+                highBidder = bids[j].name;
             }
         }
         return { highBid: highBid, highBidder: highBidder };
-        // this.setState({highBidder: highBidder})
-        // return highBid
-        // return Math.max(...bidNums);
     };
     Item.prototype.quickBid = function (e) {
         e.stopPropagation();
-        var newBid = this.getHighBid().highBid + 5;
+        var newBid = this.getHighBid(this.props.data.bids).highBid + 5;
         // this.bids.push(newBid);
         this.props.data.bids.push({ name: 'user01', bid: newBid });
         // TODO: Is there a better place to do this, so I can get rid of this.props.id altogether?
         this.props.data.id = this.props.id;
-        this.setState({ highBid: this.getHighBid().highBid });
+        this.setState({ highBid: this.getHighBid(this.props.data.bids).highBid });
         this.styleYourBid();
         this.props.updateData(this.props.data /*, this.props.id*/);
     };
@@ -2220,12 +2222,12 @@ var React = __webpack_require__(/*! react */ "react");
 var Item_1 = __webpack_require__(/*! ./Item */ "./src/components/Item.tsx");
 var List = /** @class */ (function (_super) {
     __extends(List, _super);
-    function List() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function List(props) {
+        return _super.call(this, props) || this;
     }
     List.prototype.render = function () {
-        var updateData = this.props.updateData;
-        var items = [].map.call(this.props.data, function (datum, i) { return (React.createElement(Item_1.default, { data: datum, key: i, id: i, updateData: updateData })); });
+        var _this = this;
+        var items = [].map.call(this.props.data, function (datum, i) { return (React.createElement(Item_1.default, { data: datum, key: i, id: i, updateData: _this.props.updateData })); });
         return (React.createElement("div", { className: "list" }, items));
     };
     return List;
