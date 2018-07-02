@@ -1,19 +1,18 @@
 import * as React from 'react';
 
 export default class Item extends React.Component<any, any> {
-    private bids:any[];
+
+    private bids: any[];
 
     constructor(props) {
-        super();
-        this.props = props;
+        super(props);
+
+        this.state = this.getHighBid();
 
         this.quickBid = this.quickBid.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
 
         this.bids = props.data.bids;
-
-        // TODO: Can this be done more clearly/better?
-        this.state = this.getHighBid();
     }
 
     componentDidMount() {

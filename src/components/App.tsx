@@ -1,47 +1,42 @@
 import * as React from 'react';
+import axios from 'axios';
 import Nav from './Nav';
 import List from './List';
-// import data from '../data';
-// import auctionData from '../data.json';
 
-export class App extends React.Component<any, any> {
-    private refresh:any;
-    private data:any;
-    private url:string;
+type State = {
+    data: any;
+}
 
-    constructor() {
-        super();
+type Props = {}
+
+export class App extends React.Component<Props, State> {
+
+    private url: string;
+
+    constructor(props) {
+        super(props);
+
         this.updateData = this.updateData.bind(this);
         this.url = 'http://localhost:3001/data';
-        // this.url = 'https://server-nmpfdegzrw.now.sh/';
         this.state = { data: this.getData() };
     }
 
-    getData() {
-        return fetch(this.url)
-        .then((response) => {
-            console.log(response.status);
-            response.json()
-            .then((jsonData) => {
-                console.log(jsonData);
-                this.setState({ data: jsonData });
-            });
-        });
+    private async getData(): Promise<void> {
+        const data = await axios.get(this.url);
+        console.log('state data:', data);
+        this.setState(data);
     }
 
-    updateData(itemData/*, i*/) {
+    private async updateData(itemData/*, i*/): Promise<void> {
         let data = this.state.data.slice();
         data[itemData.id] = itemData;
-        return fetch(this.url, {
+        await axios.put(this.url, {
             headers: {
                 'Content-Type': 'application/json'
             },
-            method: 'put',
-            body: JSON.stringify(itemData), // TODO: Why do I need to stringify itemData?
-        }).then((res) => {
-            console.log(res);
-            this.setState({ data });
+            body: JSON.stringify(itemData),
         });
+        this.setState({ data });
     }
 
     render() {

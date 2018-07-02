@@ -7,6 +7,7 @@ module.exports = {
 
     // Enable sourcemaps for debugging webpack's output
     devtool: 'source-map',
+    mode: 'development',
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions
@@ -14,15 +15,13 @@ module.exports = {
     },
 
     module: {
-        rules: [
+        rules: [{
             // All files with a '.ts' or '.tsx' extension will be handled
             // by ts-loader
-            { test: /\.tsx?$/, loader: 'ts-loader' },
-
-            // All output '.js' files will have sourcemaps re-processed
-            // by 'source-map-loader'
-            { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
-        ]
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        }]
     },
 
     // When importing a module whose path matches one of the following, just

@@ -3,11 +3,9 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-// const router = express.Router();
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../')));
-// app.use(router);
 
 const dataPath = path.join(__dirname, './data.json');
 let auctionData = null;
@@ -38,12 +36,12 @@ app.get('/data', (req, res) => {
 
 // On data post, push changes to all observers
 app.put('/data', (req, res) => {
-    let body = req.body;
+    let body = JSON.parse(req.body.body);
     let id = body.id;
     console.log(body.bids);
     auctionData[id].bids = body.bids;
     console.log(`High bid for ${auctionData[id].id}: ${auctionData[id].bids[auctionData[id].bids.length - 1].bid}`);
-    // TODO: Create new file after each post, so there's a history?
+
     fs.writeFile(dataPath, JSON.stringify(auctionData), (err) => {
         if (err) {
             console.error(err);
