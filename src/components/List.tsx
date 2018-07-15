@@ -2,28 +2,17 @@ import * as React from 'react';
 import Item from './Item';
 
 type Props = {
-    data: any;
-    updateData: (any) => void;
+    data: any[];
+    filter?: boolean;
 }
 
-export default class List extends React.Component<Props, any> {
-
-    constructor(props) {
-        super(props);
-    }
-
-    public render() {
-        const items = [].map.call(this.props.data, (datum, i) => (
-            <Item
-                data={datum}
-                key={i}
-                id={i}
-                updateData={this.props.updateData} />
-        ));
-        return (
-            <div className="list">
-                {items}
-            </div>
-        );
-    }
-}
+export const List = (props: Props) => (
+    <div className="list">
+        <hr />
+        {props.data.map((itemData, i) => {
+            return props.filter ? itemData.bids.find(bid => bid.name === window.localStorage.userID) &&
+                <Item itemData={itemData} key={i} id={i} />
+                : <Item itemData={itemData} key={i} id={i} />;
+        })}
+    </div>
+)

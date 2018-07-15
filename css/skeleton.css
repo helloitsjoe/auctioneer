@@ -51,7 +51,8 @@
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .container {
-    width: 80%; }
+    width: 40%;
+    max-width: 500px; }
   .column,
   .columns {
     margin-left: 4%; }
@@ -159,10 +160,11 @@ p {
 
 /* Links
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-a {
-  color: #1EAEDB; }
+a, a:visited {
+  color: #000;
+  text-decoration: none; }
 a:hover {
-  color: #0FA0CE; }
+  text-decoration: underline; }
 
 
 /* Buttons
@@ -390,8 +392,9 @@ form {
 /* Misc
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 hr {
-    margin-top: 3rem;
-    margin-bottom: 3.5rem;
+    /* margin-top: 3rem;
+    margin-bottom: 3.5rem; */
+    margin-bottom: 0;
     border-width: 0;
     border-top: 1px solid #E1E1E1; }
 

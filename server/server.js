@@ -10,52 +10,39 @@ app.use(express.static(path.join(__dirname, '../')));
 const dataPath = path.join(__dirname, './data.json');
 let auctionData = null;
 
-// Read file once, keep in memory
-fs.readFile(dataPath, (err,  data) => {
-    if (err) {
-        console.error(err);
-        done(err);
-    } else {
-        auctionData = JSON.parse(data);
-        app.listen(3001, () => {
-            console.log('Listening on port 3001');
-        });
-    }
-});
-
-// Listen for get request to '/', send main page back
 app.get('/', (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
     res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-// Listen for get request to '/data', send json data back
 app.get('/data', (req, res) => {
-    // res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Origin', '*');
     res.send(auctionData);
 });
 
-// On data post, push changes to all observers
 app.put('/data', (req, res) => {
     let body = JSON.parse(req.body.body);
     let id = body.id;
     console.log(body.bids);
-    auctionData[id].bids = body.bids;
-    console.log(`High bid for ${auctionData[id].id}: ${auctionData[id].bids[auctionData[id].bids.length - 1].bid}`);
+    const auctionItem = auctionData[id];
+    auctionItem.bids = body.bids;
+    console.log(`High bid for ${auctionItem.id}: ${auctionItem.bids[auctionItem.bids.length - 1].bid}`);
 
-    fs.writeFile(dataPath, JSON.stringify(auctionData), (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('Saved!');
-        }
-    });
-    // res.set('Access-Control-Allow-Origin', '*');
+    // TODO: Use WebSockets to push updates to all users
+
     res.sendStatus(200);
 });
 
-// On post to specific endpoint, send data for that endpoint
-app.post('/data/:0', (req, res) => {
-    console.log(req.body.params.id);
-});
-
-// and/or listen for request to '/userID', send user_bids data back
+fs.readFile(dataPath, (err,  data) => {
+        if (err) {
+            console.error(err);
+        done(err);
+        } else {
+        // Only keep data in memory for now
+        // TODO: Set up a database to persist changes
+        auctionData = JSON.parse(data);
+        app.listen(3001, () => {
+            console.log('Listening on port 3001');
+        });
+        }
+    });

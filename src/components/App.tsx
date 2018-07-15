@@ -1,7 +1,10 @@
 import * as React from 'react';
+import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 import Nav from './Nav';
-import List from './List';
+import { List } from './List';
+import { UserList } from './UserList';
+import { DATA_URL } from '../utils';
 
 type State = {
     data: any;
@@ -10,13 +13,13 @@ type State = {
 
 export class App extends React.Component<any, State> {
 
-    private url: string;
-
     constructor(props) {
         super(props);
 
-        this.updateData = this.updateData.bind(this);
-        this.url = 'http://localhost:3001/data';
+        // TODO: Don't use localStorage to store userID
+        // TODO: Don't hardcode userID
+        window.localStorage.userID = 'user01';
+
         this.state = {
             data: null,
             isLoaded: false,
@@ -24,35 +27,21 @@ export class App extends React.Component<any, State> {
     }
 
     public async componentDidMount() {
-        const data = await this.getData();
-        console.log(data);
+        const response = await axios.get(DATA_URL);
+        const data = response && response.data;
+        console.log('state data:', data);
         this.setState({ data, isLoaded: true });
-    }
-
-    private async getData(): Promise<any> {
-        const response = await axios.get(this.url);
-        console.log('state data:', response.data);
-        return response ? response.data : null;
-    }
-
-    private updateData(itemData): void {
-        let data = this.state.data.slice();
-        data[itemData.id] = itemData;
-
-        this.setState({ data });
-
-        // Fire-and-forget
-        axios.put(this.url, {
-            body: JSON.stringify(itemData),
-        });
     }
 
     public render() {
         return !this.state.isLoaded ? <div>Loading...</div> : (
-            <div className="u-full-width well">
+            <Router>
+            <div className="well">
                 <Nav />
-                <List data={this.state.data} updateData={this.updateData}/>
+                <Route exact="true" path="/" render={() => <List data={this.state.data} />} />
+                <Route exact="true" path="/user" render={() => <UserList data={this.state.data} />} />
             </div>
+            </Router>
         );
     }
 }
