@@ -40,7 +40,8 @@ fs.readFile(dataPath, (err,  data) => {
         } else {
         // Only keep data in memory for now
         // TODO: Set up a database to persist changes
-        auctionData = JSON.parse(data);
+        const json = JSON.parse(data);
+        auctionData = json.map((item, i) => Object.assign({}, item, { id: i }));
         app.listen(3001, () => {
             console.log('Listening on port 3001');
         });

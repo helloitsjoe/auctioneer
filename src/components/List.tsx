@@ -11,8 +11,8 @@ export const List = (props: Props) => (
         <hr />
         {props.data.map((itemData, i) => {
             return props.filter ? itemData.bids.find(bid => bid.name === window.localStorage.userID) &&
-                <Item itemData={itemData} key={i} id={i} />
-                : <Item itemData={itemData} key={i} id={i} />;
+                <Item itemData={itemData} key={i} />
+                : <Item itemData={itemData} key={i} />;
         })}
     </div>
 )

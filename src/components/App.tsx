@@ -36,11 +36,11 @@ export class App extends React.Component<any, State> {
     public render() {
         return !this.state.isLoaded ? <div>Loading...</div> : (
             <Router>
-            <div className="well">
-                <Nav />
-                <Route exact="true" path="/" render={() => <List data={this.state.data} />} />
-                <Route exact="true" path="/user" render={() => <UserList data={this.state.data} />} />
-            </div>
+                <div className="well">
+                    <Nav />
+                    <Route exact={true} path="/" render={() => <List data={this.state.data} />} />
+                    <Route exact={true} path="/user" render={() => <UserList data={this.state.data} />} />
+                </div>
             </Router>
         );
     }
