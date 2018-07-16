@@ -392,11 +392,14 @@ form {
 /* Misc
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 hr {
-    /* margin-top: 3rem;
-    margin-bottom: 3.5rem; */
+    margin-top: 20px;
     margin-bottom: 0;
     border-width: 0;
     border-top: 1px solid #E1E1E1; }
+
+.well {
+  background-color: #fcfcfc;
+}
 
 .nav-tab {
     display: inline;
@@ -507,6 +510,11 @@ hr {
     content: "";
     display: table;
     clear: both;
+}
+
+.footer {
+    background-color: #efefef;
+    height: 50px;
 }
 
 

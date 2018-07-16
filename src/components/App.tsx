@@ -5,6 +5,7 @@ import Nav from './Nav';
 import { List } from './List';
 import { UserList } from './UserList';
 import { DATA_URL } from '../utils';
+import { clearLine } from 'readline';
 
 type State = {
     data: any;
@@ -19,6 +20,7 @@ export class App extends React.Component<any, State> {
         // TODO: Don't use localStorage to store userID
         // TODO: Don't hardcode userID
         window.localStorage.userID = 'user01';
+        // this.submitName = this.submitName.bind(this);
 
         this.state = {
             data: null,
@@ -34,12 +36,14 @@ export class App extends React.Component<any, State> {
     }
 
     public render() {
+        // I could use a filtering button instead of Routes, just wanted to experiment with React Router
         return !this.state.isLoaded ? <div>Loading...</div> : (
             <Router>
                 <div className="well">
                     <Nav />
                     <Route exact={true} path="/" render={() => <List data={this.state.data} />} />
                     <Route exact={true} path="/user" render={() => <UserList data={this.state.data} />} />
+                    <div className="footer"></div>
                 </div>
             </Router>
         );
