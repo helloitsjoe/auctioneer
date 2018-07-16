@@ -241,11 +241,14 @@ input[type="url"],
 input[type="password"],
 textarea,
 select {
+  width: 100px;
   height: 38px;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
-  background-color: #fff;
-  border: 1px solid #D1D1D1;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 0px solid #888;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #666;
+  margin: 0 10px;
   box-shadow: none;
   box-sizing: border-box; }
 /* Removes awkward default styles on some inputs for iOS */
@@ -273,7 +276,8 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-  border: 1px solid #33C3F0;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid #666;
   outline: 0; }
 label,
 legend {
@@ -360,8 +364,6 @@ table,
 p,
 ul,
 ol,
-form {
-  margin-bottom: 2.5rem; }
 
 
 /* Utilities
@@ -399,6 +401,12 @@ hr {
 
 .well {
   background-color: #fcfcfc;
+}
+
+.user-form {
+  padding-top: 20px;
+  margin-bottom: 0;
+  background-color: #ddd;
 }
 
 .nav-tab {
@@ -447,6 +455,7 @@ hr {
     display: inline; }
 
 .centered {
+    margin: auto;
     text-align: center; }
 
 .bid {
@@ -469,6 +478,10 @@ hr {
     background-color: #cefdce;
 }
 
+.outbid-bg {
+    background-color: pink;
+}
+
 .bid-text {
     text-transform: uppercase;
     padding: 0;
@@ -482,9 +495,11 @@ hr {
     text-align: center;
     width: 60px; }
 
-.yours {
-    color: limegreen;
-    /*display: none;*/ }
+.user-high-bid {
+    color: limegreen; }
+
+.user-outbid {
+    color: red; }
 
 .description {
     transition: height 0.3s;

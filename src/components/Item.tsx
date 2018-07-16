@@ -11,7 +11,7 @@ type State = {
     highBidder: string;
 }
 
-// TODO: Clean up this file into container/presentation components
+// TODO: Refactor this file into container/presentation components
 export default class Item extends React.Component<Props, State> {
 
     constructor(props) {
@@ -45,11 +45,12 @@ export default class Item extends React.Component<Props, State> {
         e.stopPropagation();
         const itemData = this.props.itemData;
         let newBid = this.getHighBid(this.props.itemData.bids).highBid + 5;
-        itemData.bids.push({ name: 'user01', bid: newBid });
-        const { highBid } = this.getHighBid(itemData.bids);
+        // TODO: Don't user window.sessionStorage
+        itemData.bids.push({ name: window.sessionStorage.userID, bid: newBid });
+        const { highBid, highBidder } = this.getHighBid(itemData.bids);
 
-        this.setState({ highBid });
-        this.styleYourBid();
+        this.setState({ highBid, highBidder });
+        this.styleItem(highBidder);
         this.updateData();
     }
 
@@ -58,11 +59,23 @@ export default class Item extends React.Component<Props, State> {
         axios.put(DATA_URL, { body });
     }
 
-    styleYourBid() {
-        document.getElementById(`item-${this.props.itemData.id}`).classList.add('bid-bg');
-        let yourBid = document.getElementById(`bid-text-${this.props.itemData.id}`);
-        yourBid.innerHTML = 'High bid (You!)';
-        yourBid.classList.add('yours');
+    private styleItem(highBidder: string): void {
+        const user = window.sessionStorage.userID;
+        const currentItem = document.getElementById(`item-${this.props.itemData.id}`);
+        const yourBid = document.getElementById(`bid-text-${this.props.itemData.id}`);
+        if (highBidder === user) {
+            currentItem.classList.add('bid-bg');
+            currentItem.classList.remove('outbid-bg');
+            yourBid.innerHTML = 'High bid (You!)';
+            yourBid.classList.add('user-high-bid');
+            yourBid.classList.remove('user-outbid');
+        } else if (this.props.itemData.bids.find(item => item.name === user)) {
+            currentItem.classList.add('outbid-bg');
+            currentItem.classList.remove('bid-bg');
+            yourBid.innerHTML = 'High bid (Not you!)';
+            yourBid.classList.remove('user-high-bid');
+            yourBid.classList.add('user-outbid');  
+        }
     }
 
     toggleDescription(e) {
@@ -74,9 +87,7 @@ export default class Item extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        if(this.state.highBidder === /*this.props.currentUser.name*/ 'user01') {
-            this.styleYourBid();
-        }
+        this.styleItem(this.state.highBidder);
     }
 
     render() {

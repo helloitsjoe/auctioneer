@@ -4,11 +4,11 @@ import axios from 'axios';
 import Nav from './Nav';
 import { List } from './List';
 import { UserList } from './UserList';
-import { DATA_URL } from '../utils';
-import { clearLine } from 'readline';
+import { UserNameForm } from './UserNameForm';
+import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
 
 type State = {
-    data: any;
+    auctionItems: any;
     isLoaded: boolean;
 }
 
@@ -17,22 +17,20 @@ export class App extends React.Component<any, State> {
     constructor(props) {
         super(props);
 
-        // TODO: Don't use localStorage to store userID
-        // TODO: Don't hardcode userID
-        window.localStorage.userID = 'user01';
-        // this.submitName = this.submitName.bind(this);
-
         this.state = {
-            data: null,
+            auctionItems: null,
             isLoaded: false,
         };
+
+        window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES);
     }
 
     public async componentDidMount() {
         const response = await axios.get(DATA_URL);
-        const data = response && response.data;
-        console.log('state data:', data);
-        this.setState({ data, isLoaded: true });
+        const auctionItems = response && response.data;
+        // TODO: Don't use sessionStorage to store userID
+        console.log('state data:', auctionItems);
+        this.setState({ auctionItems, isLoaded: true });
     }
 
     public render() {
@@ -40,9 +38,10 @@ export class App extends React.Component<any, State> {
         return !this.state.isLoaded ? <div>Loading...</div> : (
             <Router>
                 <div className="well">
+                    <UserNameForm />
                     <Nav />
-                    <Route exact={true} path="/" render={() => <List data={this.state.data} />} />
-                    <Route exact={true} path="/user" render={() => <UserList data={this.state.data} />} />
+                    <Route exact={true} path="/" render={() => <List data={this.state.auctionItems} />} />
+                    <Route exact={true} path="/user" render={() => <UserList data={this.state.auctionItems} />} />
                     <div className="footer"></div>
                 </div>
             </Router>
