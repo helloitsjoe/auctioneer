@@ -3,12 +3,14 @@ import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 import Nav from './Nav';
 import { List } from './List';
+import { Footer } from './Footer';
 import { UserList } from './UserList';
 import { UserNameForm } from './UserNameForm';
 import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
 
 type State = {
     auctionItems: any;
+    userTotal: number;
     isLoaded: boolean;
 }
 
@@ -19,6 +21,7 @@ export class App extends React.Component<any, State> {
 
         this.state = {
             auctionItems: null,
+            userTotal: 0,
             isLoaded: false,
         };
 
@@ -42,7 +45,7 @@ export class App extends React.Component<any, State> {
                     <Nav />
                     <Route exact={true} path="/" render={() => <List data={this.state.auctionItems} />} />
                     <Route exact={true} path="/user" render={() => <UserList data={this.state.auctionItems} />} />
-                    <div className="footer"></div>
+                    <Footer userTotal={this.state.userTotal} />
                 </div>
             </Router>
         );

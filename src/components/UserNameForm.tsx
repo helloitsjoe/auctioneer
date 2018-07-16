@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { DEFAULT_NAMES, randFromArr } from '../utils';
 
 export const UserNameForm = () => {
     

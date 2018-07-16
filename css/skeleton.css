@@ -31,7 +31,7 @@
 .container {
   position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box; }
@@ -44,7 +44,7 @@
 /* For devices larger than 400px */
 @media (min-width: 400px) {
   .container {
-    width: 85%;
+    width: 100%;
     padding: 0; }
 }
 
@@ -52,7 +52,7 @@
 @media (min-width: 550px) {
   .container {
     width: 40%;
-    max-width: 500px; }
+    min-width: 400px; }
   .column,
   .columns {
     margin-left: 4%; }
@@ -417,7 +417,7 @@ hr {
     text-transform: uppercase;
     font-size: 80%;
     background-color: #ddd;
-    padding: 10px 70px; }
+    padding: 10px 40px; }
 
 .nav-bg {
     padding-top: 18px;
@@ -530,6 +530,7 @@ hr {
 .footer {
     background-color: #efefef;
     height: 50px;
+    padding-top: 20px;
 }
 
 

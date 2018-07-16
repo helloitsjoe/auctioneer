@@ -92,7 +92,7 @@ export default class Item extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="item-group clearfix" onClick={this.toggleDescription}>
+            <div className="item-group" onClick={this.toggleDescription}>
                 <div className="item-container" id={`item-${this.props.itemData.id}`}>
                     <div className="item-title u-pull-left">
                         <span>{this.props.itemData.title}</span>
