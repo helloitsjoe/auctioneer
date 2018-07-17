@@ -10,14 +10,16 @@ app.use(express.static(path.join(__dirname, '../')));
 const dataPath = path.join(__dirname, './data.json');
 let auctionData = null;
 
-app.get('/', (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
-    res.sendFile(path.join(__dirname, '../index.html'));
+app.get('/data', (req, res) => {
+    // res.set('Access-Control-Allow-Origin', '*');
+    res.send(auctionData);
 });
 
-app.get('/data', (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
-    res.send(auctionData);
+// Route all GET requests other than /data to index
+// to handle 'cannot get /users error
+app.get('/*', (req, res) => {
+    // res.set('Access-Control-Allow-Origin', '*');
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 app.put('/data', (req, res) => {
@@ -34,10 +36,10 @@ app.put('/data', (req, res) => {
 });
 
 fs.readFile(dataPath, (err,  data) => {
-        if (err) {
-            console.error(err);
+    if (err) {
+        console.error(err);
         done(err);
-        } else {
+    } else {
         // Only keep data in memory for now
         // TODO: Set up a database to persist changes
         const json = JSON.parse(data);
@@ -45,5 +47,5 @@ fs.readFile(dataPath, (err,  data) => {
         app.listen(3001, () => {
             console.log('Listening on port 3001');
         });
-        }
-    });
+    }
+});
