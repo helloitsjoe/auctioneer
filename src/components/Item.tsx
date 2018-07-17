@@ -9,6 +9,10 @@ type Props = {
 type State = {
     highBid: number;
     highBidder: string;
+    itemClass: string;
+    bidClass: string;
+    bidText: string;
+    descriptionClass: string;
 }
 
 // TODO: Refactor this file into container/presentation components
@@ -20,11 +24,17 @@ export default class Item extends React.Component<Props, State> {
         const { highBid, highBidder } = this.getHighBid(this.props.itemData.bids);
         this.state = {
             highBid,
-            highBidder
+            highBidder,
+            bidClass: '',
+            bidText: 'High bid:',
+            itemClass: '',
+            descriptionClass: '',
         };
 
         this.quickBid = this.quickBid.bind(this);
+        this.styleItem = this.styleItem.bind(this);
         this.updateData = this.updateData.bind(this);
+        this.getHighBid = this.getHighBid.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
     }
 
@@ -61,27 +71,25 @@ export default class Item extends React.Component<Props, State> {
 
     private styleItem(highBidder: string): void {
         const user = window.sessionStorage.userID;
-        const currentItem = document.getElementById(`item-${this.props.itemData.id}`);
-        const yourBid = document.getElementById(`bid-text-${this.props.itemData.id}`);
         if (highBidder === user) {
-            currentItem.classList.add('bid-bg');
-            currentItem.classList.remove('outbid-bg');
-            yourBid.innerHTML = 'High bid (You!)';
-            yourBid.classList.add('user-high-bid');
-            yourBid.classList.remove('user-outbid');
+            this.setState({
+                itemClass: 'bid-bg',
+                bidClass: 'user-high-bid',
+                bidText: 'High bid (You!)',
+            });
         } else if (this.props.itemData.bids.find(item => item.name === user)) {
-            currentItem.classList.add('outbid-bg');
-            currentItem.classList.remove('bid-bg');
-            yourBid.innerHTML = 'High bid (Not you!)';
-            yourBid.classList.remove('user-high-bid');
-            yourBid.classList.add('user-outbid');  
+            this.setState({
+                itemClass: 'outbid-bg',
+                bidClass: 'user-outbid',
+                bidText: 'High bid (Not you!)',
+            });
         }
     }
 
     toggleDescription(e) {
         e.stopPropagation();
-        let description = document.getElementById(`description-${this.props.itemData.id}`);
-        description.classList.toggle('open');
+        const descriptionClass = !!this.state.descriptionClass ? '' : 'open';
+        this.setState({ descriptionClass });
 
         // TODO: Add photos
     }
@@ -91,19 +99,21 @@ export default class Item extends React.Component<Props, State> {
     }
 
     render() {
+        const { itemClass, bidClass, highBid, descriptionClass, bidText } = this.state;
+        const { itemData } = this.props;
         return (
             <div className="item-group" onClick={this.toggleDescription}>
-                <div className="item-container" id={`item-${this.props.itemData.id}`}>
+                <div className={`item-container ${itemClass}`} id={`item-${itemData.id}`}>
                     <div className="item-title u-pull-left">
-                        <span>{this.props.itemData.title}</span>
+                        <span>{itemData.title}</span>
                     </div>
                     <div className="button-box u-pull-right">
-                    <span className="bid-text" id={`bid-text-${this.props.itemData.id}`}>High bid:</span>
-                        <span className="high-bid" id={`high-bid-${this.props.itemData.id}`}>{this.state.highBid}</span>
-                        <button className="bid btn" onClick={this.quickBid}>Bid {this.state.highBid + 5}</button>
+                        <span className={`bid-text ${bidClass}`}>{bidText}</span>
+                        <span className="high-bid">{highBid}</span>
+                        <button className="bid btn" onClick={this.quickBid}>Bid {highBid + 5}</button>
                     </div>
                 </div>
-                <div className="description" id={`description-${this.props.itemData.id}`}>{this.props.itemData.description}</div>
+                <div className={`description ${descriptionClass}`}>{itemData.description}</div>
             </div>
         );
     };
