@@ -9,7 +9,7 @@ export const UserNameForm = () => {
     }
 
     const setUserName = (e) => {
-        e.preventDefault();
+        // Don't call preventDefault so the page refreshes and bids are updated
         document.getElementById('input').blur();
     }
 

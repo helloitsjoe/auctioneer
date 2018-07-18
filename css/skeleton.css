@@ -52,7 +52,7 @@
 @media (min-width: 550px) {
   .container {
     width: 40%;
-    min-width: 400px; }
+    min-width: 450px; }
   .column,
   .columns {
     margin-left: 4%; }
