@@ -8,4 +8,4 @@ This small project came out of a visit to a silent auction where everything was 
 2. Run `npm run start`
 3. In a browser, go to `localhost:3001` to see items up for auction
 
-If you open two browser windows, each will be assigned a random username (which you can change) to keep track of bids. If you bid in one window and refresh the other, you'll see the bids update. Outbid each other!
+If you open two browser windows, each will be assigned a random username (which you can change) to keep track of bids. If you bid in one window and refresh the other (TODO: sockets), you'll see the bids update. Outbid each other!
