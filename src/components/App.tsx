@@ -34,7 +34,6 @@ export class App extends React.Component<any, State> {
         try {
             const response = await axios.get(DATA_URL);
             const auctionItems = response && response.data;
-            // TODO: Don't use sessionStorage to store userID
             console.log('state data:', auctionItems);
             this.setState({ auctionItems, isLoaded: true });
         } catch (err) {
