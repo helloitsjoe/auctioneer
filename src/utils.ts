@@ -23,6 +23,6 @@ export const DEFAULT_NAMES = [
     'Steve',
 ]
 
-export const DATA_URL = 'http://localhost:3001/data';
+export const DATA_URL = `http://${window.location.hostname}:3001/data`;
 
 export const randFromArr = (arr) => arr[Math.floor(Math.random() * arr.length)];
