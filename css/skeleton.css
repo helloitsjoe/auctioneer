@@ -28,6 +28,13 @@
 
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media 
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) { 
+    body {
+      zoom: 2;
+    }
+}
 .container {
   position: relative;
   width: 100%;
@@ -51,8 +58,9 @@
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .container {
-    width: 40%;
-    min-width: 450px; }
+    width: 100%;
+    min-width: 450px;
+  }
   .column,
   .columns {
     margin-left: 4%; }

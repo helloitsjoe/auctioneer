@@ -1,14 +1,15 @@
 import * as React from 'react';
 import axios from 'axios';
 import { DATA_URL } from '../utils';
+import { ItemView } from './ItemView';
 
-type Props = {
+export type ItemProps = {
     itemData: any;
 }
 
-type State = {
+export type ItemState = {
     highBid: number;
-    highBidder: string;
+    highBidder?: string;
     itemClass: string;
     bidClass: string;
     bidText: string;
@@ -16,7 +17,7 @@ type State = {
 }
 
 // TODO: Refactor this file into container/presentation components
-export default class Item extends React.Component<Props, State> {
+export default class Item extends React.Component<ItemProps, ItemState> {
 
     constructor(props) {
         super(props);
@@ -30,15 +31,9 @@ export default class Item extends React.Component<Props, State> {
             itemClass: '',
             descriptionClass: '',
         };
-
-        this.quickBid = this.quickBid.bind(this);
-        this.styleItem = this.styleItem.bind(this);
-        this.updateData = this.updateData.bind(this);
-        this.getHighBid = this.getHighBid.bind(this);
-        this.toggleDescription = this.toggleDescription.bind(this);
     }
 
-    getHighBid(bids) {
+    getHighBid = (bids) => {
         let highBid = 0;
         let highBidder = '';
 
@@ -51,7 +46,7 @@ export default class Item extends React.Component<Props, State> {
         return { highBid, highBidder }
     }
 
-    quickBid(e) {
+    quickBid = (e) => {
         e.stopPropagation();
         const itemData = this.props.itemData;
         let newBid = this.getHighBid(this.props.itemData.bids).highBid + 5;
@@ -64,12 +59,11 @@ export default class Item extends React.Component<Props, State> {
         this.updateData();
     }
 
-    private updateData(): void {
-        const body = JSON.stringify(this.props.itemData);
-        axios.put(DATA_URL, { body });
+    private updateData = (): void => {
+        axios.put(DATA_URL, { body: JSON.stringify(this.props.itemData) });
     }
 
-    private styleItem(highBidder: string): void {
+    private styleItem = (highBidder: string): void => {
         const user = window.sessionStorage.userID;
         if (highBidder === user) {
             this.setState({
@@ -86,7 +80,7 @@ export default class Item extends React.Component<Props, State> {
         }
     }
 
-    toggleDescription(e) {
+    toggleDescription = (e) => {
         e.stopPropagation();
         const descriptionClass = !!this.state.descriptionClass ? '' : 'open';
         this.setState({ descriptionClass });
@@ -94,27 +88,20 @@ export default class Item extends React.Component<Props, State> {
         // TODO: Add photos
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.styleItem(this.state.highBidder);
     }
 
     render() {
-        const { itemClass, bidClass, highBid, descriptionClass, bidText } = this.state;
-        const { itemData } = this.props;
-        return (
-            <div className="item-group" onClick={this.toggleDescription}>
-                <div className={`item-container ${itemClass}`} id={`item-${itemData.id}`}>
-                    <div className="item-title u-pull-left">
-                        <span>{itemData.title}</span>
-                    </div>
-                    <div className="button-box u-pull-right">
-                        <span className={`bid-text ${bidClass}`}>{bidText}</span>
-                        <span className="high-bid">{highBid}</span>
-                        <button className="bid btn" onClick={this.quickBid}>Bid {highBid + 5}</button>
-                    </div>
-                </div>
-                <div className={`description ${descriptionClass}`}>{itemData.description}</div>
-            </div>
-        );
+        const { itemClass, bidClass, bidText, highBid, descriptionClass } = this.state;
+        return <ItemView
+            itemData={this.props.itemData}
+            itemClass={itemClass}
+            bidClass={bidClass}
+            bidText={bidText}
+            highBid={highBid}
+            toggleDescription={this.toggleDescription}
+            quickBid={this.quickBid}
+            descriptionClass={descriptionClass} />
     };
 }
