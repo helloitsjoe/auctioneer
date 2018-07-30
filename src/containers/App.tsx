@@ -16,6 +16,8 @@ type State = {
 
 export class App extends React.Component<any, State> {
 
+    private auctionDataPoll: any;
+
     constructor(props) {
         super(props);
 
@@ -30,12 +32,20 @@ export class App extends React.Component<any, State> {
     }
 
     public async componentWillMount() {
+            await this.fetchAuctionData();
+            // Kick off poll every second for new auction data... TODO: Make this a socket?
+            this.auctionDataPoll = setInterval(async () => {
+                await this.fetchAuctionData();
+            }, 1000);
+    }
+
+    private async fetchAuctionData() {
         try {
             const response = await axios.get(DATA_URL);
             const auctionItems = response && response.data;
-            console.log('state data:', auctionItems);
             this.setState({ auctionItems, isLoaded: true });
         } catch (err) {
+            clearInterval(this.auctionDataPoll);
             console.error(err);
             this.setState({ error: JSON.stringify(err), isLoaded: true });
         }

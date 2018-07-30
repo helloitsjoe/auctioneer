@@ -7,53 +7,53 @@ type ItemProps = {
     itemData: any;
 }
 
-type ItemState = ItemStyle & {
-    highBid: number;
+type Bid = {
+    name: string;
+    bid: number;
+}
+
+type ItemState = {
+    highBid: Bid;
     highBidder?: string;
+    userHasHighBid: boolean;
+    userWasOutBid: boolean;
     descriptionClass: string;
 }
 
-type ItemStyle = {
-    itemClass: string;
-    bidClass: string;
-    bidText: string;
-}
-
-// TODO: Refactor this file into container/presentation components
 export default class Item extends React.Component<ItemProps, ItemState> {
 
     constructor(props) {
         super(props);
 
-        const { highBid, highBidder } = this.getHighBid(this.props.itemData.bids);
+        const highBid = this.getHighBid(this.props.itemData.bids);
         this.state = {
             highBid,
-            highBidder,
-            bidClass: '',
-            bidText: 'High bid:',
-            itemClass: '',
+            userHasHighBid: false,
+            userWasOutBid: false,
             descriptionClass: '',
         };
     }
 
     getHighBid = (bids) => {
         const high = bids.reduce((high, curr) => {
-            return curr.bid > high.bid ? curr : high;
+            return (curr.bid > high.bid) ? curr : high;
         }, { bid: 0, name: '' });
 
-        return { highBid: high.bid, highBidder: high.name }
+        // return { highBid: high.bid, highBidder: high.name }
+        return high;
     }
 
     quickBid = (e) => {
         e.stopPropagation();
         const itemData = this.props.itemData;
-        let newBid = this.getHighBid(this.props.itemData.bids).highBid + 5;
+        let newBid = this.getHighBid(this.props.itemData.bids).bid + 5;
         // TODO: Don't user window.sessionStorage
         itemData.bids.push({ name: window.sessionStorage.userID, bid: newBid });
-        const { highBid, highBidder } = this.getHighBid(itemData.bids);
-        const { itemClass, bidClass, bidText } = this.getStyleInfo(highBidder);
 
-        this.setState({ highBid, highBidder, itemClass, bidClass, bidText });
+        const highBid = this.getHighBid(itemData.bids);
+        this.setState({ highBid });
+        this.setUserBidState(highBid.name);
+
         this.updateData();
     }
 
@@ -61,23 +61,11 @@ export default class Item extends React.Component<ItemProps, ItemState> {
         axios.put(DATA_URL, { body: JSON.stringify(this.props.itemData) });
     }
 
-    private getStyleInfo = (highBidder: string): any => {
+    private setUserBidState = (highBidder: string): any => {
         const user = window.sessionStorage.userID;
-        if (highBidder === user) {
-            return {
-                itemClass: 'bid-bg',
-                bidClass: 'user-high-bid',
-                bidText: 'High bid (You!)',
-            }
-        } else if (this.props.itemData.bids.find(item => item.name === user)) {
-            return {
-                itemClass: 'outbid-bg',
-                bidClass: 'user-outbid',
-                bidText: 'High bid (Not you!)',
-            }
-        }
-        // User hasn't bid on this Item
-        return null;
+        const userHasHighBid = (highBidder === user);
+        const userWasOutBid = !userHasHighBid && this.props.itemData.bids.find(item => item.name === user);
+        this.setState({ userHasHighBid, userWasOutBid });
     }
 
     toggleDescription = (e) => {
@@ -89,23 +77,24 @@ export default class Item extends React.Component<ItemProps, ItemState> {
     }
 
     componentWillMount() {
-        const styleInfo = this.getStyleInfo(this.state.highBidder);
-        if (styleInfo) {
-            const { itemClass, bidClass, bidText } = styleInfo;
-            this.setState({ itemClass, bidClass, bidText });
-        }
+        this.setUserBidState(this.state.highBidder);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const highBid = this.getHighBid(nextProps.itemData.bids);
+        this.setUserBidState(highBid.name);
+        this.setState({ highBid });
     }
 
     render() {
-        const { itemClass, bidClass, bidText, highBid, descriptionClass } = this.state;
+        const { userHasHighBid, userWasOutBid, highBid, descriptionClass } = this.state;
         return <ItemView
-            itemData={this.props.itemData}
-            itemClass={itemClass}
-            bidClass={bidClass}
-            bidText={bidText}
-            highBid={highBid}
-            toggleDescription={this.toggleDescription}
+            highBid={highBid.bid}
+            userWasOutBid={userWasOutBid}
+            userHasHighBid={userHasHighBid}
             quickBid={this.quickBid}
+            itemData={this.props.itemData}
+            toggleDescription={this.toggleDescription}
             descriptionClass={descriptionClass} />
     };
 }
