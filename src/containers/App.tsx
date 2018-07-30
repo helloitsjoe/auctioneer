@@ -15,9 +15,12 @@ type State = {
 export class App extends React.Component<any, State> {
 
     private auctionDataPoll: any;
+    // private dataUrl: string; // TODO: Pass url/port into App
 
     constructor(props) {
         super(props);
+
+        // this.dataUrl = `${HOST}:${this.props.port}/data`
 
         this.state = {
             error: null,
@@ -30,11 +33,11 @@ export class App extends React.Component<any, State> {
     }
 
     public async componentWillMount() {
+        await this.fetchAuctionData();
+        // Kick off poll every second for new auction data... TODO: Make this a socket?
+        this.auctionDataPoll = setInterval(async () => {
             await this.fetchAuctionData();
-            // Kick off poll every second for new auction data... TODO: Make this a socket?
-            this.auctionDataPoll = setInterval(async () => {
-                await this.fetchAuctionData();
-            }, 1000);
+        }, 1000);
     }
 
     private async fetchAuctionData() {

@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const readFile = util.promisify(fs.readFile);
 const app = express();
 
-const createServer = async (port) => {
+const createServer = async (host, port) => {
 
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, '../')));
@@ -37,12 +37,12 @@ const createServer = async (port) => {
         res.sendStatus(200);
     });
     
-    readFile(dataPath).then(fileData => {
+    return readFile(dataPath).then(fileData => {
         const json = JSON.parse(fileData);
         auctionData = json.map((item, i) => Object.assign({}, item, { id: i }));
     
         return app.listen(port, () => {
-            console.log(`Listening on port ${port}`);
+            console.log(`Listening on ${host}:${port}`);
         });
     }).catch(err => {
         console.error(err);

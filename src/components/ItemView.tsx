@@ -1,7 +1,6 @@
 import * as React from 'react';
+import { BID_INCREMENT } from '../containers/Item';
 
-
-// TODO: Refactor this file into container/presentation components
 export const ItemView = (props: any) => {
     const {
         itemData,
@@ -36,7 +35,7 @@ export const ItemView = (props: any) => {
                 <div className="button-box u-pull-right">
                     <span className={`bid-text ${bidClass}`}>High bid {bidSuffix}</span>
                     <span className="high-bid">{highBid}</span>
-                    <button className="bid btn" onClick={quickBid}>Bid {highBid + 5}</button>
+                    <button className="bid btn" onClick={quickBid}>Bid {highBid + BID_INCREMENT}</button>
                 </div>
             </div>
             <div className={`description ${descriptionClass}`}>{itemData.description}</div>
