@@ -1,11 +1,9 @@
 import * as React from 'react';
 import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
-import Nav from './Nav';
-import { List } from './List';
-import { Footer } from '../components/Footer';
-import { UserNameForm } from '../components/UserNameForm';
 import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
+import AdminPage from './AdminPage';
+import BidsPage from './BidsPage';
 
 type State = {
     error: string;
@@ -57,12 +55,16 @@ export class App extends React.Component<any, State> {
             : this.state.error ? <div>Error: {this.state.error}</div>
             : (
                 <Router>
-                    <div className="well">
-                        <UserNameForm />
-                        <Nav />
-                        <Route exact={true} path="/" render={() => <List data={this.state.auctionItems} />} />
-                        <Route exact={true} path="/user" render={() => <List data={this.state.auctionItems} filter={true} />} />
-                        <Footer userTotal={this.state.userTotal} />
+                    <div>
+                        <Route exact={true} path="/admin" render={() => <AdminPage />} />
+                        <Route exact={true} path="/" render={() => <BidsPage
+                            auctionItems={this.state.auctionItems}
+                            userTotal={this.state.userTotal}
+                            filter={false}/>} />
+                        <Route exact={true} path="/user" render={() => <BidsPage
+                            auctionItems={this.state.auctionItems}
+                            userTotal={this.state.userTotal}
+                            filter={true} />} />
                     </div>
                 </Router>
             );
