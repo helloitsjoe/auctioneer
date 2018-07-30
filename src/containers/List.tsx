@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Item from './Item';
-import { EmptyList } from './EmptyList';
+import { EmptyList } from '../components/EmptyList';
 
 type Props = {
     data: any[];
@@ -13,6 +13,7 @@ export const List = (props: Props) => {
         return props.filter ? (userBidOnItem && <Item itemData={itemData} key={i} />)
             : <Item itemData={itemData} key={i} />;
     }).filter(Boolean);
+
     return (
         <div className="list">
             <hr />

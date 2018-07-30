@@ -1,19 +1,22 @@
 import * as React from 'react';
 import axios from 'axios';
 import { DATA_URL } from '../utils';
-import { ItemView } from './ItemView';
+import { ItemView } from '../components/ItemView';
 
-export type ItemProps = {
+type ItemProps = {
     itemData: any;
 }
 
-export type ItemState = {
+type ItemState = ItemStyle & {
     highBid: number;
     highBidder?: string;
+    descriptionClass: string;
+}
+
+type ItemStyle = {
     itemClass: string;
     bidClass: string;
     bidText: string;
-    descriptionClass: string;
 }
 
 // TODO: Refactor this file into container/presentation components
@@ -34,16 +37,11 @@ export default class Item extends React.Component<ItemProps, ItemState> {
     }
 
     getHighBid = (bids) => {
-        let highBid = 0;
-        let highBidder = '';
+        const high = bids.reduce((high, curr) => {
+            return curr.bid > high.bid ? curr : high;
+        }, { bid: 0, name: '' });
 
-        for (let j = 0; j < bids.length; j++) {
-            if(bids[j].bid > highBid) {
-                highBid = bids[j].bid;
-                highBidder = bids[j].name;
-            }
-        }
-        return { highBid, highBidder }
+        return { highBid: high.bid, highBidder: high.name }
     }
 
     quickBid = (e) => {
@@ -53,9 +51,9 @@ export default class Item extends React.Component<ItemProps, ItemState> {
         // TODO: Don't user window.sessionStorage
         itemData.bids.push({ name: window.sessionStorage.userID, bid: newBid });
         const { highBid, highBidder } = this.getHighBid(itemData.bids);
+        const { itemClass, bidClass, bidText } = this.getStyleInfo(highBidder);
 
-        this.setState({ highBid, highBidder });
-        this.styleItem(highBidder);
+        this.setState({ highBid, highBidder, itemClass, bidClass, bidText });
         this.updateData();
     }
 
@@ -63,21 +61,23 @@ export default class Item extends React.Component<ItemProps, ItemState> {
         axios.put(DATA_URL, { body: JSON.stringify(this.props.itemData) });
     }
 
-    private styleItem = (highBidder: string): void => {
+    private getStyleInfo = (highBidder: string): any => {
         const user = window.sessionStorage.userID;
         if (highBidder === user) {
-            this.setState({
+            return {
                 itemClass: 'bid-bg',
                 bidClass: 'user-high-bid',
                 bidText: 'High bid (You!)',
-            });
+            }
         } else if (this.props.itemData.bids.find(item => item.name === user)) {
-            this.setState({
+            return {
                 itemClass: 'outbid-bg',
                 bidClass: 'user-outbid',
                 bidText: 'High bid (Not you!)',
-            });
+            }
         }
+        // User hasn't bid on this Item
+        return null;
     }
 
     toggleDescription = (e) => {
@@ -89,7 +89,11 @@ export default class Item extends React.Component<ItemProps, ItemState> {
     }
 
     componentWillMount() {
-        this.styleItem(this.state.highBidder);
+        const styleInfo = this.getStyleInfo(this.state.highBidder);
+        if (styleInfo) {
+            const { itemClass, bidClass, bidText } = styleInfo;
+            this.setState({ itemClass, bidClass, bidText });
+        }
     }
 
     render() {

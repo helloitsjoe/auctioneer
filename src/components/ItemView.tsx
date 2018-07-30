@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ItemState, ItemProps } from './Item';
 
 
 // TODO: Refactor this file into container/presentation components
@@ -14,6 +13,7 @@ export const ItemView = (props: any) => {
         toggleDescription,
         quickBid
     } = props;
+
     return (
         <div className="item-group" onClick={toggleDescription}>
             <div className={`item-container ${itemClass}`} id={`item-${itemData.id}`}>
