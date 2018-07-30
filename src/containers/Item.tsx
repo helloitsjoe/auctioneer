@@ -3,6 +3,9 @@ import axios from 'axios';
 import { DATA_URL } from '../utils';
 import { ItemView } from '../components/ItemView';
 
+// TODO: Make this configurable by auction host
+export const BID_INCREMENT = 5;
+
 type ItemProps = {
     itemData: any;
 }
@@ -25,9 +28,8 @@ export default class Item extends React.Component<ItemProps, ItemState> {
     constructor(props) {
         super(props);
 
-        const highBid = this.getHighBid(this.props.itemData.bids);
         this.state = {
-            highBid,
+            highBid: this.getHighBid(this.props.itemData.bids),
             userHasHighBid: false,
             userWasOutBid: false,
             descriptionClass: '',
@@ -39,26 +41,27 @@ export default class Item extends React.Component<ItemProps, ItemState> {
             return (curr.bid > high.bid) ? curr : high;
         }, { bid: 0, name: '' });
 
-        // return { highBid: high.bid, highBidder: high.name }
         return high;
     }
 
     quickBid = (e) => {
         e.stopPropagation();
-        const itemData = this.props.itemData;
-        let newBid = this.getHighBid(this.props.itemData.bids).bid + 5;
+        const { bids } = this.props.itemData;
         // TODO: Don't user window.sessionStorage
-        itemData.bids.push({ name: window.sessionStorage.userID, bid: newBid });
+        const newBid = {
+            name: window.sessionStorage.userID,
+            bid: this.getHighBid(bids).bid + BID_INCREMENT
+        };
+        bids.push(newBid);
 
-        const highBid = this.getHighBid(itemData.bids);
-        this.setState({ highBid });
-        this.setUserBidState(highBid.name);
+        this.setState({ highBid: newBid });
+        this.setUserBidState(newBid.name);
 
-        this.updateData();
+        this.updateData(this.props.itemData);
     }
 
-    private updateData = (): void => {
-        axios.put(DATA_URL, { body: JSON.stringify(this.props.itemData) });
+    private updateData = (itemData): void => {
+        axios.put(DATA_URL, { body: JSON.stringify(itemData) });
     }
 
     private setUserBidState = (highBidder: string): any => {
@@ -68,6 +71,7 @@ export default class Item extends React.Component<ItemProps, ItemState> {
         this.setState({ userHasHighBid, userWasOutBid });
     }
 
+    // TODO: Move this to view?
     toggleDescription = (e) => {
         e.stopPropagation();
         const descriptionClass = !!this.state.descriptionClass ? '' : 'open';
