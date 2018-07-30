@@ -81,7 +81,7 @@ export default class Item extends React.Component<ItemProps, ItemState> {
     }
 
     componentWillMount() {
-        this.setUserBidState(this.state.highBidder);
+        this.setUserBidState(this.state.highBid.name);
     }
 
     componentWillReceiveProps(nextProps) {
