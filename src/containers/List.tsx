@@ -3,15 +3,19 @@ import Item from './Item';
 import { EmptyList } from '../components/EmptyList';
 
 type Props = {
-    data: any[];
+    auctionData: any[];
     filter?: boolean;
 }
 
 export const List = (props: Props) => {
-    const items = props.data.map((itemData, i) => {
-        const userBidOnItem = itemData.bids.find(bid => bid.name === window.sessionStorage.userID);
-        return props.filter ? (userBidOnItem && <Item itemData={itemData} key={i} />)
-            : <Item itemData={itemData} key={i} />;
+    const userID = window.sessionStorage.userID;
+    const items = props.auctionData.map((itemData, i) => {
+        const userBidOnItem = itemData.bids.find(bid => bid.name === userID);
+        if (props.filter) {
+            return userBidOnItem && <Item itemData={itemData} key={i} />
+        } else {
+            return <Item itemData={itemData} key={i} />;
+        }
     }).filter(Boolean);
 
     return (
