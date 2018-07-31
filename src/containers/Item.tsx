@@ -2,6 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { DATA_URL } from '../utils';
 import { ItemView } from '../components/ItemView';
+import { puts } from 'util';
 
 // TODO: Make this configurable by auction host
 export const BID_INCREMENT = 5;

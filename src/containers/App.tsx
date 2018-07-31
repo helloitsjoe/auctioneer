@@ -42,6 +42,10 @@ export class App extends React.Component<any, State> {
         }, 1000);
     }
 
+    public componentWillUnmount() {
+        clearInterval(this.auctionDataPoll);
+    }
+
     private async fetchAuctionData() {
         try {
             const response = await axios.get(DATA_URL);
