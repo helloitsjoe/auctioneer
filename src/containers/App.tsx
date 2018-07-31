@@ -67,8 +67,8 @@ export class App extends React.Component<any, State> {
                     <div className="well">
                         <UserNameForm />
                         <Nav />
-                        <Route exact={true} path="/" render={() => <List data={this.state.auctionItems} />} />
-                        <Route exact={true} path="/user" render={() => <List data={this.state.auctionItems} filter={true} />} />
+                        <Route exact={true} path="/" render={() => <List auctionData={this.state.auctionItems} />} />
+                        <Route exact={true} path="/user" render={() => <List auctionData={this.state.auctionItems} filter={true} />} />
                         <Footer userTotal={this.state.userTotal} />
                     </div>
                 </Router>

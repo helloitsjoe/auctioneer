@@ -1,6 +1,5 @@
 const path = require('path');
 const axios = require('axios');
-const expect = require('chai').expect;
 const { createServer } = require('../server/serverFactory');
 
 // This nonsense is required to get around jest CORS issue with localhost
@@ -24,26 +23,26 @@ describe('Server', function () {
 
     it('gets /', async function () {
         const res = await axios.get(url, { adapter });
-        expect(res.data).to.include('<!DOCTYPE html>');
+        expect(res.data).toContain('<!DOCTYPE html>');
     });
 
     it('gets /data', async function () {
         const res = await axios.get(url + '/data', { adapter });
-        expect(res.data).to.be.ok;
+        expect(res.data).toBeTruthy();
     });
 
     it('bids initialize with min bidder', async function () {
         const res = await axios.get(url + '/data', { adapter });
         res.data.forEach(auctionItem => {
-            expect(auctionItem.bids.length).to.equal(1);
-            expect(auctionItem.bids[0].name).to.equal('min');
+            expect(auctionItem.bids.length).toEqual(1);
+            expect(auctionItem.bids[0].name).toEqual('min');
         })
     });
 
     it('auction item ids match index', async function () {
         const res = await axios.get(url + '/data', { adapter });
         res.data.forEach((auctionItem, i) => {
-            expect(auctionItem.id).to.equal(i);
+            expect(auctionItem.id).toEqual(i);
         });
     });
 });

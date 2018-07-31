@@ -37,16 +37,19 @@ const createServer = async (host, port) => {
         res.sendStatus(200);
     });
     
-    return readFile(dataPath).then(fileData => {
-        const json = JSON.parse(fileData);
-        auctionData = json.map((item, i) => Object.assign({}, item, { id: i }));
-    
-        return app.listen(port, () => {
+    try {
+        const fileContents = await readFile(dataPath, 'utf-8');
+        auctionData = JSON.parse(fileContents);
+        // auctionData = json.map((item, i) => Object.assign({}, item, { id: i }));
+        
+        const server = app.listen(port, () => {
             console.log(`Listening on ${host}:${port}`);
         });
-    }).catch(err => {
+
+        return server;
+    } catch (err) {
         console.error(err);
-    });
+    }
 }
 
 module.exports = {
