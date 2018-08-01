@@ -2,7 +2,7 @@ import * as React from 'react';
 import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
-import { AdminPage } from '../admin/containers/AdminPage';
+import { AdminPage } from '../admin/presentation/AdminPage';
 import { BidsPage } from './BidsPage';
 
 type State = {

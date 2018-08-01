@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Item } from './Item';
-import { EmptyList } from '../components/EmptyList';
+import { EmptyList } from '../presentation/EmptyList';
 
 type Props = {
     user: string;

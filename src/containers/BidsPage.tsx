@@ -1,15 +1,14 @@
 import * as React from 'react';
 import Nav from './Nav';
 import { List } from './List';
-import { Footer } from '../components/Footer';
-import { UserNameForm } from '../components/UserNameForm';
-import { Route } from 'react-router-dom';
+import { Footer } from '../presentation/Footer';
+import { UserNameForm } from '../presentation/UserNameForm';
 
 type Props = {
     user: string;
     filter: boolean;
-    // userTotal: number;
     auctionItems: any;
+    // userTotal: number;
 }
 
 export const BidsPage = (props: Props) => (
