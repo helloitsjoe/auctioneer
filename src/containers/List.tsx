@@ -9,14 +9,14 @@ type Props = {
 }
 
 export const List = (props: Props) => {
-    const items = props.auctionItems.map((itemData, i) => {
-        const userBidOnItem = itemData.bids.find(bid => bid.name === props.user);
-        if (props.filter) {
-            return userBidOnItem && <Item itemData={itemData} user={props.user} key={i} />
-        } else {
-            return <Item itemData={itemData} user={props.user} key={i} />;
-        }
-    }).filter(Boolean);
+    const items = props.auctionItems
+        .map((itemData, i) => <Item itemData={itemData} user={props.user} key={i} />)
+        .filter((itemComponent, i) => {
+            if (!props.filter) {
+                return true;
+            }
+            return props.auctionItems[i].bids.some(bid => bid.name === props.user);
+        });
 
     return (
         <div className="list">
