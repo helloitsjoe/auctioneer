@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
-import { DATA_URL } from '../utils';
+import { DATA_URL, getHighBid } from '../utils';
 import { ItemView } from '../components/ItemView';
 
 // TODO: Make this configurable by auction host
@@ -8,6 +8,7 @@ export const BID_INCREMENT = 5;
 
 type ItemProps = {
     itemData: any;
+    user: string;
 }
 
 type Bid = {
@@ -23,52 +24,35 @@ type ItemState = {
     descriptionClass: string;
 }
 
-export default class Item extends React.Component<ItemProps, ItemState> {
+export class Item extends React.Component<ItemProps, ItemState> {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            highBid: this.getHighBid(this.props.itemData.bids),
+            highBid: getHighBid(this.props.itemData.bids),
             userHasHighBid: false,
             userWasOutBid: false,
             descriptionClass: '',
         };
     }
 
-    getHighBid = (bids) => {
-        const high = bids.reduce((high, curr) => {
-            return (curr.bid > high.bid) ? curr : high;
-        }, { bid: 0, name: '' });
-
-        return high;
-    }
-
     quickBid = (e) => {
         e.stopPropagation();
         const { bids } = this.props.itemData;
-        // TODO: Don't user window.sessionStorage
         const newBid = {
-            name: window.sessionStorage.userID,
-            bid: this.getHighBid(bids).bid + BID_INCREMENT
+            name: this.props.user,
+            bid: this.state.highBid.bid + BID_INCREMENT
         };
         bids.push(newBid);
 
         this.setState({ highBid: newBid });
-        this.setUserBidState(newBid.name);
 
         this.updateData(this.props.itemData);
     }
 
     private updateData = (itemData): void => {
         axios.put(DATA_URL, { body: JSON.stringify(itemData) });
-    }
-
-    private setUserBidState = (highBidder: string): any => {
-        const user = window.sessionStorage.userID;
-        const userHasHighBid = (highBidder === user);
-        const userWasOutBid = !userHasHighBid && this.props.itemData.bids.find(item => item.name === user);
-        this.setState({ userHasHighBid, userWasOutBid });
     }
 
     // TODO: Move this to view?
@@ -80,24 +64,23 @@ export default class Item extends React.Component<ItemProps, ItemState> {
         // TODO: Add photos
     }
 
-    componentWillMount() {
-        this.setUserBidState(this.state.highBid.name);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const highBid = this.getHighBid(nextProps.itemData.bids);
-        this.setUserBidState(highBid.name);
-        this.setState({ highBid });
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return { highBid: getHighBid(nextProps.itemData.bids) };
     }
 
     render() {
-        const { userHasHighBid, userWasOutBid, highBid, descriptionClass } = this.state;
+        const { highBid, descriptionClass } = this.state;
+        const { itemData, user } = this.props;
+
+        const userHasHighBid = (highBid.name === user);
+        const userWasOutBid = !userHasHighBid && itemData.bids.find(item => item.name === user);
+
         return <ItemView
             highBid={highBid.bid}
             userWasOutBid={userWasOutBid}
             userHasHighBid={userHasHighBid}
             quickBid={this.quickBid}
-            itemData={this.props.itemData}
+            itemData={itemData}
             toggleDescription={this.toggleDescription}
             descriptionClass={descriptionClass} />
     };
