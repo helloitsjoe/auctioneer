@@ -1,9 +1,6 @@
-import { configure } from 'enzyme';
-import * as Adapter from 'enzyme-adapter-react-16';
-
-configure({ adapter: new Adapter() });
-
-// describe('Auctioneer', function () {
-//     require('./App.test');
-//     require('./server.test');
-// });
+describe('Auctioneer', function () {
+    require('./App.test');
+    require('./Item.test');
+    require('./List.test');
+    require('./Server.test');
+});

@@ -121,7 +121,7 @@ module.exports = {
   // setupFiles: [],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
-  setupTestFrameworkScriptFile: './test/index.js',
+  setupTestFrameworkScriptFile: './test/setup.js',
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -138,13 +138,14 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: [
-    "**/test/*.+(ts|tsx|js)"
-    // "**/test/index.js"
+    // "**/test/*.+(ts|tsx|js)"
+    "**/test/index.js"
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
-    "/test/index.js",
+    // "/test/index.js",
+    "/test/setup.js",
     "/test/utils.js"
   ],
 

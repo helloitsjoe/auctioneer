@@ -2,11 +2,9 @@ import * as nock from 'nock';
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { App } from '../src/containers/App';
-import { clone, pollForState } from './utils';
+import { clone, pollForState, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
-const TESTER_1 = 'Tester 1';
-const TESTER_2 = 'Tester 2';
 
 describe('App', function () {
 
@@ -40,14 +38,12 @@ describe('App', function () {
 
         let app;
         let input;
-        let firstItem;
 
         beforeEach(async () => {
             app = mount(<App />);
             await pollForState(app, 'isLoaded');
             app.update(); // Need to call 'update()' for find() to work
             input = app.find('input');
-            firstItem = app.find('#item-0');
         });
 
         afterEach(() => {
@@ -72,82 +68,7 @@ describe('App', function () {
             expect(list.html()).toEqual(listHTMLTester1);
         });
 
-        it('item high bid matches highest bid in array', function () {
-            input.simulate('change', { target: { value: TESTER_1 }});
-            const highBid = firstItem.find('.high-bid');
-
-            const firstItemBids = auctionItemsCopy[0].bids;
-            const maxBid = Math.max(firstItemBids.map(bid => bid.bid));
-            
-            expect(highBid.text()).toEqual(`${maxBid}`);
-
-            const newMax = maxBid + 5;
-            firstItemBids.push({ name: TESTER_1, bid: newMax });
-            app.setState({ auctionItems: auctionItemsCopy });
-
-            expect(highBid.text()).toEqual(`${newMax}`);
-        });
-
-        it('item has bid-bg class when user has high bid', function () {
-            input.simulate('change', { target: { value: TESTER_1 }});
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(false);
-
-            const firstItemBids = auctionItemsCopy[0].bids;
-            const maxBid = Math.max(firstItemBids.map(bid => bid.bid));
-
-            firstItemBids.push({ name: TESTER_1, bid: maxBid + 5 });
-            app.setState({ auctionItems: auctionItemsCopy });
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(true);
-        });
-    
-        it('item has outbid-bg class when they have been outbid', async function () {
-            input.simulate('change', { target: { value: TESTER_1 }});
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(false);
-
-            const firstItemBids = auctionItemsCopy[0].bids;
-            const maxBid = Math.max(firstItemBids.map(bid => bid.bid));
-            const newMax = maxBid + 5;
-
-            firstItemBids.push({ name: TESTER_1, bid: newMax });
-            app.setState({ auctionItems: auctionItemsCopy });
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(true);
-
-            input.simulate('change', { target: { value: TESTER_2 }});
-            app.setState({}); // Trigger re-render
-
-            const outbidMax = newMax + 5;
-            firstItemBids.push({ name: TESTER_2, bid: outbidMax });
-            app.setState({ auctionItems: auctionItemsCopy });
-
-            input.simulate('change', { target: { value: TESTER_1 }});
-            app.setState({}); // Trigger re-render
-
-            expect(firstItem.render().hasClass('outbid-bg')).toEqual(true);
-        });
-
-        it('item has no bid class when they havent bid', async function () {
-            input.simulate('change', { target: { value: TESTER_1 }});
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(false);
-
-            const firstItemBids = auctionItemsCopy[0].bids;
-            const maxBid = Math.max(firstItemBids.map(bid => bid.bid));
-
-            firstItemBids.push({ name: TESTER_1, bid: maxBid + 5 });
-            app.setState({ auctionItems: auctionItemsCopy });
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(true);
-
-            input.simulate('change', { target: { value: TESTER_2 }});
-            app.setState({}); // Trigger re-render
-
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(false);
-            expect(firstItem.render().hasClass('outbid-bg')).toEqual(false);
-        });
+        // Clicking on My Bids should render user bids
 
         // TODO: figure out why nock insn't matching the PUT sent by the click, then unskip these tests
         // it('bid updates when user clicks button', async function () {
