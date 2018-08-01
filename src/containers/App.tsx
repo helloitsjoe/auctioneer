@@ -63,7 +63,8 @@ export class App extends React.Component<any, State> {
             : (
                 <Router>
                     <div>
-                        <Route exact={true} path="/admin" render={() => <AdminPage />} />
+                        <Route exact={true} path="/admin" render={() => <AdminPage
+                            auctionItems={this.state.auctionItems} />} />
                         <Route exact={true} path="/" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
                             user={window.sessionStorage.userID}

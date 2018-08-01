@@ -540,7 +540,60 @@ hr {
     padding-top: 20px;
 }
 
+/* ADMIN
+______________________________________________________________________ */
 
+.admin-page {
+  width: 100%;
+  height: 500px;
+}
+
+.admin-header {
+  width: 100%;
+  display: block;
+  height: 100px;
+}
+
+.sidebar {
+  width: 20%;
+  height: 500px;
+  float: left;
+  border-right: 1px solid lightgray;
+}
+
+.sidebar-item {
+  height: 50px;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid lightgray;
+}
+
+.sidebar-item:hover {
+  background-color: #ddd;
+}
+
+.sidebar-item-text {
+  margin: 20px;
+}
+
+.sidebar-add-item {
+  background-color: #eee;
+  text-align: center;
+  padding-top: 0px;
+}
+
+.plus {
+  font-size: 2em;
+  color: gray;
+}
+
+.main-item {
+  width: 75%;
+  height: 500px;
+  /* float: right; */
+  display: inline-block;
+  /* background-color: lightgreen; */
+}
 
 
 
