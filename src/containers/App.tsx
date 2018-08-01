@@ -32,12 +32,16 @@ export class App extends React.Component<any, State> {
         window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES);
     }
 
-    public async componentWillMount() {
+    public async componentDidMount() {
         await this.fetchAuctionData();
         // Kick off poll every second for new auction data... TODO: Make this a socket?
         this.auctionDataPoll = setInterval(async () => {
             await this.fetchAuctionData();
         }, 1000);
+    }
+
+    public componentWillUnmount() {
+        clearInterval(this.auctionDataPoll);
     }
 
     private async fetchAuctionData() {
@@ -62,11 +66,13 @@ export class App extends React.Component<any, State> {
                         <Route exact={true} path="/admin" render={() => <AdminPage />} />
                         <Route exact={true} path="/" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
-                            userTotal={this.state.userTotal}
-                            filter={false}/>} />
+                            user={window.sessionStorage.userID}
+                            // userTotal={this.state.userTotal}
+                            filter={false} />} />
                         <Route exact={true} path="/user" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
-                            userTotal={this.state.userTotal}
+                            user={window.sessionStorage.userID}
+                            // userTotal={this.state.userTotal}
                             filter={true} />} />
                     </div>
                 </Router>

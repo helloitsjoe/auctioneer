@@ -1,17 +1,21 @@
 import * as React from 'react';
-import Item from './Item';
+import { Item } from './Item';
 import { EmptyList } from '../components/EmptyList';
 
 type Props = {
-    data: any[];
+    user: string;
+    auctionData: any[];
     filter?: boolean;
 }
 
 export const List = (props: Props) => {
-    const items = props.data.map((itemData, i) => {
-        const userBidOnItem = itemData.bids.find(bid => bid.name === window.sessionStorage.userID);
-        return props.filter ? (userBidOnItem && <Item itemData={itemData} key={i} />)
-            : <Item itemData={itemData} key={i} />;
+    const items = props.auctionData.map((itemData, i) => {
+        const userBidOnItem = itemData.bids.find(bid => bid.name === props.user);
+        if (props.filter) {
+            return userBidOnItem && <Item itemData={itemData} user={props.user} key={i} />
+        } else {
+            return <Item itemData={itemData} user={props.user} key={i} />;
+        }
     }).filter(Boolean);
 
     return (
