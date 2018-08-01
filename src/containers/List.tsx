@@ -4,12 +4,12 @@ import { EmptyList } from '../components/EmptyList';
 
 type Props = {
     user: string;
-    auctionData: any[];
+    auctionItems: any[];
     filter?: boolean;
 }
 
 export const List = (props: Props) => {
-    const items = props.auctionData.map((itemData, i) => {
+    const items = props.auctionItems.map((itemData, i) => {
         const userBidOnItem = itemData.bids.find(bid => bid.name === props.user);
         if (props.filter) {
             return userBidOnItem && <Item itemData={itemData} user={props.user} key={i} />

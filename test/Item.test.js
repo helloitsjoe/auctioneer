@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Item } from '../src/containers/Item';
-import { quickBid, TESTER_1, TESTER_2 } from './testUtils';
+import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
 
@@ -14,7 +14,7 @@ describe('Item', function () {
     let itemView;
 
     beforeEach(() => {
-        const auctionItemsCopy = JSON.parse(JSON.stringify(auctionItems));
+        const auctionItemsCopy = clone(auctionItems);
         itemData = auctionItemsCopy.shift();
         item = mount(<Item itemData={itemData} user={TESTER_1} />);
         item.update(); // Need to call 'update()' for find() to work
