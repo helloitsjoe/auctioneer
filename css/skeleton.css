@@ -582,6 +582,11 @@ ______________________________________________________________________ */
   padding-top: 0px;
 }
 
+.selected{ 
+  background-color: #eee;
+  border-right: 1px solid #eee;
+}
+
 .plus {
   font-size: 2em;
   color: gray;

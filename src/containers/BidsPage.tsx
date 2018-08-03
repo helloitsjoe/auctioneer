@@ -11,12 +11,12 @@ type Props = {
     // userTotal: number;
 }
 
-export const BidsPage = (props: Props) => (
+export const BidsPage = ({ user, filter, auctionItems }: Props) => (
     <div className="well container">
         <UserNameForm />
         <Nav />
-        <List auctionItems={props.auctionItems} user={props.user} filter={props.filter}/>
+        <List auctionItems={auctionItems} user={user} filter={filter}/>
         <Footer userTotal={0}/>
-        {/* <Footer userTotal={props.userTotal} /> */}
+        {/* <Footer userTotal={userTotal} /> */}
     </div>
 );

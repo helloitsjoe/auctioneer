@@ -9,7 +9,20 @@ type State = {
     error: string;
     isLoaded: boolean;
     userTotal: number;
-    auctionItems: any;
+    auctionItems: ItemData[];
+}
+
+export type ItemData = {
+    id: number;
+    bids: Bid[];
+    title: string;
+    // photos: any[];
+    description: string;
+}
+
+export type Bid = {
+    name: string;
+    bid: number;
 }
 
 export class App extends React.Component<any, State> {

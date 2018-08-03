@@ -1,16 +1,26 @@
 import * as React from 'react';
 import { BID_INCREMENT } from '../containers/Item';
+import { ItemData, Bid } from '../containers/App';
 
-export const ItemView = (props: any) => {
-    const {
-        itemData,
-        userHasHighBid,
-        userWasOutBid,
-        highBid,
-        descriptionClass,
-        toggleDescription,
-        quickBid
-    } = props;
+type Props = {
+    itemData: ItemData;
+    userHasHighBid: boolean;
+    userWasOutBid: boolean;
+    highBidAmount: number;
+    descriptionClass: string;
+    toggleDescription: (event: any) => void;
+    quickBid: (event: any) =>  void;
+}
+
+export const ItemView = ({
+    itemData,
+    userHasHighBid,
+    userWasOutBid,
+    highBidAmount,
+    descriptionClass,
+    toggleDescription,
+    quickBid
+}: Props) => {
 
     let itemClass = '';
     let bidClass = '';
@@ -34,8 +44,8 @@ export const ItemView = (props: any) => {
                 </div>
                 <div className="button-box u-pull-right">
                     <span className={`bid-text ${bidClass}`}>High bid {bidSuffix}</span>
-                    <span className="high-bid">{highBid}</span>
-                    <button className="bid btn" onClick={quickBid}>Bid {highBid + BID_INCREMENT}</button>
+                    <span className="high-bid">{highBidAmount}</span>
+                    <button className="bid btn" onClick={quickBid}>Bid {highBidAmount + BID_INCREMENT}</button>
                 </div>
             </div>
             <div className={`description ${descriptionClass}`}>{itemData.description}</div>

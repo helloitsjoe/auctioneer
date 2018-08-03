@@ -2,21 +2,17 @@ import * as React from 'react';
 import axios from 'axios';
 import { DATA_URL, getHighBid } from '../utils';
 import { ItemView } from '../presentation/ItemView';
+import { Bid } from '../containers/App';
 
 // TODO: Make this configurable by auction host
 export const BID_INCREMENT = 5;
 
-type ItemProps = {
+type Props = {
     itemData: any;
     user: string;
 }
 
-type Bid = {
-    name: string;
-    bid: number;
-}
-
-type ItemState = {
+type State = {
     highBid: Bid;
     highBidder?: string;
     userHasHighBid: boolean;
@@ -24,7 +20,7 @@ type ItemState = {
     descriptionClass: string;
 }
 
-export class Item extends React.Component<ItemProps, ItemState> {
+export class Item extends React.Component<Props, State> {
 
     constructor(props) {
         super(props);
@@ -76,7 +72,7 @@ export class Item extends React.Component<ItemProps, ItemState> {
         const userWasOutBid = !userHasHighBid && itemData.bids.find(item => item.name === user);
 
         return <ItemView
-            highBid={highBid.bid}
+            highBidAmount={highBid.bid}
             userWasOutBid={userWasOutBid}
             userHasHighBid={userHasHighBid}
             quickBid={this.quickBid}
