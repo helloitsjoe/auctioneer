@@ -7,7 +7,7 @@ type Props = {
 
 export const ItemEditor = ({ itemData }: Props) => {
     const minBid = itemData.bids.find(bid => bid.name === 'min');
-    const minBidValue = minBid ? minBid.bid : 0;
+    const minBidValue = minBid ? minBid.value : 0;
 
     return <div className="main-item">
         <form action="submit">

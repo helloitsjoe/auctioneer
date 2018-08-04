@@ -22,7 +22,7 @@ export type ItemData = {
 
 export type Bid = {
     name: string;
-    bid: number;
+    value: number;
 }
 
 export class App extends React.Component<any, State> {

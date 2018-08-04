@@ -38,7 +38,7 @@ export class Item extends React.Component<Props, State> {
         const { bids } = this.props.itemData;
         const newBid = {
             name: this.props.user,
-            bid: this.state.highBid.bid + BID_INCREMENT
+            value: this.state.highBid.value + BID_INCREMENT
         };
         bids.push(newBid);
 
@@ -72,7 +72,7 @@ export class Item extends React.Component<Props, State> {
         const userWasOutBid = !userHasHighBid && itemData.bids.find(item => item.name === user);
 
         return <ItemView
-            highBidAmount={highBid.bid}
+            highBidAmount={highBid.value}
             userWasOutBid={userWasOutBid}
             userHasHighBid={userHasHighBid}
             quickBid={this.quickBid}

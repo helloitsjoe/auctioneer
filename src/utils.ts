@@ -1,3 +1,4 @@
+import { Bid } from './containers/App';
 
 export const DEFAULT_NAMES = [
     'Sally',
@@ -28,8 +29,8 @@ export const DATA_URL = `http://${window.location.hostname}:3001/data`;
 
 export const randFromArr = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-export const getHighBid = (bids) => {
+export const getHighBid = (bids: Bid[]) => {
     return bids.reduce((high, curr) => {
-        return (curr.bid > high.bid) ? curr : high;
-    }, { bid: 0, name: '' });
+        return (curr.value > high.value) ? curr : high;
+    }, { value: 0, name: '' });
 }
