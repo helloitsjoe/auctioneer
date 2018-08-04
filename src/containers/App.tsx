@@ -2,7 +2,7 @@ import * as React from 'react';
 import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
 import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
-import { AdminPage } from '../admin/presentation/AdminPage';
+import { AdminPage } from '../admin/containers/AdminPage';
 import { BidsPage } from './BidsPage';
 
 type State = {
@@ -77,7 +77,7 @@ export class App extends React.Component<any, State> {
                 <Router>
                     <div>
                         <Route exact={true} path="/admin" render={() => <AdminPage
-                            auctionItems={this.state.auctionItems} />} />
+                            auctionItems={this.state.auctionItems} poller={this.auctionDataPoll} />} />
                         <Route exact={true} path="/" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
                             user={window.sessionStorage.userID}
