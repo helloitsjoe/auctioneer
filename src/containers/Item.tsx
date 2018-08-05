@@ -29,7 +29,7 @@ export class Item extends React.Component<Props, State> {
             highBid: getHighBid(this.props.itemData.bids),
             userHasHighBid: false,
             userWasOutBid: false,
-            descriptionClass: '',
+            descriptionClass: 'closed',
         };
     }
 

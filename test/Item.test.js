@@ -96,4 +96,20 @@ describe('Item', function () {
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
         expect(itemView.render().hasClass('outbid-bg')).toEqual(false);
     });
+
+    it('description is hidden on load', function () {
+        const description = item.find('.description');
+        expect(description.render().hasClass('closed')).toEqual(true);
+        expect(description.render().hasClass('open')).toEqual(false);
+    });
+
+    it('description toggles on click', function () {
+        const description = item.find('.description');
+        item.simulate('click');
+        expect(description.render().hasClass('open')).toEqual(true);
+        expect(description.render().hasClass('closed')).toEqual(false);
+        item.simulate('click');
+        expect(description.render().hasClass('closed')).toEqual(true);
+        expect(description.render().hasClass('open')).toEqual(false);
+    });
 });
