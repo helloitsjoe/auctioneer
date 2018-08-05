@@ -1,5 +1,5 @@
-export const TESTER_1 = 'Tester 1';
-export const TESTER_2 = 'Tester 2';
+export const TESTER_1 = 'TESTER 1';
+export const TESTER_2 = 'TESTER 2';
 
 export const clone = (obj) => JSON.parse(JSON.stringify(obj));
 

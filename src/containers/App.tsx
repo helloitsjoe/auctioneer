@@ -42,7 +42,7 @@ export class App extends React.Component<any, State> {
             auctionItems: null,
         };
 
-        window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES);
+        window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES).toUpperCase();
     }
 
     public async componentDidMount() {
