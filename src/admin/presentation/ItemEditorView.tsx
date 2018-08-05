@@ -17,7 +17,7 @@ export const ItemEditorView = ({ title, minBid, description, handleChange, submi
                 <input id="title" type="text" value={title} onChange={handleChange.bind(this, StateKey.title)} />
             </div>
             <div className="main-element">
-                Minimum Bid:
+                Minimum Bid: $
                 <input id="minimum" type="number" value={minBid} onChange={handleChange.bind(this, StateKey.minBid)} />
             </div>
             <div className="main-element">

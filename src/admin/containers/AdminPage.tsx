@@ -1,9 +1,10 @@
+import axios from 'axios';
 import * as React from 'react';
 import { Sidebar } from '../presentation/Sidebar';
 import { ItemEditor } from './ItemEditor';
 import { AdminHeader } from '../presentation/AdminHeader';
 import { ItemData } from '../../containers/App';
-import { createNewAuctionItem } from '../../utils';
+import { DATA_URL, createNewAuctionItem } from '../../utils';
 
 type Props = {
     auctionItems: ItemData[];
@@ -51,6 +52,22 @@ export class AdminPage extends React.Component<Props, State> {
         this.setState({ auctionItems });
     }
 
+    submitChanges = (itemState, e) => {
+        e.preventDefault();
+        const { auctionItems, selectedIndex } = this.state;
+
+        const selectedItem = auctionItems[selectedIndex];
+        selectedItem.bids[0].value = itemState.minBid;
+        const updatedItem = Object.assign({}, selectedItem, itemState);
+
+        axios.put(DATA_URL, { body: JSON.stringify(updatedItem) });
+
+        const itemsCopy = [...auctionItems];
+        itemsCopy[selectedIndex] = updatedItem;
+
+        this.setState({ auctionItems: itemsCopy });
+    }
+
     render() {
         return <div>
             <AdminHeader />
@@ -61,6 +78,7 @@ export class AdminPage extends React.Component<Props, State> {
                     selectedIndex={this.state.selectedIndex} />
                 <ItemEditor
                     updateTitle={this.updateTitle}
+                    submitChanges={this.submitChanges}
                     itemData={this.state.auctionItems[this.state.selectedIndex]} />
             </div>
         </div>

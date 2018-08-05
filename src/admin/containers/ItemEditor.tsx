@@ -1,7 +1,6 @@
-import axios from 'axios';
 import * as React from 'react';
 import { ItemData } from '../../containers/App';
-import { DATA_URL, getMinBidValue } from '../../utils';
+import { getMinBidValue } from '../../utils';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 
 export enum StateKey {
@@ -13,6 +12,7 @@ export enum StateKey {
 type Props = {
     itemData: ItemData;
     updateTitle: (title: string, id: number) => void;
+    submitChanges: (itemState: State, e: any) => void;
 }
 
 type State = {
@@ -53,14 +53,6 @@ export class ItemEditor extends React.Component<Props, State> {
         this.setState(newState);
     }
 
-    submitChanges = (e) => {
-        e.preventDefault();
-        this.props.itemData.bids[0].value = this.state.minBid;
-        const body = Object.assign({}, this.props.itemData, this.state);
-
-        axios.put(DATA_URL, { body: JSON.stringify(body) });
-    }
-
     // TODO: Warn if user is going to click away from changes...
     // Need to connect Sidebar item with ItemEditor, Redux would probably be best
 
@@ -85,7 +77,7 @@ export class ItemEditor extends React.Component<Props, State> {
 
         return (
             <ItemEditorView
-                submitChanges={this.submitChanges}
+                submitChanges={this.props.submitChanges.bind(this, this.state)}
                 title={title}
                 minBid={minBid}
                 description={description}
