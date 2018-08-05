@@ -11,6 +11,7 @@ type Props = {
 
 type State = {
     selectedIndex: number;
+    auctionItems: ItemData[];
 }
 
 export class AdminPage extends React.Component<Props, State> {
@@ -23,14 +24,25 @@ export class AdminPage extends React.Component<Props, State> {
         clearInterval(this.props.poller);
 
         this.state = {
-            selectedIndex: 0
+            selectedIndex: 0,
+            auctionItems: this.props.auctionItems,
         }
     }
 
-    // TODO: itemClickHandler
     handleClick = (i, e) => {
-        console.log(`Clicked:`, this.props.auctionItems[i].title);
+        // Handle click on AddItem
         this.setState({ selectedIndex: i });
+    }
+
+    updateTitle = (title, id) => {
+        // This seems weird. Probably a better way to do this. Redux?
+        const auctionItems = this.state.auctionItems.map(item => {
+            if (item.id === id) {
+                item.title = title;
+            }
+            return item;
+        });
+        this.setState({ auctionItems });
     }
 
     render() {
@@ -39,9 +51,11 @@ export class AdminPage extends React.Component<Props, State> {
             <div className="admin-page">
                 <Sidebar
                     clickHandler={this.handleClick}
-                    auctionItems={this.props.auctionItems}
+                    auctionItems={this.state.auctionItems}
                     selectedIndex={this.state.selectedIndex} />
-                <ItemEditor itemData={this.props.auctionItems[this.state.selectedIndex]} />
+                <ItemEditor
+                    updateTitle={this.updateTitle}
+                    itemData={this.props.auctionItems[this.state.selectedIndex]} />
             </div>
         </div>
     }

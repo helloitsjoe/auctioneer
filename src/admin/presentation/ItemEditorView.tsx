@@ -1,8 +1,16 @@
 import * as React from 'react';
 
-export const ItemEditorView = ({ title, minBid, description, handleChange }) => (
+type Props = {
+    title: string;
+    minBid: number;
+    description: string;
+    handleChange: (stateKey: string, e: any) => void;
+    submitChanges: (e: any) => void;
+}
+
+export const ItemEditorView = ({ title, minBid, description, handleChange, submitChanges }: Props) => (
     <div className="main-item">
-        <form action="submit">
+        <form action="submit" onSubmit={submitChanges}>
             <div className="main-element">
                 Title:
                 <input id="title" type="text" value={title} onChange={handleChange.bind(this, 'title')} />
@@ -20,6 +28,7 @@ export const ItemEditorView = ({ title, minBid, description, handleChange }) => 
                     value={description}
                     onChange={handleChange.bind(this, 'description')} />
             </div>
+            <input id="submit" type="submit" onClick={submitChanges} value="Submit"/>
         </form>
     </div>
 )

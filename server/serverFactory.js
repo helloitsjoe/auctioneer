@@ -29,8 +29,9 @@ const createServer = async (host, port) => {
         let id = body.id;
         const auctionItem = auctionData[id];
         auctionItem.bids = body.bids;
+        auctionData[id] = body;
         console.log('bids:', auctionItem.bids);
-        console.log(`High bid for ${auctionItem.id}: ${auctionItem.bids.slice(-1)[0].bid}`);
+        console.log(`High bid for ${auctionItem.id}: ${auctionItem.bids.slice(-1)[0].value}`);
         
         // TODO: Use WebSockets to push updates to all users
         
