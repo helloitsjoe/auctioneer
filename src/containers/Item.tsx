@@ -54,7 +54,7 @@ export class Item extends React.Component<Props, State> {
     // TODO: Move this to view?
     toggleDescription = (e) => {
         e.stopPropagation();
-        const descriptionClass = !!this.state.descriptionClass ? '' : 'open';
+        const descriptionClass = this.state.descriptionClass === 'open' ? 'closed' : 'open';
         this.setState({ descriptionClass });
 
         // TODO: Add photos

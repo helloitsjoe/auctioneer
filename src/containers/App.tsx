@@ -70,7 +70,6 @@ export class App extends React.Component<any, State> {
     }
 
     public render() {
-        // I could use a filtering button instead of Routes, just wanted to experiment with React Router
         return !this.state.isLoaded ? <div>Loading...</div>
             : this.state.error ? <div>Error: {this.state.error}</div>
             : (

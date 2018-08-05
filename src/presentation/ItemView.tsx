@@ -48,7 +48,7 @@ export const ItemView = ({
                     <button className="bid btn" onClick={quickBid}>Bid {highBidAmount + BID_INCREMENT}</button>
                 </div>
             </div>
-            <div className={`description ${descriptionClass}`}>{itemData.description}</div>
+            <div className={`description ${descriptionClass} ${itemClass}`}>{itemData.description}</div>
         </div>
     );
 };

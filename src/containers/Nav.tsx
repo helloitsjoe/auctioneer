@@ -8,7 +8,6 @@ export default class Nav extends React.Component<any, any> {
             <div className="centered nav-bg">
                 <NavLink exact to="/" className="nav-tab" activeClassName="active">Auction Items</NavLink>
                 <NavLink exact to="/user" className="nav-tab" activeClassName="active">My Bids</NavLink>
-                <NavLink exact to="/admin">Admin page</NavLink>
             </div>
         );
     }

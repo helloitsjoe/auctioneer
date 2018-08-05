@@ -1,5 +1,5 @@
-import * as React from 'react';
 import axios from 'axios';
+import * as React from 'react';
 import { ItemData } from '../../containers/App';
 import { DATA_URL, getMinBidValue } from '../../utils';
 import { ItemEditorView } from '../presentation/ItemEditorView';

@@ -514,19 +514,25 @@ hr {
     font-family: 'Lato';
     font-weight: 300;
     text-align: left;
-    margin-left: 40px;
-    margin-right: 160px;
+    /* margin-left: 40px;
+    margin-right: 160px; */
     color: #888;
     height: 0;
     display: block;
     overflow: hidden; }
 
+.closed {
+  padding-left: 40px;
+  padding-right: 160px;
+}
+
 .open {
     transition: height 0.3s;
-    margin-left: 40px;
-    margin-right: 160px;
-    margin-bottom: 10px;
+    padding-left: 40px;
+    padding-right: 160px;
+    padding-bottom: 10px;
     height: 150px;
+    overflow: scroll;
     display: block; }
 
 .clearfix:after {
@@ -539,6 +545,11 @@ hr {
     background-color: #efefef;
     height: 50px;
     padding-top: 20px;
+}
+
+.small {
+  font-size: 0.8em;
+  color: #999;
 }
 
 /* ADMIN
