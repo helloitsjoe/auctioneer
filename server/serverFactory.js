@@ -27,9 +27,9 @@ const createServer = async (host, port) => {
     app.put('/data', (req, res) => {
         let body = JSON.parse(req.body.body);
         let id = body.id;
+        auctionData[id] = body;
         const auctionItem = auctionData[id];
         auctionItem.bids = body.bids;
-        auctionData[id] = body;
         console.log('bids:', auctionItem.bids);
         console.log(`High bid for ${auctionItem.id}: ${auctionItem.bids.slice(-1)[0].value}`);
         

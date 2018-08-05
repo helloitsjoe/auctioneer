@@ -3,6 +3,7 @@ import { Sidebar } from '../presentation/Sidebar';
 import { ItemEditor } from './ItemEditor';
 import { AdminHeader } from '../presentation/AdminHeader';
 import { ItemData } from '../../containers/App';
+import { createNewAuctionItem } from '../../utils';
 
 type Props = {
     auctionItems: ItemData[];
@@ -30,8 +31,13 @@ export class AdminPage extends React.Component<Props, State> {
     }
 
     handleClick = (i, e) => {
-        // Handle click on AddItem
-        this.setState({ selectedIndex: i });
+        if (i === null) { // AddItem
+            const id = this.state.auctionItems.length;
+            const auctionItems = [...this.state.auctionItems, createNewAuctionItem({ id })];
+            this.setState({ auctionItems, selectedIndex: id  });
+        } else {
+            this.setState({ selectedIndex: i });
+        }
     }
 
     updateTitle = (title, id) => {
@@ -55,7 +61,7 @@ export class AdminPage extends React.Component<Props, State> {
                     selectedIndex={this.state.selectedIndex} />
                 <ItemEditor
                     updateTitle={this.updateTitle}
-                    itemData={this.props.auctionItems[this.state.selectedIndex]} />
+                    itemData={this.state.auctionItems[this.state.selectedIndex]} />
             </div>
         </div>
     }

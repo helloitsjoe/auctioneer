@@ -18,6 +18,6 @@ export const Sidebar = ({ auctionItems, selectedIndex, clickHandler }: Props) =>
                 selected={i === selectedIndex}
                 clickHandler={clickHandler.bind(this, i)} />
         ))}
-        <AddItem />
+        <AddItem clickHandler={clickHandler.bind(this, null)} />
     </div>
 )

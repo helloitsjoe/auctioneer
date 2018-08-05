@@ -4,6 +4,12 @@ import { ItemData } from '../../containers/App';
 import { DATA_URL, getMinBidValue } from '../../utils';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 
+export enum StateKey {
+    title = 'title',
+    minBid = 'minBid',
+    description = 'description',
+}
+
 type Props = {
     itemData: ItemData;
     updateTitle: (title: string, id: number) => void;
@@ -37,11 +43,11 @@ export class ItemEditor extends React.Component<Props, State> {
         const newState = {};
 
         // TODO: Write test checking for number type
-        newState[stateKey] = stateKey === 'minBid' ? parseInt(value) : value;
+        newState[stateKey] = stateKey === StateKey.minBid ? parseInt(value) : value;
 
         // Seems like there is probably a better way to pass this up to AdminPage
         // FIXME: Sidebar title changes remain after clicking on another item
-        if (stateKey === 'title') {
+        if (stateKey === StateKey.title) {
             this.props.updateTitle(value, this.state.id);
         }
         this.setState(newState);

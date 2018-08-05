@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { StateKey } from '../containers/ItemEditor';
 
 type Props = {
     title: string;
@@ -13,11 +14,11 @@ export const ItemEditorView = ({ title, minBid, description, handleChange, submi
         <form action="submit" onSubmit={submitChanges}>
             <div className="main-element">
                 Title:
-                <input id="title" type="text" value={title} onChange={handleChange.bind(this, 'title')} />
+                <input id="title" type="text" value={title} onChange={handleChange.bind(this, StateKey.title)} />
             </div>
             <div className="main-element">
                 Minimum Bid:
-                <input id="minimum" type="number" value={minBid} onChange={handleChange.bind(this, 'minBid')} />
+                <input id="minimum" type="number" value={minBid} onChange={handleChange.bind(this, StateKey.minBid)} />
             </div>
             <div className="main-element">
                 <p>Description:</p>
@@ -26,7 +27,7 @@ export const ItemEditorView = ({ title, minBid, description, handleChange, submi
                     name="description"
                     id="description"
                     value={description}
-                    onChange={handleChange.bind(this, 'description')} />
+                    onChange={handleChange.bind(this, StateKey.description)} />
             </div>
             <input id="submit" type="submit" onClick={submitChanges} value="Submit"/>
         </form>

@@ -1,4 +1,4 @@
-import { Bid } from './containers/App';
+import { Bid, ItemData } from './containers/App';
 
 export const DEFAULT_NAMES = [
     'Sally',
@@ -39,3 +39,10 @@ export const getMinBidValue = (bids: Bid[]) => {
     const minBid = bids.find(bid => bid.name === 'min');
     return minBid ? minBid.value : 0;
 }
+
+export const createNewAuctionItem = ({ id }): ItemData => ({
+    id,
+    title: '',
+    bids: [{ name: 'min', value: 0 }],
+    description: '',
+})
