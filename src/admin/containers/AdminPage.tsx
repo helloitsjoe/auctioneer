@@ -8,7 +8,6 @@ import { DATA_URL, createNewAuctionItem } from '../../utils';
 
 type Props = {
     auctionItems: ItemData[];
-    poller: any;
 }
 
 type State = {

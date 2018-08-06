@@ -28,12 +28,9 @@ export type Bid = {
 export class App extends React.Component<any, State> {
 
     private auctionDataPoll: any;
-    // private dataUrl: string; // TODO: Pass url/port into App
 
     constructor(props) {
         super(props);
-
-        // this.dataUrl = `${HOST}:${this.props.port}/data`
 
         this.state = {
             error: null,
@@ -72,23 +69,19 @@ export class App extends React.Component<any, State> {
     public render() {
         return !this.state.isLoaded ? <div>Loading...</div>
             : this.state.error ? <div>Error: {this.state.error}</div>
-            : (
-                <Router>
+            : (<Router>
                     <div>
-                        <Route exact={true} path="/admin" render={() => <AdminPage
-                            auctionItems={this.state.auctionItems} poller={this.auctionDataPoll} />} />
-                        <Route exact={true} path="/" render={() => <BidsPage
+                        <Route exact path="/admin"
+                            render={() => <AdminPage auctionItems={this.state.auctionItems} />} />
+                        <Route exact path="/" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
                             user={window.sessionStorage.userID}
-                            // userTotal={this.state.userTotal}
                             filter={false} />} />
-                        <Route exact={true} path="/user" render={() => <BidsPage
+                        <Route exact path="/user" render={() => <BidsPage
                             auctionItems={this.state.auctionItems}
                             user={window.sessionStorage.userID}
-                            // userTotal={this.state.userTotal}
                             filter={true} />} />
                     </div>
-                </Router>
-            );
+                </Router>);
     }
 }
