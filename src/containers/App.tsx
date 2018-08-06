@@ -1,28 +1,36 @@
 import * as React from 'react';
 import {BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
-import Nav from './Nav';
-import { List } from './List';
-import { Footer } from '../components/Footer';
-import { UserNameForm } from '../components/UserNameForm';
 import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
+import { AdminPage } from '../admin/containers/AdminPage';
+import { BidsPage } from './BidsPage';
 
 type State = {
     error: string;
     isLoaded: boolean;
     userTotal: number;
-    auctionItems: any;
+    auctionItems: ItemData[];
+}
+
+export type ItemData = {
+    id: number;
+    bids: Bid[];
+    title: string;
+    // photos: any[];
+    description: string;
+}
+
+export type Bid = {
+    name: string;
+    value: number;
 }
 
 export class App extends React.Component<any, State> {
 
     private auctionDataPoll: any;
-    // private dataUrl: string; // TODO: Pass url/port into App
 
     constructor(props) {
         super(props);
-
-        // this.dataUrl = `${HOST}:${this.props.port}/data`
 
         this.state = {
             error: null,
@@ -31,7 +39,7 @@ export class App extends React.Component<any, State> {
             auctionItems: null,
         };
 
-        window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES);
+        window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES).toUpperCase();
     }
 
     public async componentDidMount() {
@@ -59,19 +67,21 @@ export class App extends React.Component<any, State> {
     }
 
     public render() {
-        // I could use a filtering button instead of Routes, just wanted to experiment with React Router
         return !this.state.isLoaded ? <div>Loading...</div>
             : this.state.error ? <div>Error: {this.state.error}</div>
-            : (
-                <Router>
-                    <div className="well">
-                        <UserNameForm />
-                        <Nav />
-                        <Route exact={true} path="/" render={() => <List auctionData={this.state.auctionItems} user={window.sessionStorage.userID} />} />
-                        <Route exact={true} path="/user" render={() => <List auctionData={this.state.auctionItems} user={window.sessionStorage.userID} filter={true} />} />
-                        <Footer userTotal={this.state.userTotal} />
+            : (<Router>
+                    <div>
+                        <Route exact path="/admin"
+                            render={() => <AdminPage auctionItems={this.state.auctionItems} />} />
+                        <Route exact path="/" render={() => <BidsPage
+                            auctionItems={this.state.auctionItems}
+                            user={window.sessionStorage.userID}
+                            filter={false} />} />
+                        <Route exact path="/user" render={() => <BidsPage
+                            auctionItems={this.state.auctionItems}
+                            user={window.sessionStorage.userID}
+                            filter={true} />} />
                     </div>
-                </Router>
-            );
+                </Router>);
     }
 }

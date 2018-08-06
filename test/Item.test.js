@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Item } from '../src/containers/Item';
-import { quickBid, TESTER_1, TESTER_2 } from './testUtils';
+import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
 
@@ -14,7 +14,7 @@ describe('Item', function () {
     let itemView;
 
     beforeEach(() => {
-        const auctionItemsCopy = JSON.parse(JSON.stringify(auctionItems));
+        const auctionItemsCopy = clone(auctionItems);
         itemData = auctionItemsCopy.shift();
         item = mount(<Item itemData={itemData} user={TESTER_1} />);
         item.update(); // Need to call 'update()' for find() to work
@@ -29,7 +29,7 @@ describe('Item', function () {
 
     it('item high bid matches highest bid in array', function () {
         const highBid = item.find('.high-bid');
-        const maxBid = Math.max(itemData.bids.map(bid => bid.bid));
+        const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         
         expect(highBid.text()).toEqual(`${maxBid}`);
 
@@ -41,7 +41,7 @@ describe('Item', function () {
 
     it('quick bid button text is maxBid + bid increment', function () {
         const quickBidButton = item.find('.btn');
-        const maxBid = Math.max(itemData.bids.map(bid => bid.bid));
+        const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         
         expect(quickBidButton.text()).toEqual(`Bid ${maxBid + BID_INCREMENT}`);
 
@@ -54,8 +54,8 @@ describe('Item', function () {
     it('item has bid-bg class when user has high bid', function () {
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
-        const maxBid = Math.max(itemData.bids.map(bid => bid.bid));
-        itemData.bids.push({ name: TESTER_1, bid: maxBid + 5 });
+        const maxBid = Math.max(itemData.bids.map(bid => bid.value));
+        itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
         item.setProps({ itemData });
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(true);
@@ -64,16 +64,16 @@ describe('Item', function () {
     it('item has outbid-bg class when they have been outbid', function () {
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
-        const maxBid = Math.max(itemData.bids.map(bid => bid.bid));
+        const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         const newMax = maxBid + 5;
 
-        itemData.bids.push({ name: TESTER_1, bid: newMax });
+        itemData.bids.push({ name: TESTER_1, value: newMax });
         item.setProps({ itemData });
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(true);
 
         const outbidMax = newMax + 5;
-        itemData.bids.push({ name: TESTER_2, bid: outbidMax });
+        itemData.bids.push({ name: TESTER_2, value: outbidMax });
         item.setProps({ itemData });
 
         expect(itemView.render().hasClass('outbid-bg')).toEqual(true);
@@ -82,9 +82,9 @@ describe('Item', function () {
     it('item has no bid class when they havent bid', async function () {
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
-        const maxBid = Math.max(itemData.bids.map(bid => bid.bid));
+        const maxBid = Math.max(itemData.bids.map(bid => bid.value));
 
-        itemData.bids.push({ name: TESTER_1, bid: maxBid + 5 });
+        itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
         item.setProps({ itemData });
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(true);
@@ -95,5 +95,21 @@ describe('Item', function () {
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
         expect(itemView.render().hasClass('outbid-bg')).toEqual(false);
+    });
+
+    it('description is hidden on load', function () {
+        const description = item.find('.description');
+        expect(description.render().hasClass('closed')).toEqual(true);
+        expect(description.render().hasClass('open')).toEqual(false);
+    });
+
+    it('description toggles on click', function () {
+        const description = item.find('.description');
+        item.simulate('click');
+        expect(description.render().hasClass('open')).toEqual(true);
+        expect(description.render().hasClass('closed')).toEqual(false);
+        item.simulate('click');
+        expect(description.render().hasClass('closed')).toEqual(true);
+        expect(description.render().hasClass('open')).toEqual(false);
     });
 });

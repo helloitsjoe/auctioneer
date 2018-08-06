@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { List } from '../src/containers/List';
-import { quickBid, TESTER_1 } from './testUtils';
+import { clone, quickBid, TESTER_1 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
 
@@ -11,7 +11,7 @@ describe('List', function () {
     let auctionItemsCopy;
 
     beforeEach(() => {
-        auctionItemsCopy = JSON.parse(JSON.stringify(auctionItems));
+        auctionItemsCopy = clone(auctionItems);
     });
 
     afterEach(() => {
@@ -19,7 +19,7 @@ describe('List', function () {
     });
 
     it('renders each item in the right order', function () {
-        list = mount(<List auctionData={auctionItemsCopy} user={TESTER_1} filter={false} />);
+        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={false} />);
         list.update(); // Need to call 'update()' for find() to work
 
         const listItems = list.find('.item-container');
@@ -33,7 +33,7 @@ describe('List', function () {
         const firstItem = auctionItemsCopy[0];
         firstItem.bids.push(quickBid(firstItem, TESTER_1));
 
-        list = mount(<List auctionData={auctionItemsCopy} user={TESTER_1} filter={true} />);
+        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
         list.update(); // Need to call 'update()' for find() to work
 
         const listItems = list.find('.item-container');
@@ -46,7 +46,7 @@ describe('List', function () {
             expect(item.bids.some(bid => bid.name === list.props('user'))).toEqual(false);
         });
 
-        list = mount(<List auctionData={auctionItemsCopy} user={TESTER_1} filter={true} />);
+        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
         list.update(); // Need to call 'update()' for find() to work
 
         const listItems = list.find('.item-container');
