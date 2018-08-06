@@ -1,18 +1,22 @@
 import * as nock from 'nock';
 import * as React from 'react';
 import { mount } from 'enzyme';
-import { App } from '../src/containers/App';
-import { clone, pollForState, TESTER_1, TESTER_2 } from './testUtils';
+import { Provider } from 'react-redux';
+import { initStore } from '../src/store';
+import ConnectedApp from '../src/containers/App';
+import { clone, pollForProps, TESTER_1, TESTER_2, wait } from './testUtils';
 
 const auctionItems = require('../server/data.json');
 
 describe('App', function () {
 
+    let store;
     let auctionItemsCopy;
     const host = 'localhost';
     const port = 3001;
 
     beforeEach(async () => {
+        store = initStore();
         auctionItemsCopy = clone(auctionItems);
         nock(`http://${host}:${port}`)
             // .log(console.log)
@@ -24,45 +28,55 @@ describe('App', function () {
 
     afterEach(() => {
         auctionItemsCopy = null;
+        store = null;
         nock.cleanAll();
     })
     
     it('isLoaded = false until data returns', function () {
-        const app = mount(<App />);
-        expect(app.state('isLoaded')).toBe(false);
-        expect(app.state('auctionItems')).toEqual(null);
+        const provider = mount(<Provider store={store}><ConnectedApp /></Provider>);
+        const app = provider.find('App');
+        expect(app.prop('isLoaded')).toBe(false);
+        expect(app.prop('auctionItems')).toEqual(null);
         expect(app.html()).toEqual('<div>Loading...</div>');
     });
 
-    describe('after data loads', function () {
+    describe.only('after data loads', function () {
 
         let app;
         let input;
+        let provider;
 
         beforeEach(async () => {
-            app = mount(<App />);
-            await pollForState(app, 'isLoaded');
-            app.update(); // Need to call 'update()' for find() to work
+            provider = mount(<Provider store={store}><ConnectedApp /></Provider>);
+            console.log(`provider:`, provider);
+            // provider.update(); // Need to call 'update()' for find() to work
+            app = provider.find('App');
             input = app.find('input');
+            // This doesn't seem to be working?
+            await pollForProps(app, 'isLoaded');
+            expect(app.prop('isLoaded')).toEqual(true);
         });
 
         afterEach(() => {
-            app.unmount();
+            provider.unmount();
         });
         
-        it('isLoaded = true after data returns', function () {
-            expect(app.state('auctionItems')).toEqual(auctionItems);
+        it.only('isLoaded = true after data returns', function () {
+            // TODO: Why is this test timing out?
+            console.log(`app.prop('isLoaded'):`, app.prop('isLoaded'));
+            expect(app.prop('isLoaded')).toEqual(true);
+            expect(app.prop('auctionItems')).toEqual(auctionItems);
         });
 
         it('two users get the same initial data', function () {
             const list = app.find('.list');
             input.simulate('change', { target: { value: TESTER_1 }});
-            app.setState({}); // Trigger re-render
+            provider.setState({}); // Trigger re-render
 
             const appHTMLTester1 = app.html();
             const listHTMLTester1 = list.html();
             input.simulate('change', { target: { value: TESTER_2 }});
-            app.setState({}); // Trigger re-render
+            provider.setState({}); // Trigger re-render
 
             expect(app.html()).not.toEqual(appHTMLTester1);
             expect(list.html()).toEqual(listHTMLTester1);

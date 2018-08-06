@@ -1,16 +1,17 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import {BrowserRouter as Router, Route } from 'react-router-dom';
-import axios from 'axios';
-import { DATA_URL, randFromArr, DEFAULT_NAMES } from '../utils';
+import { randFromArr, DEFAULT_NAMES } from '../utils';
 import { AdminPage } from '../admin/containers/AdminPage';
 import { BidsPage } from './BidsPage';
+import { fetchAuctionItems } from '../actions/auctionItemActions';
 
-type State = {
-    error: string;
-    isLoaded: boolean;
-    userTotal: number;
-    auctionItems: ItemData[];
-}
+// type State = {
+//     error: string;
+//     isLoaded: boolean;
+//     userTotal: number;
+//     auctionItems: ItemData[];
+// }
 
 export type ItemData = {
     id: number;
@@ -25,28 +26,28 @@ export type Bid = {
     value: number;
 }
 
-export class App extends React.Component<any, State> {
+export class App extends React.Component<any, void> {
 
     private auctionDataPoll: any;
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            error: null,
-            isLoaded: false,
-            userTotal: 0,
-            auctionItems: null,
-        };
+        // this.state = {
+        //     error: null,
+        //     isLoaded: false,
+        //     userTotal: 0,
+        //     auctionItems: null,
+        // };
 
         window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES).toUpperCase();
     }
 
     public async componentDidMount() {
-        await this.fetchAuctionData();
+        this.props.dispatch(fetchAuctionItems());
         // Kick off poll every second for new auction data... TODO: Make this a socket?
-        this.auctionDataPoll = setInterval(async () => {
-            await this.fetchAuctionData();
+        this.auctionDataPoll = setInterval(() => {
+            this.props.dispatch(fetchAuctionItems());
         }, 1000);
     }
 
@@ -54,34 +55,45 @@ export class App extends React.Component<any, State> {
         clearInterval(this.auctionDataPoll);
     }
 
-    private async fetchAuctionData() {
-        try {
-            const response = await axios.get(DATA_URL);
-            const auctionItems = response && response.data;
-            this.setState({ auctionItems, isLoaded: true });
-        } catch (err) {
-            clearInterval(this.auctionDataPoll);
-            console.error(err);
-            this.setState({ error: JSON.stringify(err), isLoaded: true });
-        }
-    }
+    // private async fetchAuctionData() {
+    //     try {
+    //         const response = await axios.get(DATA_URL);
+    //         const auctionItems = response && response.data;
+    //         this.setState({ auctionItems, isLoaded: true });
+    //     } catch (err) {
+    //         clearInterval(this.auctionDataPoll);
+    //         console.error(err);
+    //         this.setState({ error: JSON.stringify(err), isLoaded: true });
+    //     }
+    // }
 
     public render() {
-        return !this.state.isLoaded ? <div>Loading...</div>
-            : this.state.error ? <div>Error: {this.state.error}</div>
+        const { error, isLoaded, auctionItems } = this.props;
+        console.log(`App.tsx isLoaded:`, isLoaded);
+
+        if (error) {
+            clearInterval(this.auctionDataPoll);
+            console.error(error);
+        }
+        return !isLoaded ? <div>Loading...</div>
+            : error ? <div>Error: {JSON.stringify(error)}</div>
             : (<Router>
                     <div>
                         <Route exact path="/admin"
-                            render={() => <AdminPage auctionItems={this.state.auctionItems} />} />
+                            render={() => <AdminPage auctionItems={auctionItems} />} />
                         <Route exact path="/" render={() => <BidsPage
-                            auctionItems={this.state.auctionItems}
+                            auctionItems={auctionItems}
                             user={window.sessionStorage.userID}
                             filter={false} />} />
                         <Route exact path="/user" render={() => <BidsPage
-                            auctionItems={this.state.auctionItems}
+                            auctionItems={auctionItems}
                             user={window.sessionStorage.userID}
                             filter={true} />} />
                     </div>
                 </Router>);
     }
 }
+
+const mapStateToProps = (state) => state;
+
+export default connect(mapStateToProps)(App);
