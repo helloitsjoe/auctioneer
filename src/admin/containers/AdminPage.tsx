@@ -21,10 +21,6 @@ export class AdminPage extends React.Component<Props, State> {
     constructor(props) {
         super(props);
 
-        // Cancel poller on admin page. For now, need to
-        // refresh back on bids page to kick off the poller again. TODO: fix this.
-        clearInterval(this.props.poller);
-
         this.state = {
             selectedIndex: 0,
             auctionItems: this.props.auctionItems,
@@ -62,10 +58,9 @@ export class AdminPage extends React.Component<Props, State> {
 
         axios.put(DATA_URL, { body: JSON.stringify(updatedItem) });
 
-        const itemsCopy = [...auctionItems];
-        itemsCopy[selectedIndex] = updatedItem;
+        const updatedItems = auctionItems.map(item => (item.id === itemState.id) ? updatedItem : item);
 
-        this.setState({ auctionItems: itemsCopy });
+        this.setState({ auctionItems: updatedItems });
     }
 
     render() {
