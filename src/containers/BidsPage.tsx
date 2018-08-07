@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Nav from './Nav';
+import { Nav } from './Nav';
 import { List } from './List';
 import { Footer } from '../presentation/Footer';
 import { UserNameForm } from '../presentation/UserNameForm';
