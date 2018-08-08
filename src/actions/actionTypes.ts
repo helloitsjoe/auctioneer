@@ -3,3 +3,7 @@ export const SET_AUCTION_ERROR = 'SET_AUCTION_ERROR';
 
 export const QUICK_BID = 'QUICK_BID';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
+
+export const ADD_ITEM = 'ADD_ITEM';
+export const SELECT_ITEM = 'SELECT_ITEM';
+export const INPUT_CHANGE = 'INPUT_CHANGE';

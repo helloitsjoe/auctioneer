@@ -1,6 +1,10 @@
 import * as React from 'react';
-import { ItemData, getMinBidValue } from '../../reducers/auctionItemsReducer';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+
 import { ItemEditorView } from '../presentation/ItemEditorView';
+import { inputChange } from '../../actions/adminActions';
+import { ItemData, getMinBidValue } from '../../reducers/auctionItemsReducer';
 
 export enum StateKey {
     title = 'title',
@@ -10,18 +14,19 @@ export enum StateKey {
 
 type Props = {
     itemData: ItemData;
-    updateTitle: (title: string, id: number) => void;
-    submitChanges: (itemState: State, e: any) => void;
+    dispatch: Dispatch;
+    // updateTitle: (title: string, id: number) => void;
+    submitChanges: (itemState: any, e: any) => void;
 }
 
-type State = {
-    id: number;
-    title: string;
-    minBid: number;
-    description: string;
-}
+// type State = {
+//     id: number;
+//     title: string;
+//     minBid: number;
+//     description: string;
+// }
 
-export class ItemEditor extends React.Component<Props, State> {
+export class ItemEditor extends React.Component<Props, null> {
 
     constructor(props) {
         super(props);
@@ -29,50 +34,56 @@ export class ItemEditor extends React.Component<Props, State> {
         const { itemData } = this.props;
         const { id, title, bids, description } = itemData;
 
-        this.state = {
-            id,
-            title,
-            description,
-            minBid: getMinBidValue(bids),
-        }
+        // this.state = {
+        //     id,
+        //     title,
+        //     description,
+        //     minBid: getMinBidValue(bids),
+        // }
     }
 
-    handleChange = (stateKey: string, e: any) => {
+    handleChange = (key: string, e: any) => {
         const { value } = e.target;
         const newState = {};
 
         // TODO: Write test checking for number type
-        newState[stateKey] = stateKey === StateKey.minBid ? parseInt(value) : value;
+        // newState[stateKey] = stateKey === StateKey.minBid ? parseInt(value) : value;
 
         // Seems like there is probably a better way to pass this up to AdminPage
         // FIXME: Sidebar title changes remain after clicking on another item
-        if (stateKey === StateKey.title) {
-            this.props.updateTitle(value, this.state.id);
-        }
-        this.setState(newState);
+        // if (stateKey === StateKey.title) {
+            // TODO: Might not need this check
+            // this.props.dispatch(updateTitle(value))
+            // this.props.updateTitle(value, this.state.id);
+        // }
+        this.props.dispatch(inputChange(key, value));
+        // this.setState(newState);
     }
 
     // TODO: Warn if user is going to click away from changes...
     // Need to connect Sidebar item with ItemEditor, Redux would probably be best
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-        const { itemData } = nextProps;
-        const { id, bids, title, description } = itemData;
+    // static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    //     const { itemData } = nextProps;
+    //     console.log(`itemData:`, itemData);
+    //     const { id, bids, title, description } = itemData;
 
-        // Only rerender if the item id is different
-        if (id !== prevState.id) {
-            return {
-                id,
-                title,
-                description,
-                minBid: getMinBidValue(bids),
-            };    
-        }
-        return null;
-    }
+    //     // Only rerender if the item id is different
+    //     if (id !== prevState.id) {
+    //         return {
+    //             id,
+    //             title,
+    //             description,
+    //             minBid: getMinBidValue(bids),
+    //         };    
+    //     }
+    //     return null;
+    // }
 
     render() {
-        const { title, minBid, description } = this.state;
+        const { itemData } = this.props;
+        const { title, description } = itemData;
+        const minBid = getMinBidValue(itemData.bids);
 
         return (
             <ItemEditorView
@@ -84,3 +95,8 @@ export class ItemEditor extends React.Component<Props, State> {
         )
     }
 }
+
+const mapStateToProps = state => state;
+
+const ConnectedEditor = connect(mapStateToProps)(ItemEditor);
+export default ConnectedEditor;

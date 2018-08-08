@@ -2,42 +2,44 @@ import axios from "axios";
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { randFromArr, DEFAULT_NAMES, DATA_URL } from '../utils';
-import { AdminPage } from '../admin/containers/AdminPage';
+
+import { Poller } from '../Poller';
 import { BidsPage } from './BidsPage';
+import { randFromArr, DEFAULT_NAMES, DATA_URL } from '../utils';
+import ConnectedAdminPage from '../admin/containers/AdminPage';
 import { setAuctionData, setAuctionError } from '../actions/auctionItemActions';
 
 export class App extends React.Component<any, any> {
 
-    private auctionDataPoll: any;
+    private auctionDataPoll: Poller;
 
     constructor(props) {
         super(props);
-
+        // TODO: Might be able to simplify by moving polling to BidsPage
+        this.auctionDataPoll= new Poller(this.fetchAuctionData);
         window.sessionStorage.userID = window.sessionStorage.userID || randFromArr(DEFAULT_NAMES).toUpperCase();
     }
 
     public async componentDidMount() {
         await this.fetchAuctionData();
         // Kick off poll every second for new auction data... TODO: Make this a socket?
-        this.auctionDataPoll = setInterval(async () => {
-            await this.fetchAuctionData();
-        }, 1000);
+        this.auctionDataPoll.start();
     }
 
     public componentWillUnmount() {
-        clearInterval(this.auctionDataPoll);
+        this.auctionDataPoll.stop();
     }
 
-    private async fetchAuctionData() {
+    private fetchAuctionData = async () => {
         try {
             const response = await axios.get(DATA_URL);
             const auctionItems = response && response.data;
             this.props.dispatch(setAuctionData(auctionItems));
         } catch (err) {
-            clearInterval(this.auctionDataPoll);
+            console.log(`err:`, err);
             console.error(err);
             this.props.dispatch(setAuctionError(JSON.stringify(err)));
+            this.auctionDataPoll.stop();
         }
     }
 
@@ -45,20 +47,25 @@ export class App extends React.Component<any, any> {
         const { error, isLoaded, auctionItems } = this.props;
         // console.log(`App.tsx isLoaded:`, isLoaded);
 
+
         return !isLoaded ? <div>Loading...</div>
             : error ? <div>Error: {JSON.stringify(error)}</div>
             : (<Router>
                     <div>
-                        <Route exact path="/admin"
-                            render={() => <AdminPage auctionItems={auctionItems} />} />
-                        <Route exact path="/" render={() => <BidsPage
-                            auctionItems={auctionItems}
-                            user={window.sessionStorage.userID}
-                            filter={false} />} />
-                        <Route exact path="/user" render={() => <BidsPage
-                            auctionItems={auctionItems}
-                            user={window.sessionStorage.userID}
-                            filter={true} />} />
+                        <Route exact path="/admin" render={() => 
+                            <ConnectedAdminPage poller={this.auctionDataPoll} auctionItems={auctionItems} />} />
+                        <Route exact path="/" render={() =>
+                            <BidsPage
+                                poller={this.auctionDataPoll}
+                                auctionItems={auctionItems}
+                                user={window.sessionStorage.userID}
+                                filter={false} />} />
+                        <Route exact path="/user" render={() =>
+                            <BidsPage
+                                poller={this.auctionDataPoll}
+                                auctionItems={auctionItems}
+                                user={window.sessionStorage.userID}
+                                filter={true} />} />
                     </div>
                 </Router>);
     }
