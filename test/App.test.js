@@ -1,6 +1,6 @@
 import * as nock from 'nock';
 import * as React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
 import ConnectedApp from '../src/containers/App';

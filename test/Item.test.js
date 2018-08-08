@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { Item } from '../src/containers/Item';
+import { ItemView } from '../src/presentation/ItemView';
 import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
@@ -17,7 +18,6 @@ describe('Item', function () {
         const auctionItemsCopy = clone(auctionItems);
         itemData = auctionItemsCopy.shift();
         item = mount(<Item itemData={itemData} user={TESTER_1} />);
-        item.update(); // Need to call 'update()' for find() to work
         itemView = item.find('.item-container');
     });
 
@@ -89,8 +89,6 @@ describe('Item', function () {
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(true);
 
-        // input.simulate('change', { target: { value: TESTER_2 }});
-        // app.setState({}); // Trigger re-render
         item.setProps({ user: TESTER_2 });
 
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
@@ -103,13 +101,20 @@ describe('Item', function () {
         expect(description.render().hasClass('open')).toEqual(false);
     });
 
-    it('description toggles on click', function () {
-        const description = item.find('.description');
+    it('toggleDescription called on click', function () {
+        const toggleDescription = jest.fn();
+        const highBid = { name: TESTER_1, value: 20 };
+        item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} toggleDescription={toggleDescription} />);
         item.simulate('click');
-        expect(description.render().hasClass('open')).toEqual(true);
-        expect(description.render().hasClass('closed')).toEqual(false);
-        item.simulate('click');
-        expect(description.render().hasClass('closed')).toEqual(true);
-        expect(description.render().hasClass('open')).toEqual(false);
+        expect(toggleDescription).toBeCalled();
+    });
+
+    it('quickBid called on button click', function () {
+        const quickBid = jest.fn();
+        const highBid = { name: TESTER_1, value: 20 };
+        item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} quickBid={quickBid} />);
+        const button = item.find('button');
+        button.simulate('click');
+        expect(quickBid).toBeCalled();
     });
 });

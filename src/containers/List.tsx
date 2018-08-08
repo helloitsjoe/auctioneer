@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Item } from './Item';
+import ConnectedItem from './Item';
 import { EmptyList } from '../presentation/EmptyList';
-import { ItemData } from './App';
+import { ItemData } from '../reducers/auctionItemsReducer';
 
 type Props = {
     user: string;
@@ -10,9 +10,7 @@ type Props = {
 }
 
 export const List = ({ user, auctionItems, filter }: Props) => {
-    let items = auctionItems.map((itemData, i) => (
-        <Item itemData={itemData} user={user} key={i} />
-    ));
+    let items = auctionItems.map((item, i) => <ConnectedItem itemData={item} user={user} key={i} />);
     
     if (filter) {
         items = items.filter((itemComponent, i) => {

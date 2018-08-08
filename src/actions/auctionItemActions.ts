@@ -1,21 +1,8 @@
-import axios from 'axios';
-import { DATA_URL } from '../utils';
 import { SET_AUCTION_DATA, SET_AUCTION_ERROR, QUICK_BID, TOGGLE_DESCRIPTION } from './actionTypes';
+import { ItemData } from '../reducers/auctionItemsReducer';
 
-export const setAuctionData = (auctionItems) => ({
-    type: SET_AUCTION_DATA,
-    auctionItems
-});
+export const setAuctionData = (rawAuctionItems: ItemData[]) => ({ type: SET_AUCTION_DATA, rawAuctionItems });
+export const setAuctionError = (err) => ({ type: SET_AUCTION_ERROR, err });
 
-export const setAuctionError = (err) => ({
-    type: SET_AUCTION_ERROR,
-    err
-});
-
-export const quickItemBid = () => ({
-    type: QUICK_BID
-});
-
-export const toggleItemDescription = () => ({
-    type: TOGGLE_DESCRIPTION
-});
+export const quickBidAction = (userName: string, itemID: number) => ({ type: QUICK_BID, userName, itemID });
+export const toggleDescriptionAction = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });

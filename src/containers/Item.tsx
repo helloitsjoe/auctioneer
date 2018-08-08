@@ -1,83 +1,44 @@
-import * as React from 'react';
 import axios from 'axios';
-import { DATA_URL, getHighBid } from '../utils';
-import { ItemView } from '../presentation/ItemView';
-import { Bid } from '../containers/App';
+import * as React from 'react';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
-// TODO: Make this configurable by auction host
-export const BID_INCREMENT = 5;
+import { DATA_URL } from '../utils';
+import { ItemView } from '../presentation/ItemView';
+import { getHighBid } from '../reducers/auctionItemsReducer';
+import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 
 type Props = {
     itemData: any;
     user: string;
+    dispatch: Dispatch;
 }
 
-type State = {
-    highBid: Bid;
-    highBidder?: string;
-    userHasHighBid: boolean;
-    userWasOutBid: boolean;
-    descriptionClass: string;
-}
+export function Item({ itemData, user, dispatch }: Props) {
 
-export class Item extends React.Component<Props, State> {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            highBid: getHighBid(this.props.itemData.bids),
-            userHasHighBid: false,
-            userWasOutBid: false,
-            descriptionClass: 'closed',
-        };
-    }
-
-    quickBid = (e) => {
+    const quickBid = (e) => {
         e.stopPropagation();
-        const { bids } = this.props.itemData;
-        const newBid = {
-            name: this.props.user,
-            value: this.state.highBid.value + BID_INCREMENT
-        };
-        bids.push(newBid);
 
-        this.setState({ highBid: newBid });
-
-        this.updateData(this.props.itemData);
-    }
-
-    private updateData = (itemData): void => {
+        dispatch(quickBidAction(user, itemData.id));
         axios.put(DATA_URL, { body: JSON.stringify(itemData) });
     }
 
-    // TODO: Move this to view?
-    toggleDescription = (e) => {
-        e.stopPropagation();
-        const descriptionClass = this.state.descriptionClass === 'open' ? 'closed' : 'open';
-        this.setState({ descriptionClass });
-
+    const toggleDescription = (e) => {
+        dispatch(toggleDescriptionAction(itemData.id))
         // TODO: Add photos
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return { highBid: getHighBid(nextProps.itemData.bids) };
-    }
-
-    render() {
-        const { highBid, descriptionClass } = this.state;
-        const { itemData, user } = this.props;
-
-        const userHasHighBid = (highBid.name === user);
-        const userWasOutBid = !userHasHighBid && itemData.bids.find(item => item.name === user);
-
-        return <ItemView
-            highBidAmount={highBid.value}
-            userWasOutBid={userWasOutBid}
-            userHasHighBid={userHasHighBid}
-            quickBid={this.quickBid}
-            itemData={itemData}
-            toggleDescription={this.toggleDescription}
-            descriptionClass={descriptionClass} />
-    };
+    return <ItemView
+        user={user}
+        highBid={getHighBid(itemData.bids)}
+        itemData={itemData}
+        quickBid={quickBid}
+        toggleDescription={toggleDescription} />
 }
+
+const mapStateToProps = (state) => state;
+
+// Note: Need named default export for tests to
+// render Connect(Item) instead of Connect(Component)
+const ConnectedItem = connect(mapStateToProps)(Item);
+export default ConnectedItem;

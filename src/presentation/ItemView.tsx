@@ -1,40 +1,31 @@
 import * as React from 'react';
-import { BID_INCREMENT } from '../containers/Item';
-import { ItemData, Bid } from '../containers/App';
+import { ItemData, Bid, BID_INCREMENT } from '../reducers/auctionItemsReducer';
 
 type Props = {
+    user: string;
+    highBid: Bid;
     itemData: ItemData;
-    userHasHighBid: boolean;
-    userWasOutBid: boolean;
-    highBidAmount: number;
-    descriptionClass: string;
     toggleDescription: (event: any) => void;
     quickBid: (event: any) =>  void;
 }
 
-export const ItemView = ({
-    itemData,
-    userHasHighBid,
-    userWasOutBid,
-    highBidAmount,
-    descriptionClass,
-    toggleDescription,
-    quickBid
-}: Props) => {
+export const ItemView = ({ user, highBid, itemData, toggleDescription, quickBid }: Props) => {
 
     let itemClass = '';
     let bidClass = '';
     let bidSuffix = '';
 
-    if (userHasHighBid) {
+    if (highBid.name === user) {
         itemClass = 'bid-bg';
         bidClass = 'user-high-bid';
         bidSuffix = '(You!)';
-    } else if (userWasOutBid) {
+    } else if (itemData.bids.some(bid => bid.name === user)) {
         itemClass = 'outbid-bg';
         bidClass = 'user-outbid';
         bidSuffix = '(Not you!)';
     }
+
+    const descriptionClass = itemData.viewDetails ? 'open' : 'closed';
 
     return (
         <div className="item-group" onClick={toggleDescription}>
@@ -44,8 +35,8 @@ export const ItemView = ({
                 </div>
                 <div className="button-box u-pull-right">
                     <span className={`bid-text ${bidClass}`}>High bid {bidSuffix}</span>
-                    <span className="high-bid">{highBidAmount}</span>
-                    <button className="bid btn" onClick={quickBid}>Bid {highBidAmount + BID_INCREMENT}</button>
+                    <span className="high-bid">{highBid.value}</span>
+                    <button className="bid btn" onClick={quickBid}>Bid {highBid.value + BID_INCREMENT}</button>
                 </div>
             </div>
             <div className={`description ${descriptionClass} ${itemClass}`}>{itemData.description}</div>

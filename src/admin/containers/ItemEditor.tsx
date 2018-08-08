@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { ItemData } from '../../containers/App';
-import { getMinBidValue } from '../../utils';
+import { ItemData, getMinBidValue } from '../../reducers/auctionItemsReducer';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 
 export enum StateKey {
