@@ -24,7 +24,7 @@ export const ItemEditor = ({ itemData, dispatch, submitChanges }: Props) => {
         const { value } = e.target;
         dispatch(inputChange(key, value));
     }
-    
+console.log(`itemData:`, itemData);
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
     // TODO: Prohibit addItem submit without title and description

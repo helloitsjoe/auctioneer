@@ -52,33 +52,39 @@ export const auctionItems = (state=initialState, action) => {
         case SELECT_ITEM:
             return merge(state, { selectedIndex: action.itemID });
         case QUICK_BID:
-            // TODO: QUICK_BID and TOGGLE_DESCRIPTION feel a little ugly. Fix em up.
-            const { userName, itemID } = action;
-            const items = [...state.auctionItems];
-            const item = items[itemID];
-            const newHighBid = getHighBid(item.bids).value + BID_INCREMENT;
-            item.bids.push({ name: userName, value: newHighBid });
-            return merge(state, { auctionItems: items });
         case TOGGLE_DESCRIPTION:
-            const itemsCopy = [...state.auctionItems];
-            const itemCopy = itemsCopy[action.itemID];
+        case ADD_ITEM:
+        case INPUT_CHANGE:
+            return itemReducer(state, action);
+        default:
+            return state;
+    }
+}
+
+const itemReducer = (state, action) => {
+    const { userName, itemID } = action;
+
+    const itemsCopy = [...state.auctionItems];
+    const itemCopy = (itemID !== null) && itemsCopy[itemID];
+    switch (action.type) {
+        case QUICK_BID:
+            const newHighBid = getHighBid(itemCopy.bids).value + BID_INCREMENT;
+            itemCopy.bids.push({ name: userName, value: newHighBid });
+            return merge(state, { auctionItems: itemsCopy });
+        case TOGGLE_DESCRIPTION:
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
         case ADD_ITEM:
-            const newItem = createNewAuctionItem({ id: state.auctionItems.length });
-            const auctionItemsPlusOne = [...state.auctionItems, newItem];
-            return merge(state, { auctionItems: auctionItemsPlusOne, selectedIndex: newItem.id });
+            const newItem = createNewAuctionItem({ id: itemsCopy.length });
+            return merge(state, { auctionItems: [...itemsCopy, newItem], selectedIndex: newItem.id });
         case INPUT_CHANGE:
-            const inputChangeItems = [...state.auctionItems];
-            const inputChangeItem = inputChangeItems[state.selectedIndex];
+            const inputChangeItem = itemsCopy[state.selectedIndex];
             const { key, value } = action;
             if (key === 'minBid') {
                 inputChangeItem.bids[0].value = parseInt(value);
             } else {
                 inputChangeItem[key] = value;
             }
-            return merge(state, { auctionItems: inputChangeItems });
-        default:
-            return state;
+            return merge(state, { auctionItems: itemsCopy });
     }
 }
