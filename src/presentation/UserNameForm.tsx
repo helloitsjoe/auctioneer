@@ -4,8 +4,8 @@ export const UserNameForm = () => {
     
     const changeUserName = (e) => {
         e.preventDefault();
-        // TODO: Don't use sessionStorage
         e.target.value = e.target.value.toUpperCase();
+        // TODO: Don't use sessionStorage
         window.sessionStorage.userName = e.target.value;
     }
 

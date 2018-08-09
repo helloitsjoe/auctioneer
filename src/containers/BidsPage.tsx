@@ -12,7 +12,6 @@ type Props = {
 }
 
 export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
-    // TODO: Figure out how to trigger a render when coming back to the bids page
     if (!poller.isPolling) {
         poller.start();
     }
