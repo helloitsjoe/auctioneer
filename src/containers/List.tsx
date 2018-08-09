@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ConnectedItem from './Item';
 import { EmptyList } from '../presentation/EmptyList';
-import { ItemData } from '../reducers/auctionItemsReducer';
+import { ItemData } from '../reducers';
 
 type Props = {
     user: string;

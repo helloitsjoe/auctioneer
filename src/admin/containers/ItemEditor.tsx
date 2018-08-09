@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
-import { ItemData } from '../../reducers/auctionItemsReducer';
+import { ItemData } from '../../reducers';
 import { inputChange } from '../../actions/adminActions';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 

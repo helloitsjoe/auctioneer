@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ItemData, Bid, BID_INCREMENT } from '../reducers/auctionItemsReducer';
+import { ItemData, Bid, BID_INCREMENT } from '../reducers';
 
 type Props = {
     user: string;

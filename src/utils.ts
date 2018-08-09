@@ -1,4 +1,4 @@
-import { Bid, ItemData } from './reducers/auctionItemsReducer';
+import { Bid, ItemData } from './reducers';
 
 export const DEFAULT_NAMES = [
     'Sally',

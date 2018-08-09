@@ -8,7 +8,7 @@ import { DATA_URL } from '../../utils';
 import { Sidebar } from '../presentation/Sidebar';
 import { AdminHeader } from '../presentation/AdminHeader';
 import { addItem, selectItem } from '../../actions/adminActions';
-import { ItemData } from '../../reducers/auctionItemsReducer';
+import { ItemData } from '../../reducers';
 
 type Props = {
     auctionItems: ItemData[];

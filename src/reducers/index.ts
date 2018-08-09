@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux';
 import { getHighBid, createNewAuctionItem, getUserTotal } from '../utils';
 import {
     SET_AUCTION_DATA,
@@ -57,13 +58,13 @@ export const auctionItems = (state=initialState, action) => {
         case TOGGLE_DESCRIPTION:
         case ADD_ITEM:
         case INPUT_CHANGE:
-            return itemReducer(state, action);
+            return item(state, action);
         default:
             return state;
     }
 }
 
-const itemReducer = (state, action) => {
+const item = (state, action) => {
     const { userName, itemID } = action;
 
     const itemsCopy = [...state.auctionItems];

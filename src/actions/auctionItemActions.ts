@@ -4,7 +4,7 @@ import {
     QUICK_BID,
     TOGGLE_DESCRIPTION,
 } from './actionTypes';
-import { ItemData } from '../reducers/auctionItemsReducer';
+import { ItemData } from '../reducers';
 
 export const setAuctionData = (rawAuctionItems: ItemData[], userName: string) => ({
     userName,
