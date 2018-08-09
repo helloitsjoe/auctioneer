@@ -1,3 +1,4 @@
+import { getHighBid, createNewAuctionItem } from '../utils';
 import {
     SET_AUCTION_DATA,
     SET_AUCTION_ERROR,
@@ -33,25 +34,6 @@ const initialState = {
 
 const merge = (root, toMerge) => Object.assign({}, root, toMerge);
 
-export const getHighBid = (bids: Bid[]): Bid => {
-    return bids.reduce((high, curr) => {
-        return (curr.value > high.value) ? curr : high;
-    }, { value: 0, name: '' });
-}
-
-export const getMinBidValue = (bids: Bid[]) => {
-    const minBid = bids.find(bid => bid.name === 'min');
-    return minBid ? minBid.value : 0;
-}
-
-export const createNewAuctionItem = ({ id }): ItemData => ({
-    id,
-    title: '',
-    bids: [{ name: 'min', value: 0 }],
-    description: '',
-    viewDetails: false
-});
-
 export const auctionItems = (state=initialState, action) => {
     console.log(`action:`, action);
     switch (action.type) {
@@ -59,12 +41,16 @@ export const auctionItems = (state=initialState, action) => {
             const auctionItems = action.rawAuctionItems.map((item, i) => {
                 // I don't love having viewDetails as an added property on each item...
                 // Is there a better way to do this?
-                const viewDetails = state.auctionItems ? state.auctionItems[i].viewDetails : false;
+                const viewDetails = (state.auctionItems && state.auctionItems[i])
+                    ? state.auctionItems[i].viewDetails
+                    : false;
                 return merge(item, { id: i, viewDetails });
             });
             return merge(state, { auctionItems, isLoaded: true });
         case SET_AUCTION_ERROR:
             return merge(state, { error: action.err, isLoaded: true });
+        case SELECT_ITEM:
+            return merge(state, { selectedIndex: action.itemID });
         case QUICK_BID:
             // TODO: QUICK_BID and TOGGLE_DESCRIPTION feel a little ugly. Fix em up.
             const { userName, itemID } = action;
@@ -78,8 +64,6 @@ export const auctionItems = (state=initialState, action) => {
             const itemCopy = itemsCopy[action.itemID];
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
-        case SELECT_ITEM:
-            return merge(state, { selectedIndex: action.itemID });
         case ADD_ITEM:
             const newItem = createNewAuctionItem({ id: state.auctionItems.length });
             const auctionItemsPlusOne = [...state.auctionItems, newItem];
@@ -93,7 +77,6 @@ export const auctionItems = (state=initialState, action) => {
             } else {
                 inputChangeItem[key] = value;
             }
-            // console.log(`inputChangeItem.title:`, inputChangeItem.title);
             return merge(state, { auctionItems: inputChangeItems });
         default:
             return state;

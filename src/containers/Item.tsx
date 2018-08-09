@@ -3,9 +3,8 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
-import { DATA_URL } from '../utils';
+import { DATA_URL, getHighBid } from '../utils';
 import { ItemView } from '../presentation/ItemView';
-import { getHighBid } from '../reducers/auctionItemsReducer';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 
 type Props = {

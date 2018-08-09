@@ -36,9 +36,8 @@ export class App extends React.Component<any, any> {
             const auctionItems = response && response.data;
             this.props.dispatch(setAuctionData(auctionItems));
         } catch (err) {
-            console.log(`err:`, err);
             console.error(err);
-            this.props.dispatch(setAuctionError(JSON.stringify(err)));
+            this.props.dispatch(setAuctionError(err.message));
             this.auctionDataPoll.stop();
         }
     }
@@ -46,7 +45,6 @@ export class App extends React.Component<any, any> {
     public render() {
         const { error, isLoaded, auctionItems } = this.props;
         // console.log(`App.tsx isLoaded:`, isLoaded);
-
 
         return !isLoaded ? <div>Loading...</div>
             : error ? <div>Error: {JSON.stringify(error)}</div>

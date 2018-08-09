@@ -17,57 +17,32 @@ type Props = {
     poller: any;
 }
 
-export class AdminPage extends React.Component<Props, null> {
+export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Props) => {
 
-    handleClick = (i, e) => {
-        this.props.dispatch((i === null) ? addItem() : selectItem(i));
+    const handleClick = (i, e) => {
+        dispatch((i === null) ? addItem() : selectItem(i));
     }
 
-    // updateTitle = (title, id) => {
-        // This seems weird. Probably a better way to do this. Redux?
-        // const auctionItems = this.props.auctionItems.map(item => {
-        //     if (item.id === id) {
-        //         item.title = title;
-        //     }
-        //     return item;
-        // });
-        // this.setState({ auctionItems });
-    // }
-
-    submitChanges = (itemState, e) => {
+    const submitChanges = (e) => {
         e.preventDefault();
-        const { auctionItems, selectedIndex } = this.props;
-
         const selectedItem = auctionItems[selectedIndex];
-        // selectedItem.bids[0].value = itemState.minBid;
-        // const updatedItem = Object.assign({}, selectedItem, itemState);
-
         axios.put(DATA_URL, { body: JSON.stringify(selectedItem) });
-
-        // const updatedItems = auctionItems.map(item => (item.id === itemState.id) ? updatedItem : item);
-
-        // this.setState({ auctionItems: updatedItems });
     }
 
-    render() {
+    poller.stop();
 
-        const { poller, auctionItems, selectedIndex } = this.props;
-        poller.stop();
-
-        return <div>
-            <AdminHeader />
-            <div className="admin-page">
-                <Sidebar
-                    clickHandler={this.handleClick}
-                    auctionItems={auctionItems}
-                    selectedIndex={selectedIndex} />
-                <ConnectedItemEditor
-                    // updateTitle={this.updateTitle}
-                    submitChanges={this.submitChanges}
-                    itemData={auctionItems[selectedIndex]} />
-            </div>
+    return (<div>
+        <AdminHeader />
+        <div className="admin-page">
+            <Sidebar
+                clickHandler={handleClick}
+                auctionItems={auctionItems}
+                selectedIndex={selectedIndex} />
+            <ConnectedItemEditor
+                submitChanges={submitChanges}
+                itemData={auctionItems[selectedIndex]} />
         </div>
-    }
+    </div>)
 }
 
 const mapStateToProps = (state) => state;
