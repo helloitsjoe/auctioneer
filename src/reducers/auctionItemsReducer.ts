@@ -1,4 +1,4 @@
-import { getHighBid, createNewAuctionItem } from '../utils';
+import { getHighBid, createNewAuctionItem, getUserTotal } from '../utils';
 import {
     SET_AUCTION_DATA,
     SET_AUCTION_ERROR,
@@ -30,6 +30,7 @@ const initialState = {
     isLoaded: false,
     auctionItems: null,
     selectedIndex: 0,
+    userTotal: 0,
 }
 
 const merge = (root, toMerge) => Object.assign({}, root, toMerge);
@@ -46,7 +47,8 @@ export const auctionItems = (state=initialState, action) => {
                     : false;
                 return merge(item, { id: i, viewDetails });
             });
-            return merge(state, { auctionItems, isLoaded: true });
+            const userTotal = getUserTotal(auctionItems, action.userName);
+            return merge(state, { auctionItems, userTotal, isLoaded: true });
         case SET_AUCTION_ERROR:
             return merge(state, { error: action.err, isLoaded: true });
         case SELECT_ITEM:
@@ -70,7 +72,8 @@ const itemReducer = (state, action) => {
         case QUICK_BID:
             const newHighBid = getHighBid(itemCopy.bids).value + BID_INCREMENT;
             itemCopy.bids.push({ name: userName, value: newHighBid });
-            return merge(state, { auctionItems: itemsCopy });
+            const userTotal = getUserTotal(itemsCopy, userName);
+            return merge(state, { auctionItems: itemsCopy, userTotal });
         case TOGGLE_DESCRIPTION:
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });

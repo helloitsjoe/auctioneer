@@ -20,7 +20,7 @@ type Props = {
 
 export const ItemEditor = ({ itemData, dispatch, submitChanges }: Props) => {
 
-    const handleChange = (key: string, e: any) => {
+    const handleChange = (key: InputKey, e: any) => {
         const { value } = e.target;
         dispatch(inputChange(key, value));
     }
