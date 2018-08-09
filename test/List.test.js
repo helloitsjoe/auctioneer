@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { List } from '../src/containers/List';
 import { clone, quickBid, TESTER_1 } from './testUtils';
 
@@ -19,26 +19,25 @@ describe('List', function () {
     });
 
     it('renders each item in the right order', function () {
-        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={false} />);
-        list.update(); // Need to call 'update()' for find() to work
+        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={false} />);
 
-        const listItems = list.find('.item-container');
+        const listItems = list.find('Connect(Item)');
         expect(listItems.length).toEqual(4);
         listItems.forEach((item, i) => {
-            expect(item.find(`#item-${i}`).length).toEqual(1);
+            expect(item.prop('itemData').id).toEqual(i);
         });
     });
 
     it('filters items user has bid on', function () {
-        const firstItem = auctionItemsCopy[0];
+        const TEST_INDEX = 1;
+        const firstItem = auctionItemsCopy[TEST_INDEX];
         firstItem.bids.push(quickBid(firstItem, TESTER_1));
 
-        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
-        list.update(); // Need to call 'update()' for find() to work
+        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
 
-        const listItems = list.find('.item-container');
-        expect(listItems.length).toEqual(1);
-        expect(listItems.find(`#item-0`).length).toEqual(1);
+        const listItem = list.find('Connect(Item)');
+        expect(listItem.length).toEqual(1);
+        expect(listItem.prop('itemData').id).toEqual(TEST_INDEX);
     });
 
     it('filtered list renders EmptyList if user has no bids', function () {
@@ -46,11 +45,7 @@ describe('List', function () {
             expect(item.bids.some(bid => bid.name === list.props('user'))).toEqual(false);
         });
 
-        list = mount(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
-        list.update(); // Need to call 'update()' for find() to work
-
-        const listItems = list.find('.item-container');
-        expect(listItems.length).toEqual(1);
-        expect(listItems.childAt(0).html()).toEqual('<span>No bids yet!</span>');
+        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
+        expect(list.childAt(1).html()).toMatch(/<span>No bids yet!<\/span>/);
     });
 });

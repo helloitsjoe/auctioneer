@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { ItemData } from '../../containers/App';
-import { getMinBidValue } from '../../utils';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+
+import { ItemData } from '../../reducers/auctionItemsReducer';
+import { inputChange } from '../../actions/adminActions';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 
-export enum StateKey {
+export enum InputKey {
     title = 'title',
     minBid = 'minBid',
     description = 'description',
@@ -11,77 +14,28 @@ export enum StateKey {
 
 type Props = {
     itemData: ItemData;
-    updateTitle: (title: string, id: number) => void;
-    submitChanges: (itemState: State, e: any) => void;
+    submitChanges: (e: any) => void;
+    handleChange: (key: InputKey, e: any) => void;
 }
 
-type State = {
-    id: number;
-    title: string;
-    minBid: number;
-    description: string;
-}
+export const ItemEditor = ({ itemData, handleChange, submitChanges }: Props) => {
 
-export class ItemEditor extends React.Component<Props, State> {
-
-    constructor(props) {
-        super(props);
-
-        const { itemData } = this.props;
-        const { id, title, bids, description } = itemData;
-
-        this.state = {
-            id,
-            title,
-            description,
-            minBid: getMinBidValue(bids),
-        }
-    }
-
-    handleChange = (stateKey: string, e: any) => {
-        const { value } = e.target;
-        const newState = {};
-
-        // TODO: Write test checking for number type
-        newState[stateKey] = stateKey === StateKey.minBid ? parseInt(value) : value;
-
-        // Seems like there is probably a better way to pass this up to AdminPage
-        // FIXME: Sidebar title changes remain after clicking on another item
-        if (stateKey === StateKey.title) {
-            this.props.updateTitle(value, this.state.id);
-        }
-        this.setState(newState);
-    }
-
+    // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
-    // Need to connect Sidebar item with ItemEditor, Redux would probably be best
+    // TODO: Prohibit addItem submit without title and description
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-        const { itemData } = nextProps;
-        const { id, bids, title, description } = itemData;
-
-        // Only rerender if the item id is different
-        if (id !== prevState.id) {
-            return {
-                id,
-                title,
-                description,
-                minBid: getMinBidValue(bids),
-            };    
-        }
-        return null;
-    }
-
-    render() {
-        const { title, minBid, description } = this.state;
-
-        return (
-            <ItemEditorView
-                submitChanges={this.props.submitChanges.bind(this, this.state)}
-                title={title}
-                minBid={minBid}
-                description={description}
-                handleChange={this.handleChange} />
-        )
-    }
+    return (
+        <ItemEditorView
+            itemData={itemData}
+            submitChanges={submitChanges}
+            handleChange={handleChange} />
+    )
 }
+
+const mapStateToProps = state => state;
+const mapDispatchToProps = (dispatch) => ({
+    handleChange: (key: InputKey, e: any) => dispatch(inputChange(key, e.target.value))
+});
+
+const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(ItemEditor);
+export default ConnectedEditor;

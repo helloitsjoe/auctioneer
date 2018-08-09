@@ -1,22 +1,26 @@
 import * as React from 'react';
-import Nav from './Nav';
+import { Nav } from './Nav';
 import { List } from './List';
-import { Footer } from '../presentation/Footer';
+import ConnectedFooter from './Footer';
 import { UserNameForm } from '../presentation/UserNameForm';
 
 type Props = {
+    poller: any;
     user: string;
     filter: boolean;
     auctionItems: any;
-    // userTotal: number;
 }
 
-export const BidsPage = ({ user, filter, auctionItems }: Props) => (
-    <div className="well container">
-        <UserNameForm />
-        <Nav />
-        <List auctionItems={auctionItems} user={user} filter={filter}/>
-        <Footer userTotal={0}/>
-        {/* <Footer userTotal={userTotal} /> */}
-    </div>
-);
+export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
+    if (!poller.isPolling) {
+        poller.start();
+    }
+    return (
+        <div className="well container">
+            <UserNameForm />
+            <Nav />
+            <List auctionItems={auctionItems} user={user} filter={filter}/>
+            <ConnectedFooter />
+        </div>
+    )
+}

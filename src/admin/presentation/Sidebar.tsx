@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SidebarItem } from './SidebarItem';
 import { AddItem } from './AddItem';
-import { ItemData } from '../../containers/App';
+import { ItemData } from '../../reducers/auctionItemsReducer';
 
 type Props = {
     auctionItems: ItemData[];

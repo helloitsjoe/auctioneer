@@ -1,4 +1,4 @@
-import { Bid, ItemData } from './containers/App';
+import { Bid, ItemData } from './reducers/auctionItemsReducer';
 
 export const DEFAULT_NAMES = [
     'Sally',
@@ -40,9 +40,16 @@ export const getMinBidValue = (bids: Bid[]) => {
     return minBid ? minBid.value : 0;
 }
 
+export const getUserTotal = (auctionItems, user) => auctionItems.reduce((userTotal, item) => {
+    const highBid = getHighBid(item.bids);
+    return (highBid.name === user) ? (userTotal + highBid.value) : userTotal;
+}, 0);
+
+
 export const createNewAuctionItem = ({ id }): ItemData => ({
     id,
     title: '',
     bids: [{ name: 'min', value: 0 }],
     description: '',
-})
+    viewDetails: false
+});

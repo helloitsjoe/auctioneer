@@ -1,80 +1,51 @@
 import axios from 'axios';
 import * as React from 'react';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+
+import ConnectedItemEditor from './ItemEditor';
+import { DATA_URL } from '../../utils';
 import { Sidebar } from '../presentation/Sidebar';
-import { ItemEditor } from './ItemEditor';
 import { AdminHeader } from '../presentation/AdminHeader';
-import { ItemData } from '../../containers/App';
-import { DATA_URL, createNewAuctionItem } from '../../utils';
+import { addItem, selectItem } from '../../actions/adminActions';
+import { ItemData } from '../../reducers/auctionItemsReducer';
 
 type Props = {
     auctionItems: ItemData[];
-}
-
-type State = {
     selectedIndex: number;
-    auctionItems: ItemData[];
+    dispatch: Dispatch;
+    poller: any;
 }
 
-export class AdminPage extends React.Component<Props, State> {
+export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Props) => {
 
-    constructor(props) {
-        super(props);
+    const handleClick = (i, e) => {
+        dispatch((i === null) ? addItem() : selectItem(i));
+    };
 
-        this.state = {
-            selectedIndex: 0,
-            auctionItems: this.props.auctionItems,
-        }
-    }
-
-    handleClick = (i, e) => {
-        if (i === null) { // AddItem
-            const id = this.state.auctionItems.length;
-            const auctionItems = [...this.state.auctionItems, createNewAuctionItem({ id })];
-            this.setState({ auctionItems, selectedIndex: id  });
-        } else {
-            this.setState({ selectedIndex: i });
-        }
-    }
-
-    updateTitle = (title, id) => {
-        // This seems weird. Probably a better way to do this. Redux?
-        const auctionItems = this.state.auctionItems.map(item => {
-            if (item.id === id) {
-                item.title = title;
-            }
-            return item;
-        });
-        this.setState({ auctionItems });
-    }
-
-    submitChanges = (itemState, e) => {
+    const submitChanges = (e) => {
         e.preventDefault();
-        const { auctionItems, selectedIndex } = this.state;
-
         const selectedItem = auctionItems[selectedIndex];
-        selectedItem.bids[0].value = itemState.minBid;
-        const updatedItem = Object.assign({}, selectedItem, itemState);
+        axios.put(DATA_URL, { body: JSON.stringify(selectedItem) });
+    };
 
-        axios.put(DATA_URL, { body: JSON.stringify(updatedItem) });
+    poller.stop();
 
-        const updatedItems = auctionItems.map(item => (item.id === itemState.id) ? updatedItem : item);
-
-        this.setState({ auctionItems: updatedItems });
-    }
-
-    render() {
-        return <div>
-            <AdminHeader />
-            <div className="admin-page">
-                <Sidebar
-                    clickHandler={this.handleClick}
-                    auctionItems={this.state.auctionItems}
-                    selectedIndex={this.state.selectedIndex} />
-                <ItemEditor
-                    updateTitle={this.updateTitle}
-                    submitChanges={this.submitChanges}
-                    itemData={this.state.auctionItems[this.state.selectedIndex]} />
-            </div>
+    return (<div>
+        <AdminHeader />
+        <div className="admin-page">
+            <Sidebar
+                clickHandler={handleClick}
+                auctionItems={auctionItems}
+                selectedIndex={selectedIndex} />
+            <ConnectedItemEditor
+                submitChanges={submitChanges}
+                itemData={auctionItems[selectedIndex]} />
         </div>
-    }
+    </div>)
 }
+
+const mapStateToProps = (state) => state;
+
+const ConnectedAdminPage = connect(mapStateToProps)(AdminPage);
+export default ConnectedAdminPage;

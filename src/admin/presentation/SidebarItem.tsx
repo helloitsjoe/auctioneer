@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ItemData } from '../../containers/App';
+import { ItemData } from '../../reducers/auctionItemsReducer';
 
 type Props = {
     itemData: ItemData;

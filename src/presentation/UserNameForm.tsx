@@ -4,9 +4,9 @@ export const UserNameForm = () => {
     
     const changeUserName = (e) => {
         e.preventDefault();
-        // TODO: Don't use sessionStorage
         e.target.value = e.target.value.toUpperCase();
-        window.sessionStorage.userID = e.target.value;
+        // TODO: Don't use sessionStorage
+        window.sessionStorage.userName = e.target.value;
     }
 
     const setUserName = (e) => {
@@ -25,7 +25,7 @@ export const UserNameForm = () => {
                 <input
                     id="input"
                     type="text"
-                    defaultValue={window.sessionStorage.userID}
+                    defaultValue={window.sessionStorage.userName}
                     onFocus={focusUserName}
                     onChange={changeUserName} />
                 {/* <input type="submit" onClick={submitName} /> */}
