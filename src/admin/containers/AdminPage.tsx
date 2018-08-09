@@ -21,13 +21,13 @@ export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Pro
 
     const handleClick = (i, e) => {
         dispatch((i === null) ? addItem() : selectItem(i));
-    }
+    };
 
     const submitChanges = (e) => {
         e.preventDefault();
         const selectedItem = auctionItems[selectedIndex];
         axios.put(DATA_URL, { body: JSON.stringify(selectedItem) });
-    }
+    };
 
     poller.stop();
 

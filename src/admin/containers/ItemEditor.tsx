@@ -14,17 +14,12 @@ export enum InputKey {
 
 type Props = {
     itemData: ItemData;
-    dispatch: Dispatch;
     submitChanges: (e: any) => void;
+    handleChange: (key: InputKey, e: any) => void;
 }
 
-export const ItemEditor = ({ itemData, dispatch, submitChanges }: Props) => {
+export const ItemEditor = ({ itemData, handleChange, submitChanges }: Props) => {
 
-    const handleChange = (key: InputKey, e: any) => {
-        const { value } = e.target;
-        dispatch(inputChange(key, value));
-    }
-console.log(`itemData:`, itemData);
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
     // TODO: Prohibit addItem submit without title and description
@@ -38,6 +33,9 @@ console.log(`itemData:`, itemData);
 }
 
 const mapStateToProps = state => state;
+const mapDispatchToProps = (dispatch) => ({
+    handleChange: (key: InputKey, e: any) => dispatch(inputChange(key, e.target.value))
+});
 
-const ConnectedEditor = connect(mapStateToProps)(ItemEditor);
+const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(ItemEditor);
 export default ConnectedEditor;

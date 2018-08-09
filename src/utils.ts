@@ -42,8 +42,6 @@ export const getMinBidValue = (bids: Bid[]) => {
 
 export const getUserTotal = (auctionItems, user) => auctionItems.reduce((userTotal, item) => {
     const highBid = getHighBid(item.bids);
-    console.log(`highBid:`, highBid);
-    console.log(`acc:`, userTotal);
     return (highBid.name === user) ? (userTotal + highBid.value) : userTotal;
 }, 0);
 
