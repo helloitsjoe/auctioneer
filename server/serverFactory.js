@@ -37,6 +37,13 @@ const createServer = async (host, port) => {
         
         res.sendStatus(200);
     });
+
+    app.delete('/data', (req, res) => {
+        let id = JSON.parse(req.body.id);
+        auctionData.splice(id, 1);
+
+        res.sendStatus(200);
+    });
     
     try {
         const fileContents = await readFile(dataPath, 'utf-8');

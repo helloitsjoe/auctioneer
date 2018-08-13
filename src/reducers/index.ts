@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import { getHighBid, createNewAuctionItem, getUserTotal } from '../utils';
 import {
     SET_AUCTION_DATA,
@@ -6,8 +5,10 @@ import {
     QUICK_BID,
     TOGGLE_DESCRIPTION,
     SELECT_ITEM,
+    DELETE_ITEM,
     INPUT_CHANGE,
-    ADD_ITEM } from '../actions/actionTypes';
+    ADD_ITEM, 
+} from '../actions/actionTypes';
 
 export type ItemData = {
     id: number;
@@ -48,16 +49,20 @@ export const auctionItems = (state=initialState, action) => {
                     : false;
                 return merge(item, { id: i, viewDetails });
             });
+            if (!auctionItems.length) {
+                auctionItems.push(createNewAuctionItem({ id: 0 }));
+            }
             const userTotal = getUserTotal(auctionItems, action.userName);
             return merge(state, { auctionItems, userTotal, isLoaded: true });
         case SET_AUCTION_ERROR:
             return merge(state, { error: action.err, isLoaded: true });
         case SELECT_ITEM:
             return merge(state, { selectedIndex: action.itemID });
-        case QUICK_BID:
-        case TOGGLE_DESCRIPTION:
         case ADD_ITEM:
+        case QUICK_BID:
+        case DELETE_ITEM:
         case INPUT_CHANGE:
+        case TOGGLE_DESCRIPTION:
             return item(state, action);
         default:
             return state;
@@ -66,6 +71,7 @@ export const auctionItems = (state=initialState, action) => {
 
 const item = (state, action) => {
     const { userName, itemID } = action;
+    const { selectedIndex } = state;
 
     const itemsCopy = [...state.auctionItems];
     const itemCopy = (itemID !== null) && itemsCopy[itemID];
@@ -78,11 +84,20 @@ const item = (state, action) => {
         case TOGGLE_DESCRIPTION:
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
+        case DELETE_ITEM:
+            const filteredItems = itemsCopy
+                .filter(item => item.id !== itemID)
+                .map((item, i) => merge(item, { id: i }));
+            if (!filteredItems.length) {
+                filteredItems.push(createNewAuctionItem({ id: 0 }));
+            }
+            const newSelectedIndex = filteredItems[selectedIndex] ? selectedIndex : selectedIndex - 1;
+            return merge(state, { auctionItems: filteredItems, selectedIndex: newSelectedIndex });
         case ADD_ITEM:
             const newItem = createNewAuctionItem({ id: itemsCopy.length });
             return merge(state, { auctionItems: [...itemsCopy, newItem], selectedIndex: newItem.id });
         case INPUT_CHANGE:
-            const inputChangeItem = itemsCopy[state.selectedIndex];
+            const inputChangeItem = itemsCopy[selectedIndex];
             const { key, value } = action;
             if (key === 'minBid') {
                 inputChangeItem.bids[0].value = parseInt(value);
