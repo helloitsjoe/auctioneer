@@ -1,4 +1,5 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const util = require('util');
 const express = require('express');
@@ -44,6 +45,8 @@ const createServer = async (host, port) => {
 
         res.sendStatus(200);
     });
+
+    logIPAddress(port);
     
     try {
         const fileContents = await readFile(dataPath, 'utf-8');
@@ -58,6 +61,16 @@ const createServer = async (host, port) => {
     } catch (err) {
         console.error(err);
     }
+}
+
+function logIPAddress(port) {
+    const ifaces = os.networkInterfaces();
+    const ifKeys = Object.keys(ifaces);
+    const ip = ifKeys.reduce((final, curr) => {
+        const config = ifaces[curr].find(config => config.address.includes('192.168'));
+        return config ? config.address : final;
+    }, '');
+    console.log(`To bid on your phone, go to ${ip}:${port}`);
 }
 
 module.exports = {
