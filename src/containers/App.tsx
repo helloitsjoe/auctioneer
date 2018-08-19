@@ -26,7 +26,8 @@ export class App extends React.Component<Props, any> {
         super(props);
         // TODO: Might be able to simplify by moving polling to BidsPage
         this.auctionDataPoll= new Poller(this.fetchAuctionData);
-        window.sessionStorage.userName = window.sessionStorage.userName || randFromArr(DEFAULT_NAMES).toUpperCase();
+        const name = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
+        sessionStorage.setItem('userName', name);
     }
 
     public async componentDidMount() {
@@ -43,7 +44,7 @@ export class App extends React.Component<Props, any> {
         try {
             const response = await this.props.axios.get(DATA_URL);
             const auctionItems = response && response.data;
-            this.props.dispatch(setAuctionData(auctionItems, window.sessionStorage.userName));
+            this.props.dispatch(setAuctionData(auctionItems, sessionStorage.getItem('userName')));
         } catch (err) {
             console.error(err);
             this.props.dispatch(setAuctionError(err.message));
@@ -65,13 +66,13 @@ export class App extends React.Component<Props, any> {
                             <BidsPage
                                 poller={this.auctionDataPoll}
                                 auctionItems={auctionItems}
-                                user={window.sessionStorage.userName}
+                                user={sessionStorage.getItem('userName')}
                                 filter={false} />} />
                         <Route exact path="/user" render={() =>
                             <BidsPage
                                 poller={this.auctionDataPoll}
                                 auctionItems={auctionItems}
-                                user={window.sessionStorage.userName}
+                                user={sessionStorage.getItem('userName')}
                                 filter={true} />} />
                     </div>
                 </Router>);
