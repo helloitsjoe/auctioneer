@@ -3,7 +3,8 @@ import { auctionItems } from './reducers';
 import thunk from 'redux-thunk';
 // import promise from 'redux-promise-middleware';
 
-const middleware = applyMiddleware(thunk);
-// const rootReducer = combineReducers({ auctionItems: auctionItems });
-
-export const initStore = () => createStore(auctionItems, middleware);
+export const initStore = (services = {}) => {
+    const middleware = applyMiddleware(thunk.withExtraArgument(services));
+    // const rootReducer = combineReducers({ auctionItems: auctionItems });
+    return createStore(auctionItems, middleware);
+}

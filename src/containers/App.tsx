@@ -1,4 +1,4 @@
-import axios from "axios";
+import { Dispatch } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -8,8 +8,17 @@ import { BidsPage } from './BidsPage';
 import { randFromArr, DEFAULT_NAMES, DATA_URL } from '../utils';
 import ConnectedAdminPage from '../admin/containers/AdminPage';
 import { setAuctionData, setAuctionError } from '../actions/auctionItemActions';
+import { ItemData } from '../reducers';
 
-export class App extends React.Component<any, any> {
+type Props = {
+    axios: any
+    error: Error,
+    isLoaded: boolean,
+    auctionItems: ItemData[],
+    dispatch: Dispatch
+}
+
+export class App extends React.Component<Props, any> {
 
     private auctionDataPoll: Poller;
 
@@ -32,7 +41,7 @@ export class App extends React.Component<any, any> {
 
     private fetchAuctionData = async () => {
         try {
-            const response = await axios.get(DATA_URL);
+            const response = await this.props.axios.get(DATA_URL);
             const auctionItems = response && response.data;
             this.props.dispatch(setAuctionData(auctionItems, window.sessionStorage.userName));
         } catch (err) {

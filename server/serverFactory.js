@@ -25,25 +25,25 @@ const createServer = async (host, port) => {
         res.sendFile(path.join(__dirname, '../index.html'));
     });
     
-    app.put('/data', (req, res) => {
-        let body = JSON.parse(req.body.body);
-        let id = body.id;
+    app.put('/data/:id', (req, res) => {
+        const body = JSON.parse(req.body.body);
+        const id = parseInt(req.params.id);
         auctionData[id] = body;
-        const auctionItem = auctionData[id];
-        auctionItem.bids = body.bids;
-        console.log('bids:', auctionItem.bids);
-        console.log(`High bid for ${auctionItem.id}: ${auctionItem.bids.slice(-1)[0].value}`);
+        console.log('bids:', body.bids);
+        console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
         
         // TODO: Use WebSockets to push updates to all users
         
         res.sendStatus(200);
     });
 
-    app.delete('/data', (req, res) => {
-        let id = JSON.parse(req.body.id);
-        auctionData.splice(id, 1);
+    app.delete('/data/:id', (req, res) => {
+        const incomingID = parseInt(req.params.id);
+        auctionData = auctionData
+            .filter(item => item.id !== incomingID)
+            .map((item, i) => Object.assign({}, item, { id: i }));
 
-        res.sendStatus(200);
+        res.status(200).send(auctionData);
     });
 
     logIPAddress(port);

@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import { ItemData } from '../../reducers';
-import { inputChange, deleteRequest, submitRequest } from '../../actions/adminActions';
+import { inputChange, deleteRequest, putRequest } from '../../actions/adminActions';
 import { ItemEditorView } from '../presentation/ItemEditorView';
 
 export enum InputKey {
@@ -14,12 +13,12 @@ export enum InputKey {
 
 type Props = {
     itemData: ItemData;
-    submitRequest: (itemData: string) => void;
+    putRequest: (itemData: ItemData) => void;
     handleChange: (key: InputKey, e: any) => void;
     deleteRequest: (id: number) => void;
 }
 
-export const ItemEditor = ({ itemData, handleChange, submitRequest, deleteRequest }: Props) => {
+export const ItemEditor = ({ itemData, handleChange, putRequest, deleteRequest }: Props) => {
 
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
@@ -27,7 +26,7 @@ export const ItemEditor = ({ itemData, handleChange, submitRequest, deleteReques
 
     const submitChanges = (e) => {
         e.preventDefault();
-        submitRequest(JSON.stringify(itemData));
+        putRequest(itemData);
     };
 
 
@@ -44,7 +43,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = (dispatch) => ({
     handleChange: (key: InputKey, e: any) => dispatch(inputChange(key, e.target.value)),
     deleteRequest: (id: number) => dispatch(deleteRequest(id)),
-    submitRequest: (itemData: string) => dispatch(submitRequest(itemData))
+    putRequest: (itemData: string) => dispatch(putRequest(itemData))
 });
 
 const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(ItemEditor);

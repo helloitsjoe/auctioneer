@@ -1,29 +1,31 @@
-import axios from 'axios';
 import * as React from 'react';
-import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
-import { DATA_URL, getHighBid } from '../utils';
+import { getHighBid } from '../utils';
 import { ItemView } from '../presentation/ItemView';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
+import { putRequest } from '../actions/adminActions';
+import { ItemData } from '../reducers';
 
 type Props = {
     itemData: any;
     user: string;
-    dispatch: Dispatch;
+    quickBidAction: (user: string, id: number) => void;
+    putRequest: (itemData: ItemData) => void;
+    toggleDescriptionAction: (id: number) => void;
 }
 
-export function Item({ itemData, user, dispatch }: Props) {
+export function Item({ itemData, user, quickBidAction, putRequest, toggleDescriptionAction }: Props) {
 
     const quickBid = (e) => {
         e.stopPropagation();
 
-        dispatch(quickBidAction(user, itemData.id));
-        axios.put(DATA_URL, { body: JSON.stringify(itemData) });
+        quickBidAction(user, itemData.id);
+        putRequest(itemData);
     }
 
     const toggleDescription = (e) => {
-        dispatch(toggleDescriptionAction(itemData.id))
+        toggleDescriptionAction(itemData.id)
         // TODO: Add photos
     }
 
@@ -37,7 +39,13 @@ export function Item({ itemData, user, dispatch }: Props) {
 
 const mapStateToProps = (state) => state;
 
+const mapDispatchToProps = (dispatch) => ({
+    toggleDescriptionAction: (id) => dispatch(toggleDescriptionAction(id)),
+    quickBidAction: (user, id) => dispatch(quickBidAction(user, id)),
+    putRequest: (itemData) => dispatch(putRequest(itemData)),
+})
+
 // Note: Need named default export for tests to
 // render Connect(Item) instead of Connect(Component)
-const ConnectedItem = connect(mapStateToProps)(Item);
+const ConnectedItem = connect(mapStateToProps, mapDispatchToProps)(Item);
 export default ConnectedItem;

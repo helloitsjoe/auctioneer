@@ -1,17 +1,21 @@
-import axios from 'axios';
 import { DATA_URL } from '../utils';
-import { ADD_ITEM, SELECT_ITEM, INPUT_CHANGE, DELETE_ITEM } from './actionTypes';
+import { ADD_ITEM, SELECT_ITEM, INPUT_CHANGE, DELETED_ITEM } from './actionTypes';
 import { InputKey } from '../admin/containers/ItemEditor';
+import { ItemData } from '../reducers';
 
 export const addItem = () => ({ type: ADD_ITEM });
 export const selectItem = (itemID: number) => ({ type: SELECT_ITEM, itemID });
 export const inputChange = (key: InputKey, value: string) => ({ type: INPUT_CHANGE, key, value });
-export const submitRequest = (body) => (dispatch) => {
-    axios.put(DATA_URL, { body });
+export const putRequest = (body) => (dispatch, _, services) => {
+    services.axios.put(`${DATA_URL}/${body.id}`, { body: JSON.stringify(body) });
 }
-export const deleteRequest = (itemID) => (dispatch) => {
-    axios.delete(DATA_URL, { data: { id: itemID } }).then(response => {
-        dispatch(deleteItem(itemID));
-    });
+export const deleteRequest = (itemID) => (dispatch, _, services) => {
+    services.axios.delete(`${DATA_URL}/${itemID}`).then(response => {
+        if (response.data) {
+            dispatch(deleteItem(response.data));
+        } else {
+            console.error('response.data does not exist');
+        }
+    }).catch(err => console.error(err));
 }
-const deleteItem = (itemID: number) => ({ type: DELETE_ITEM, itemID });
+const deleteItem = (itemsAfterDelete: ItemData[]) => ({ type: DELETED_ITEM, itemsAfterDelete });
