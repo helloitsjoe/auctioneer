@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
 import ConnectedApp from '../src/containers/App';
-import { clone, TESTER_1, TESTER_2 } from './testUtils';
+import { clone, wait, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
 
@@ -14,12 +14,12 @@ describe('App', function () {
     let auctionItemsCopy;
 
     beforeEach(async () => {
-        store = initStore({ axios: moxios });
         auctionItemsCopy = clone(auctionItems);
         moxios = {
             get: jest.fn().mockResolvedValue({ data: auctionItemsCopy }),
             put: jest.fn(),
         }
+        store = initStore({ axios: moxios });
     });
 
     afterEach(() => {
@@ -30,9 +30,6 @@ describe('App', function () {
     it('isLoaded = false until data returns', function () {
         const provider = mount(<Provider store={store}><ConnectedApp axios={moxios}/></Provider>);
         const app = provider.find('App');
-        expect(moxios.get).toHaveBeenCalled();
-        expect(app.prop('isLoaded')).toBe(false);
-        expect(app.prop('auctionItems')).toEqual(null);
         expect(app.html()).toEqual('<div>Loading...</div>');
     });
 
@@ -41,13 +38,11 @@ describe('App', function () {
         let provider;
         let app;
 
-        beforeEach((done) => {
+        beforeEach(async () => {
             provider = mount(<Provider store={store}><ConnectedApp axios={moxios}/></Provider>);
-            setTimeout(() => {
-                provider.update();
-                app = provider.find('App');
-                done();
-            });
+            await wait(); // Wait for async moxios call to return
+            provider.update();
+            app = provider.find('App');
         });
 
         afterEach(() => {
@@ -59,29 +54,20 @@ describe('App', function () {
             expect(app.prop('auctionItems')).toEqual(auctionItems);
         });
 
-        it.skip('two users get the same initial data', function () {
+        it('two users get the same initial data', function () {
             const list = app.find('.list');
-            // const input = app.find('input');
-            console.log(`input.debug():`, provider.find('input').html());
-            // input.instance().value = TESTER_1;
-            // TODO: Why isn't this changing input value?
+            const input = app.find('input');
             provider.find('input').simulate('change', { target: { value: TESTER_1 }});
-            console.log(`input.debug():`, provider.find('input').html());
-            // provider.setState({}); // Trigger re-render
-            // provider.update();
 
-            const appHTMLTester1 = app.html();
+            const inputHTMLTester1 = input.html();
             const listHTMLTester1 = list.html();
             input.simulate('change', { target: { value: TESTER_2 }});
-            // provider.setState({}); // Trigger re-render
-            console.log(`provider TWO:`, provider.html());
-            provider.update();
-
-            expect(app.html()).not.toEqual(appHTMLTester1);
-            expect(list.html()).toEqual(listHTMLTester1);
+            
+            const inputHTMLTester2 = input.html();
+            const listHTMLTester2 = list.html();
+            expect(inputHTMLTester1).not.toEqual(inputHTMLTester2);
+            expect(listHTMLTester2).toEqual(listHTMLTester1);
         });
-
-        // Clicking on My Bids should render user bids
 
         it('bid updates when user clicks button', async function () {
             const firstButton = app.find('button.btn').first();
