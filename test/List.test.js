@@ -7,19 +7,20 @@ const auctionItems = require('../server/data.json');
 
 describe('List', function () {
 
-    let list;
-    let auctionItemsCopy;
+    const setup = propOverrides => {
+        const auctionItemsCopy = clone(auctionItems);
+        const props = Object.assign({}, {
+            user: TESTER_1,
+            filter: false
+        }, propOverrides);
 
-    beforeEach(() => {
-        auctionItemsCopy = clone(auctionItems);
-    });
+        const list = shallow(<List auctionItems={auctionItemsCopy} user={props.user} filter={props.filter} />);
 
-    afterEach(() => {
-        list.unmount();
-    });
+        return { auctionItemsCopy, list }
+    }
 
     it('renders each item in the right order', function () {
-        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={false} />);
+        const { list } = setup();
 
         const listItems = list.find('Connect(Item)');
         expect(listItems.length).toEqual(4);
@@ -29,11 +30,11 @@ describe('List', function () {
     });
 
     it('filters items user has bid on', function () {
+        const { auctionItemsCopy, list } = setup({ filter: true });
         const TEST_INDEX = 1;
         const firstItem = auctionItemsCopy[TEST_INDEX];
         firstItem.bids.push(quickBid(firstItem, TESTER_1));
-
-        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
+        list.setProps({ auctionItems: auctionItemsCopy });
 
         const listItem = list.find('Connect(Item)');
         expect(listItem.length).toEqual(1);
@@ -41,11 +42,11 @@ describe('List', function () {
     });
 
     it('filtered list renders EmptyList if user has no bids', function () {
+        const { auctionItemsCopy, list } = setup({ filter: true });
         auctionItemsCopy.forEach(item => {
             expect(item.bids.some(bid => bid.name === list.props('user'))).toEqual(false);
         });
 
-        list = shallow(<List auctionItems={auctionItemsCopy} user={TESTER_1} filter={true} />);
         expect(list.childAt(1).html()).toMatch(/<span>No bids yet!<\/span>/);
     });
 });
