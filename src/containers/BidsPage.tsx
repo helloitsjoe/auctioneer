@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Nav } from './Nav';
 import { List } from './List';
-import { Footer } from './Footer';
+import Footer from './Footer';
 import { UserNameForm } from './UserNameForm';
 import { Context } from '../Context';
 
@@ -21,12 +21,7 @@ export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
             <UserNameForm />
             <Nav />
             <List auctionItems={auctionItems} user={user} filter={filter}/>
-            <Context.Consumer>
-                {({ userTotal }) => {
-                    console.log(`userTotal:`, userTotal);
-                    return <Footer userTotal={userTotal} />
-                }}
-            </Context.Consumer>
+            <Footer />
         </div>
     )
 }

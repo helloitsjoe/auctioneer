@@ -2,7 +2,7 @@ import * as React from 'react';
 import ConnectedItem from './Item';
 import { EmptyList } from '../presentation/EmptyList';
 import { ItemData } from '../reducers';
-import { Context } from '../Context';
+import { Context, withContext } from '../Context';
 
 type Props = {
     user: string;
@@ -12,12 +12,14 @@ type Props = {
 
 export const List = ({ user, auctionItems, filter }: Props) => {
     let items = auctionItems.map((item, i) => (
-        <Context.Consumer>
-            {({ incrementTotal }) => {
-                // console.log(`incrementTotal:`, incrementTotal);
-                return <ConnectedItem incrementTotal={incrementTotal} itemData={item} user={user} key={i} />
-            }}
-        </Context.Consumer>
+        <ConnectedItem itemData={item} user={user} key={i} />
+        // withContext(ConnectedItem)
+        // <Context.Consumer>
+        //     {({ incrementTotal }) => {
+        //         // console.log(`incrementTotal:`, incrementTotal);
+        //         return <ConnectedItem incrementTotal={incrementTotal} itemData={item} user={user} key={i} />
+        //     }}
+        // </Context.Consumer>
     ));
     
     if (filter) {

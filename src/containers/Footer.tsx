@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { withContext } from '../Context';
 
 type Props = {
     userTotal: number;
 }
 
-export const Footer = ({ userTotal }: Props) => (
+const Footer = ({ userTotal }: Props) => (
     <div className="footer centered">
         <p className="user-total">Your total bids:</p>
         <h5>$ {userTotal}</h5>
@@ -18,3 +19,4 @@ export const Footer = ({ userTotal }: Props) => (
 
 // const ConnectedFooter = connect(mapStateToProps)(Footer);
 // export default ConnectedFooter;
+export default withContext(Footer);

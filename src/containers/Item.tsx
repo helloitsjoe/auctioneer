@@ -6,6 +6,7 @@ import { ItemView } from '../presentation/ItemView';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 import { putRequest } from '../actions/adminActions';
 import { ItemData } from '../reducers';
+import { withContext } from '../Context';
 
 type Props = {
     itemData: any;
@@ -53,4 +54,4 @@ const mapDispatchToProps = (dispatch) => ({
 // Note: Need named default export for tests to
 // render Connect(Item) instead of Connect(Component)
 const ConnectedItem = connect(mapStateToProps, mapDispatchToProps)(Item);
-export default ConnectedItem;
+export default withContext(ConnectedItem);
