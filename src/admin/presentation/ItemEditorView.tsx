@@ -7,9 +7,10 @@ type Props = {
     itemData: ItemData;
     handleChange: (inputKey: string, e: any) => void;
     submitChanges: (e: any) => void;
+    deleteRequest: (id: number) => void;
 }
 
-export const ItemEditorView = ({ itemData, handleChange, submitChanges }: Props) => (
+export const ItemEditorView = ({ itemData, handleChange, submitChanges, deleteRequest }: Props) => (
     <div className="main-item">
         <form action="submit" onSubmit={submitChanges}>
             <div className="main-element">
@@ -29,7 +30,8 @@ export const ItemEditorView = ({ itemData, handleChange, submitChanges }: Props)
                     value={itemData.description}
                     onChange={handleChange.bind(this, InputKey.description)} />
             </div>
-            <input id="submit" type="submit" onClick={submitChanges} value="Submit"/>
+            <button id="submit" className="save" type="submit" onClick={submitChanges}>Save</button>
+            <button id="delete" className="u-pull-right delete" type="button" onClick={() => deleteRequest(itemData.id)}>Delete</button>
         </form>
     </div>
 )

@@ -6,4 +6,5 @@ export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 
 export const ADD_ITEM = 'ADD_ITEM';
 export const SELECT_ITEM = 'SELECT_ITEM';
+export const DELETED_ITEM = 'DELETED_ITEM';
 export const INPUT_CHANGE = 'INPUT_CHANGE';

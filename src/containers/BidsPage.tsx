@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Nav } from './Nav';
 import { List } from './List';
 import ConnectedFooter from './Footer';
-import { UserNameForm } from '../presentation/UserNameForm';
+import { UserNameForm } from './UserNameForm';
 
 type Props = {
     poller: any;

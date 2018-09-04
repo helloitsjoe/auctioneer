@@ -9,25 +9,24 @@ const auctionItems = require('../server/data.json');
 const BID_INCREMENT = 5;
 
 describe('Item', function () {
-
-    let item;
-    let itemData;
-    let itemView;
-
-    beforeEach(() => {
+    
+    const setup = propOverrides => {
         const auctionItemsCopy = clone(auctionItems);
-        itemData = auctionItemsCopy.shift();
-        item = mount(<Item itemData={itemData} user={TESTER_1} />);
-        itemView = item.find('.item-container');
-    });
+        const itemData = auctionItemsCopy.shift();
 
-    afterEach(() => {
-        itemView = null;
-        itemData = null;
-        item.unmount();
-    });
+        const props = Object.assign({}, {
+            itemData,
+            user: TESTER_1
+        }, propOverrides);
+
+        const item = mount(<Item itemData={props.itemData} user={props.user} />);
+        const itemView = item.find('.item-container');
+
+        return { props, item, itemView, itemData };
+    }
 
     it('item high bid matches highest bid in array', function () {
+        const { item, itemData } = setup();
         const highBid = item.find('.high-bid');
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         
@@ -40,6 +39,7 @@ describe('Item', function () {
     });
 
     it('quick bid button text is maxBid + bid increment', function () {
+        const { item, itemData } = setup();
         const quickBidButton = item.find('.btn');
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         
@@ -52,6 +52,7 @@ describe('Item', function () {
     });
 
     it('item has bid-bg class when user has high bid', function () {
+        const { item, itemData, itemView } = setup();
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
@@ -62,6 +63,7 @@ describe('Item', function () {
     });
 
     it('item has outbid-bg class when they have been outbid', function () {
+        const { item, itemData, itemView } = setup();
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
@@ -79,7 +81,8 @@ describe('Item', function () {
         expect(itemView.render().hasClass('outbid-bg')).toEqual(true);
     });
 
-    it('item has no bid class when they havent bid', async function () {
+    it('item has no bid class when they havent bid', function () {
+        const { item, itemData, itemView } = setup();
         expect(itemView.render().hasClass('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
@@ -96,12 +99,14 @@ describe('Item', function () {
     });
 
     it('description is hidden on load', function () {
+        const { item } = setup();
         const description = item.find('.description');
         expect(description.render().hasClass('closed')).toEqual(true);
         expect(description.render().hasClass('open')).toEqual(false);
     });
 
     it('toggleDescription called on click', function () {
+        const { item, itemData } = setup();
         const toggleDescription = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
         item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} toggleDescription={toggleDescription} />);
@@ -110,6 +115,7 @@ describe('Item', function () {
     });
 
     it('quickBid called on button click', function () {
+        const { item, itemData } = setup();
         const quickBid = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
         item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} quickBid={quickBid} />);
