@@ -10,7 +10,6 @@ export class UserNameForm extends React.Component<any, any> {
     changeUserName = (e) => {
         const userName = e.target.value.toUpperCase();
         this.setState({ userName });
-        // TODO: Don't use sessionStorage
         sessionStorage.setItem('userName', userName);
     }
     
