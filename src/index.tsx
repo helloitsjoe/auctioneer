@@ -6,8 +6,12 @@ import ConnectedApp from './containers/App';
 import { initStore } from './store';
 
 import axios from 'axios';
+import { ContextProvider } from './Context';
 
 ReactDOM.render(
-    <Provider store={initStore({ axios })}>
-        <ConnectedApp axios={axios} />
-    </Provider>, document.getElementById('main'));
+    <ContextProvider>
+        <Provider store={initStore({ axios })}>
+            <ConnectedApp axios={axios} />
+        </Provider>
+    </ContextProvider>,
+    document.getElementById('main'))

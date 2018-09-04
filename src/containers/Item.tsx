@@ -10,16 +10,18 @@ import { ItemData } from '../reducers';
 type Props = {
     itemData: any;
     user: string;
+    incrementTotal: () => void;
     quickBidAction: (user: string, id: number) => void;
     putRequest: (itemData: ItemData) => void;
     toggleDescriptionAction: (id: number) => void;
 }
 
-export function Item({ itemData, user, quickBidAction, putRequest, toggleDescriptionAction }: Props) {
+export function Item({ itemData, user, incrementTotal, quickBidAction, putRequest, toggleDescriptionAction }: Props) {
 
     const quickBid = (e) => {
         e.stopPropagation();
-
+        // console.log(`userTotal:`, userTotal);
+        incrementTotal();
         quickBidAction(user, itemData.id);
         putRequest(itemData);
     }
@@ -29,12 +31,15 @@ export function Item({ itemData, user, quickBidAction, putRequest, toggleDescrip
         // TODO: Add photos
     }
 
-    return <ItemView
-        user={user}
-        highBid={getHighBid(itemData.bids)}
-        itemData={itemData}
-        quickBid={quickBid}
-        toggleDescription={toggleDescription} />
+    return (
+        <ItemView
+            user={user}
+            highBid={getHighBid(itemData.bids)}
+            itemData={itemData}
+            quickBid={quickBid}
+            toggleDescription={toggleDescription}
+        />
+    )
 }
 
 const mapStateToProps = (state) => state;

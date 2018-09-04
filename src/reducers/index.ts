@@ -48,8 +48,8 @@ export const auctionItems = (state = initialState, action) => {
                     && state.auctionItems[i].viewDetails);
                 return merge(item, { id: i, viewDetails });
             }) : [createNewAuctionItem({ id: 0 })];
-            const userTotalMaybeOutbid = getUserTotal(auctionItems, action.userName);
-            return merge(state, { auctionItems, userTotal: userTotalMaybeOutbid, isLoaded: true });
+            // const userTotalMaybeOutbid = getUserTotal(auctionItems, action.userName);
+            return merge(state, { auctionItems, isLoaded: true });
         case SET_AUCTION_ERROR:
             return merge(state, { error: action.err, isLoaded: true });
         case SELECT_ITEM:
@@ -75,8 +75,8 @@ const item = (state, action) => {
         case QUICK_BID:
             const newHighBid = getHighBid(itemCopy.bids).value + BID_INCREMENT;
             itemCopy.bids.push({ name: userName, value: newHighBid });
-            const userTotal = getUserTotal(itemsCopy, userName);
-            return merge(state, { auctionItems: itemsCopy, userTotal });
+            // const userTotal = getUserTotal(itemsCopy, userName);
+            return merge(state, { auctionItems: itemsCopy });
         case TOGGLE_DESCRIPTION:
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
