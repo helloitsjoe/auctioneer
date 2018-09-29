@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { Poller } from '../Poller';
 import { BidsPage } from './BidsPage';
@@ -54,28 +54,23 @@ export class App extends React.Component<Props, any> {
 
     public render() {
         const { error, isLoaded, auctionItems } = this.props;
-        // console.log(`App.tsx isLoaded:`, isLoaded);
 
         return !isLoaded ? <div>Loading...</div>
             : error ? <div>Error: {JSON.stringify(error)}</div>
-            : (<Router>
-                    <div>
+            : (
+                <Router>
+                    <Switch>
                         <Route exact path="/admin" render={() => 
                             <ConnectedAdminPage poller={this.auctionDataPoll} auctionItems={auctionItems} />} />
-                        <Route exact path="/" render={() =>
+                        <Route path="/" render={({location}) => 
                             <BidsPage
                                 poller={this.auctionDataPoll}
                                 auctionItems={auctionItems}
                                 user={sessionStorage.getItem('userName')}
-                                filter={false} />} />
-                        <Route exact path="/user" render={() =>
-                            <BidsPage
-                                poller={this.auctionDataPoll}
-                                auctionItems={auctionItems}
-                                user={sessionStorage.getItem('userName')}
-                                filter={true} />} />
-                    </div>
-                </Router>);
+                                filter={location.pathname === '/user'} />} />
+                    </Switch>
+                </Router>
+            );
     }
 }
 
