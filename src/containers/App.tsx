@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { Poller } from '../Poller';
 import { BidsPage } from './BidsPage';
-import { randFromArr, DEFAULT_NAMES, DATA_URL } from '../utils';
+import { randFromArr, mapAllStateToProps, DEFAULT_NAMES, DATA_URL } from '../utils';
 import ConnectedAdminPage from '../admin/containers/AdminPage';
 import { setAuctionData, setAuctionError } from '../actions/auctionItemActions';
 import { ItemData } from '../reducers';
@@ -74,6 +74,4 @@ export class App extends React.Component<Props, any> {
     }
 }
 
-const mapStateToProps = (state) => state;
-
-export default connect(mapStateToProps)(App);
+export default connect(mapAllStateToProps)(App);

@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 type Props = {
-    clickHandler: (e: any) => void;
+    onSelect: () => void;
 }
 
-export const AddItem = ({ clickHandler }: Props) => (
-    <div className="sidebar-add-item sidebar-item" onClick={clickHandler}>
+export const AddItem = ({ onSelect }: Props) => (
+    <div className="sidebar-add-item sidebar-item" onClick={onSelect}>
         <span className="plus">+</span>
     </div>
 )

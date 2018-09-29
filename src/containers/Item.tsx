@@ -39,13 +39,10 @@ export function Item({ itemData, user, quickBidAction, putRequest, toggleDescrip
 
 const mapStateToProps = (state) => state;
 
-const mapDispatchToProps = (dispatch) => ({
-    toggleDescriptionAction: (id) => dispatch(toggleDescriptionAction(id)),
-    quickBidAction: (user, id) => dispatch(quickBidAction(user, id)),
-    putRequest: (itemData) => dispatch(putRequest(itemData)),
-})
+const mapDispatchToProps = {
+    toggleDescriptionAction,
+    quickBidAction,
+    putRequest,
+}
 
-// Note: Need named default export for tests to
-// render Connect(Item) instead of Connect(Component)
-const ConnectedItem = connect(mapStateToProps, mapDispatchToProps)(Item);
-export default ConnectedItem;
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

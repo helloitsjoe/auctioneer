@@ -14,11 +14,11 @@ export enum InputKey {
 type Props = {
     itemData: ItemData;
     putRequest: (itemData: ItemData) => void;
-    handleChange: (key: InputKey, e: any) => void;
+    onInputChange: (e: any, key: InputKey) => void;
     deleteRequest: (id: number) => void;
 }
 
-export const ItemEditor = ({ itemData, handleChange, putRequest, deleteRequest }: Props) => {
+export const ItemEditor = ({ itemData, onInputChange, putRequest, deleteRequest }: Props) => {
 
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
@@ -35,16 +35,15 @@ export const ItemEditor = ({ itemData, handleChange, putRequest, deleteRequest }
             itemData={itemData}
             deleteRequest={deleteRequest}
             submitChanges={submitChanges}
-            handleChange={handleChange} />
+            onInputChange={onInputChange} />
     )
 }
 
 const mapStateToProps = state => state;
-const mapDispatchToProps = (dispatch) => ({
-    handleChange: (key: InputKey, e: any) => dispatch(inputChange(key, e.target.value)),
-    deleteRequest: (id: number) => dispatch(deleteRequest(id)),
-    putRequest: (itemData: string) => dispatch(putRequest(itemData))
-});
+const mapDispatchToProps = {
+    onInputChange: (e: any, key: InputKey) => inputChange(e.target.value, key),
+    deleteRequest,
+    putRequest
+};
 
-const ConnectedEditor = connect(mapStateToProps, mapDispatchToProps)(ItemEditor);
-export default ConnectedEditor;
+export default connect(mapStateToProps, mapDispatchToProps)(ItemEditor);

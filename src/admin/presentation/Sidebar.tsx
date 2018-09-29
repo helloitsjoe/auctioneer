@@ -6,18 +6,19 @@ import { ItemData } from '../../reducers';
 type Props = {
     auctionItems: ItemData[];
     selectedIndex: number;
-    clickHandler: (i: number, event: any) => void;
+    onSelect: (i: number) => void;
 }
 
-export const Sidebar = ({ auctionItems, selectedIndex, clickHandler }: Props) => (
+export const Sidebar = ({ auctionItems, selectedIndex, onSelect }: Props) => (
     <div className="sidebar">
         {auctionItems.map((item, i) => (
+            // TODO: No index as key
             <SidebarItem
                 key={i}
                 itemData={item}
                 selected={i === selectedIndex}
-                clickHandler={clickHandler.bind(this, i)} />
+                onSelect={() => onSelect(i)} />
         ))}
-        <AddItem clickHandler={clickHandler.bind(this, null)} />
+        <AddItem onSelect={() => onSelect(null)} />
     </div>
 )

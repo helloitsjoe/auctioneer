@@ -7,6 +7,7 @@ import { Sidebar } from '../presentation/Sidebar';
 import { AdminHeader } from '../presentation/AdminHeader';
 import { addItem, selectItem } from '../../actions/adminActions';
 import { ItemData } from '../../reducers';
+import { mapAllStateToProps} from '../../utils';
 
 type Props = {
     auctionItems: ItemData[];
@@ -17,7 +18,7 @@ type Props = {
 
 export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Props) => {
 
-    const handleClick = (i, e) => {
+    const handleSelect = (i) => {
         dispatch((i === null) ? addItem() : selectItem(i));
     };
 
@@ -27,7 +28,7 @@ export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Pro
         <AdminHeader />
         <div className="admin-page">
             <Sidebar
-                clickHandler={handleClick}
+                onSelect={handleSelect}
                 auctionItems={auctionItems}
                 selectedIndex={selectedIndex} />
             <ConnectedItemEditor itemData={auctionItems[selectedIndex]} />
@@ -35,7 +36,4 @@ export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Pro
     </div>)
 }
 
-const mapStateToProps = (state) => state;
-
-const ConnectedAdminPage = connect(mapStateToProps)(AdminPage);
-export default ConnectedAdminPage;
+export default connect(mapAllStateToProps)(AdminPage);

@@ -10,11 +10,12 @@ type Props = {
 }
 
 export const List = ({ user, auctionItems, filter }: Props) => {
+    // TODO: Add id to item in admin page, no index as key
     let items = auctionItems.map((item, i) => <ConnectedItem itemData={item} user={user} key={i} />);
     
     if (filter) {
         items = items.filter((itemComponent, i) => {
-            return auctionItems[i].bids.some(bid => bid.name === user);
+            return auctionItems[i].bids.some(({ name }) => name === user);
         });
     }
 

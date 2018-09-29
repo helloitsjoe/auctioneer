@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { mapAllStateToProps } from '../utils';
 
 type Props = {
     userTotal: number;
@@ -14,7 +15,5 @@ export const Footer = ({ userTotal }: Props) => (
     </div>
 )
 
-const mapStateToProps = state => state;
-
-const ConnectedFooter = connect(mapStateToProps)(Footer);
+const ConnectedFooter = connect(mapAllStateToProps)(Footer);
 export default ConnectedFooter;
