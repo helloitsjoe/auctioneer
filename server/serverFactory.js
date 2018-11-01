@@ -38,12 +38,10 @@ const createServer = async (host, port) => {
     });
 
     app.delete('/data/:id', (req, res) => {
-        const incomingID = parseInt(req.params.id);
-        auctionData = auctionData
-            .filter(item => item.id !== incomingID)
-            .map((item, i) => Object.assign({}, item, { id: i }));
+        const incomingID = Number(req.params.id);
+        auctionData = auctionData.filter(item => item.id !== incomingID)
 
-        res.status(200).send(auctionData);
+        res.status(200).send({deletedItemID: incomingID});
     });
 
     logIPAddress(port);

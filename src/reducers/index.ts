@@ -43,13 +43,12 @@ export const auctionItems = (state = initialState, action) => {
     switch (action.type) {
         case SET_AUCTION_DATA:
             const { rawAuctionItems } = action;
-            const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item, i) => {
+            const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item) => {
                 // Is there a better way to do this?
-                const viewDetails = !!(state.auctionItems
-                    && state.auctionItems[i]
-                    && state.auctionItems[i].viewDetails);
-                return merge(item, { id: i, viewDetails });
-            }) : [createNewAuctionItem({ id: 0 })];
+                const itemInState = state.auctionItems.find(({id}) => id === item.id)
+                const viewDetails = !!(itemInState && itemInState.viewDetails);
+                return merge(item, { viewDetails });
+            }) : [createNewAuctionItem()];
             const userTotalMaybeOutbid = getUserTotal(auctionItems, action.userName);
             return merge(state, { auctionItems, userTotal: userTotalMaybeOutbid, isLoaded: true });
         case SET_AUCTION_ERROR:
@@ -72,7 +71,7 @@ const item = (state, action) => {
     const { selectedIndex, auctionItems } = state;
 
     const itemsCopy = [...auctionItems];
-    const itemCopy = (itemID !== null) && itemsCopy[itemID];
+    const itemCopy = (itemID != null) && itemsCopy.find(({id}) => id === itemID);
     switch (action.type) {
         case QUICK_BID:
             const newHighBid = getHighBid(itemCopy.bids).value + BID_INCREMENT;
@@ -83,12 +82,13 @@ const item = (state, action) => {
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
         case DELETE_ITEM_SUCCESS:
-            const { itemsAfterDelete } = action;
-            const safeItemsAfterDelete = itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem({ id: 0 })];
+            const { deletedItemID } = action;
+            const itemsAfterDelete = auctionItems.filter(item => item.id !== deletedItemID);
+            const safeItemsAfterDelete = itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem()];
             const newSelectedIndex = selectedIndex >= safeItemsAfterDelete.length ? safeItemsAfterDelete.length - 1 : selectedIndex;
             return merge(state, { auctionItems: safeItemsAfterDelete, selectedIndex: newSelectedIndex });
         case ADD_ITEM:
-            const newItem = createNewAuctionItem({ id: itemsCopy.length });
+            const newItem = createNewAuctionItem(itemsCopy);
             return merge(state, { auctionItems: [...itemsCopy, newItem], selectedIndex: newItem.id });
         case INPUT_CHANGE:
             const inputChangeItem = itemsCopy[selectedIndex];

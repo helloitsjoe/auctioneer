@@ -48,10 +48,13 @@ export const getUserTotal = (auctionItems, user) => auctionItems.reduce((userTot
 }, 0);
 
 
-export const createNewAuctionItem = ({ id }): ItemData => ({
-    id,
-    title: '',
-    bids: [{ name: 'min', value: 0 }],
-    description: '',
-    viewDetails: false
-});
+export const createNewAuctionItem = (items: ItemData[] = []): ItemData => {
+    const id = items.length ? (Math.max(...items.map(item => item.id)) + 1) : 0;
+    return {
+        id,
+        title: '',
+        bids: [{ name: 'min', value: 0 }],
+        description: '',
+        viewDetails: false
+    };
+}

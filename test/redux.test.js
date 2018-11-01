@@ -4,11 +4,9 @@ import {
 } from "../src/store";
 import {
     addItem,
-    deleteRequest
+    deleteRequest,
+    deleteItemSuccess
 } from "../src/actions/adminActions";
-import {
-    createNewAuctionItem
-} from "../src/utils";
 import {
     toggleDescriptionAction
 } from "../src/actions/auctionItemActions";
@@ -37,9 +35,10 @@ describe("redux duck tests", () => {
         it("add item to store", function () {
             expect(store.getState().auctionItems.length).toBe(0);
             store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(1);
-            // TODO: Make this id unique (and settable?) Use .title instead of .id?
+            store.dispatch(addItem());
+            expect(store.getState().auctionItems.length).toBe(2);
             expect(store.getState().auctionItems[0].id).toBe(0);
+            expect(store.getState().auctionItems[1].id).toBe(1);
         });
 
         it('add item no-op if selected has no title/description', function () {
@@ -47,14 +46,13 @@ describe("redux duck tests", () => {
         });
 
         it('deleteItem removes item from store', function () {
-            // store.dispatch(addItem());
-            // store.dispatch(addItem());
-            // expect(store.getState().auctionItems.length).toBe(2);
-            // TODO: Figure out how best to test this thunk
-            // store.dispatch(deleteRequest(0));
-            // expect(store.getState().auctionItems.length).toBe(1);
-            // expect(store.getState().auctionItems.find(item => item.id === 1)).toBeTruthy();
-            // expect(store.getState().auctionItems.find(item => item.id === 0)).toBeUndefined();
+            store.dispatch(addItem());
+            store.dispatch(addItem());
+            expect(store.getState().auctionItems.length).toBe(2);
+            store.dispatch(deleteItemSuccess(0));
+            expect(store.getState().auctionItems.length).toBe(1);
+            expect(store.getState().auctionItems.find(item => item.id === 1)).toBeTruthy();
+            expect(store.getState().auctionItems.find(item => item.id === 0)).toBeUndefined();
         });
 
         it('deleting last item replaces item with blank item', function () {});
@@ -72,11 +70,18 @@ describe("redux duck tests", () => {
 
         it('show/hide details', function () {
             store.dispatch(addItem());
-            expect(store.getState().auctionItems[0].viewDetails).toBe(false);
+            store.dispatch(addItem());
+            store.dispatch(addItem());
+            expect(store.getState().auctionItems.some(item => item.viewDetails)).toBe(false);
             store.dispatch(toggleDescriptionAction(0));
-            expect(store.getState().auctionItems[0].viewDetails).toBe(true);
-            store.dispatch(toggleDescriptionAction(0));
-            expect(store.getState().auctionItems[0].viewDetails).toBe(false);
+            store.dispatch(toggleDescriptionAction(2));
+            expect(store.getState().auctionItems.find(it => it.id === 0).viewDetails).toBe(true);
+            expect(store.getState().auctionItems.find(it => it.id === 2).viewDetails).toBe(true);
+
+            store.dispatch(deleteItemSuccess(1));
+            store.dispatch(toggleDescriptionAction(2));
+            expect(store.getState().auctionItems.find(it => it.id === 0).viewDetails).toBe(true);
+            expect(store.getState().auctionItems.find(it => it.id === 2).viewDetails).toBe(false);
         });
 
         it('quick bid increments bid', function () {});

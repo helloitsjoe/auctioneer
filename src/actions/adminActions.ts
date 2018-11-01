@@ -11,10 +11,11 @@ export const putRequest = (body) => (dispatch, _, services) => {
 }
 export const deleteRequest = (itemID) => (dispatch, _, services) => {
     services.axios.delete(`${DATA_URL}/${itemID}`).then(response => {
-        if (!response.data) {
-            throw new Error('The item you were trying to delete does not exist');
+        const { deletedItemID } = response.data;
+        if (deletedItemID == null) {
+            throw new Error(`There was an error deleting item ${itemID}`);
         }
-        dispatch(deleteItemSuccess(response.data));
+        dispatch(deleteItemSuccess(deletedItemID));
     }).catch(err => console.error(err));
 }
-const deleteItemSuccess = (itemsAfterDelete: ItemData[]) => ({ type: DELETE_ITEM_SUCCESS, itemsAfterDelete });
+export const deleteItemSuccess = (deletedItemID: number) => ({ type: DELETE_ITEM_SUCCESS, deletedItemID });
