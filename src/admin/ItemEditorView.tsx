@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { getMinBidValue } from '../../utils';
-import { InputKey } from '../containers/ItemEditor';
-import { ItemData } from '../../reducers';
+import { getMinBidValue } from '../utils';
+import { InputKey } from './ItemEditor';
+import { ItemData } from '../reducers';
 
 type Props = {
     itemData: ItemData;

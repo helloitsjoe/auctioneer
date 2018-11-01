@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Item } from '../src/containers/Item';
-import { ItemView } from '../src/presentation/ItemView';
+import { Item } from '../src/user/Item';
+import { ItemView } from '../src/user/ItemView';
 import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');

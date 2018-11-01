@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { ItemData } from '../../reducers';
-import { inputChange, deleteRequest, putRequest } from '../../actions/adminActions';
-import { ItemEditorView } from '../presentation/ItemEditorView';
+import { ItemData } from '../reducers';
+import { inputChange, deleteRequest, putRequest } from '../actions/adminActions';
+import { ItemEditorView } from './ItemEditorView';
 
 export enum InputKey {
     title = 'title',

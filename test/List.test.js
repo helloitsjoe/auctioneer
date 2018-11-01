@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { List } from '../src/containers/List';
+import { List } from '../src/user/List';
 import { clone, quickBid, TESTER_1 } from './testUtils';
 
 const auctionItems = require('../server/data.json');

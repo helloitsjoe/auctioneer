@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { getHighBid } from '../utils';
-import { ItemView } from '../presentation/ItemView';
+import { ItemView } from './ItemView';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 import { putRequest } from '../actions/adminActions';
 import { ItemData } from '../reducers';

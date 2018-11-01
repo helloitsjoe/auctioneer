@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import ConnectedApp from './containers/App';
+import ConnectedApp from './App';
 import { initStore } from './store';
 
 import axios from 'axios';

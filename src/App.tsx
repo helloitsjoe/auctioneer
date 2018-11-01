@@ -3,12 +3,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { Poller } from '../Poller';
-import { BidsPage } from './BidsPage';
-import { randFromArr, mapAllStateToProps, DEFAULT_NAMES, DATA_URL } from '../utils';
-import ConnectedAdminPage from '../admin/containers/AdminPage';
-import { setAuctionData, setAuctionError } from '../actions/auctionItemActions';
-import { ItemData } from '../reducers';
+import { Poller } from './Poller';
+import { BidsPage } from './user/BidsPage';
+import { randFromArr, mapAllStateToProps, DEFAULT_NAMES, DATA_URL } from './utils';
+import ConnectedAdminPage from './admin/AdminPage';
+import { setAuctionData, setAuctionError } from './actions/auctionItemActions';
+import { ItemData } from './reducers';
 
 type Props = {
     axios: any

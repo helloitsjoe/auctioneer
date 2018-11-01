@@ -2,7 +2,7 @@ import * as React from 'react';
 import { mount, shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
-import ConnectedApp from '../src/containers/App';
+import ConnectedApp from '../src/App';
 import { clone, wait, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ConnectedItem from './Item';
-import { EmptyList } from '../presentation/EmptyList';
+import { EmptyList } from './EmptyListView';
 import { ItemData } from '../reducers';
 
 type Props = {

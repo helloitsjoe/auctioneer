@@ -1,14 +1,4 @@
 import { getHighBid, createNewAuctionItem, getUserTotal } from '../utils';
-import {
-    SET_AUCTION_DATA,
-    SET_AUCTION_ERROR,
-    QUICK_BID,
-    TOGGLE_DESCRIPTION,
-    SELECT_ITEM,
-    DELETE_ITEM_SUCCESS,
-    INPUT_CHANGE,
-    ADD_ITEM,
-} from '../actions/actionTypes';
 
 export type ItemData = {
     id: number;
@@ -26,6 +16,18 @@ export type Bid = {
 
 // TODO: Make this configurable by auction host
 export const BID_INCREMENT = 5;
+
+// Action types
+export const SET_AUCTION_DATA = 'SET_AUCTION_DATA';
+export const SET_AUCTION_ERROR = 'SET_AUCTION_ERROR';
+
+export const QUICK_BID = 'QUICK_BID';
+export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
+
+export const ADD_ITEM = 'ADD_ITEM';
+export const SELECT_ITEM = 'SELECT_ITEM';
+export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
+export const INPUT_CHANGE = 'INPUT_CHANGE';
 
 const initialState = {
     error: null,

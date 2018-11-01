@@ -3,7 +3,7 @@ import {
     SET_AUCTION_ERROR,
     QUICK_BID,
     TOGGLE_DESCRIPTION,
-} from './actionTypes';
+} from '../reducers';
 import { ItemData } from '../reducers';
 
 export const setAuctionData = (rawAuctionItems: ItemData[], userName: string) => ({
