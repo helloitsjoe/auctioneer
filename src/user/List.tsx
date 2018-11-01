@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const List = ({ user, auctionItems, filter }: Props) => {
-    let items = auctionItems.map(item => <ConnectedItem itemData={item} user={user} key={item.title} />);
+    let items = auctionItems.map(item => <ConnectedItem itemData={item} user={user} key={item.id} />);
 
     if (filter) {
         items = items.filter((itemComponent, i) => {

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { List } from '../src/user/List';
 import { clone, quickBid, TESTER_1 } from './testUtils';
+import { BID_INCREMENT } from '../src/reducers';
 
 const auctionItems = require('../server/data.json');
 
@@ -33,7 +34,7 @@ describe('List', function () {
         const { auctionItemsCopy, list } = setup({ filter: true });
         const TEST_INDEX = 1;
         const firstItem = auctionItemsCopy[TEST_INDEX];
-        firstItem.bids.push(quickBid(firstItem, TESTER_1));
+        firstItem.bids.push(quickBid(firstItem, TESTER_1, BID_INCREMENT));
         list.setProps({ auctionItems: auctionItemsCopy });
 
         const listItem = list.find('Connect(Item)');

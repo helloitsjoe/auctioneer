@@ -4,7 +4,7 @@ import { InputKey } from '../admin/ItemEditor';
 import { ItemData } from '../reducers';
 
 export const addItem = () => ({ type: ADD_ITEM });
-export const selectItem = (itemID: number) => ({ type: SELECT_ITEM, itemID });
+export const selectItem = (itemIndex: number) => ({ type: SELECT_ITEM, itemIndex });
 export const inputChange = (value: string, key) => ({ type: INPUT_CHANGE, key, value });
 export const putRequest = (body) => (dispatch, _, services) => {
     services.axios.put(`${DATA_URL}/${body.id}`, { body: JSON.stringify(body) });

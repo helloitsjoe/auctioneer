@@ -13,7 +13,7 @@ export const Sidebar = ({ auctionItems, selectedIndex, onSelect }: Props) => (
     <div className="sidebar">
         {auctionItems.map((item, i) => (
             <SidebarItem
-                key={item.title}
+                key={item.id}
                 itemData={item}
                 selected={i === selectedIndex}
                 onSelect={() => onSelect(i)} />

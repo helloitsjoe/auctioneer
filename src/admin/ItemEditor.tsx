@@ -22,6 +22,7 @@ export const ItemEditor = ({ itemData, onInputChange, putRequest, deleteRequest 
 
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
+    // TODO: Warn if user is trying to add a second item without adding a title/description
     // TODO: Prohibit addItem submit without title and description
 
     const submitChanges = (e) => {

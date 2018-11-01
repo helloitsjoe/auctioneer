@@ -54,7 +54,7 @@ export const auctionItems = (state = initialState, action) => {
         case SET_AUCTION_ERROR:
             return merge(state, { error: action.err, isLoaded: true });
         case SELECT_ITEM:
-            return merge(state, { selectedIndex: action.itemID });
+            return merge(state, { selectedIndex: action.itemIndex });
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -89,7 +89,8 @@ const item = (state, action) => {
             return merge(state, { auctionItems: safeItemsAfterDelete, selectedIndex: newSelectedIndex });
         case ADD_ITEM:
             const newItem = createNewAuctionItem(itemsCopy);
-            return merge(state, { auctionItems: [...itemsCopy, newItem], selectedIndex: newItem.id });
+            const auctionItemsWithNew = [...itemsCopy, newItem]
+            return merge(state, { auctionItems: auctionItemsWithNew, selectedIndex: auctionItemsWithNew.indexOf(newItem) });
         case INPUT_CHANGE:
             const inputChangeItem = itemsCopy[selectedIndex];
             const { key, value } = action;
