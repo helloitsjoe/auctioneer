@@ -12,9 +12,8 @@ type Props = {
 export const Sidebar = ({ auctionItems, selectedIndex, onSelect }: Props) => (
     <div className="sidebar">
         {auctionItems.map((item, i) => (
-            // TODO: No index as key
             <SidebarItem
-                key={i}
+                key={item.title}
                 itemData={item}
                 selected={i === selectedIndex}
                 onSelect={() => onSelect(i)} />
