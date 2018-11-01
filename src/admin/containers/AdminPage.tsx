@@ -7,7 +7,7 @@ import { Sidebar } from '../presentation/Sidebar';
 import { AdminHeader } from '../presentation/AdminHeader';
 import { addItem, selectItem } from '../../actions/adminActions';
 import { ItemData } from '../../reducers';
-import { mapAllStateToProps} from '../../utils';
+import { mapAllStateToProps } from '../../utils';
 
 type Props = {
     auctionItems: ItemData[];
