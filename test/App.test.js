@@ -79,9 +79,9 @@ describe('App', function () {
         it('item has bid-bg class when clicked', function () {
             const firstItem = app.find('#item-0');
             const firstButton = firstItem.find('button.btn');
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(false);
+            expect(firstItem.html().includes('bid-bg')).toEqual(false);
             firstButton.simulate('click');
-            expect(firstItem.render().hasClass('bid-bg')).toEqual(true);      
+            expect(firstItem.html().includes('bid-bg')).toEqual(true);      
         });
     });
 });

@@ -53,18 +53,18 @@ describe('Item', function () {
 
     it('item has bid-bg class when user has high bid', function () {
         const { item, itemData, itemView } = setup();
-        expect(itemView.render().hasClass('bid-bg')).toEqual(false);
+        expect(itemView.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
         item.setProps({ itemData });
 
-        expect(itemView.render().hasClass('bid-bg')).toEqual(true);
+        expect(itemView.html().includes('bid-bg')).toEqual(true);
     });
 
     it('item has outbid-bg class when they have been outbid', function () {
         const { item, itemData, itemView } = setup();
-        expect(itemView.render().hasClass('bid-bg')).toEqual(false);
+        expect(itemView.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         const newMax = maxBid + 5;
@@ -72,53 +72,52 @@ describe('Item', function () {
         itemData.bids.push({ name: TESTER_1, value: newMax });
         item.setProps({ itemData });
 
-        expect(itemView.render().hasClass('bid-bg')).toEqual(true);
+        expect(itemView.html().includes('bid-bg')).toEqual(true);
 
         const outbidMax = newMax + 5;
         itemData.bids.push({ name: TESTER_2, value: outbidMax });
         item.setProps({ itemData });
 
-        expect(itemView.render().hasClass('outbid-bg')).toEqual(true);
+        expect(itemView.html().includes('outbid-bg')).toEqual(true);
     });
 
     it('item has no bid class when they havent bid', function () {
         const { item, itemData, itemView } = setup();
-        expect(itemView.render().hasClass('bid-bg')).toEqual(false);
+        expect(itemView.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
 
         itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
         item.setProps({ itemData });
 
-        expect(itemView.render().hasClass('bid-bg')).toEqual(true);
+        expect(itemView.html().includes('bid-bg')).toEqual(true);
 
         item.setProps({ user: TESTER_2 });
 
-        expect(itemView.render().hasClass('bid-bg')).toEqual(false);
-        expect(itemView.render().hasClass('outbid-bg')).toEqual(false);
+        expect(itemView.html().includes('bid-bg')).toEqual(false);
+        expect(itemView.html().includes('outbid-bg')).toEqual(false);
     });
 
     it('description is hidden on load', function () {
         const { item } = setup();
-        const description = item.find('.description');
-        expect(description.render().hasClass('closed')).toEqual(true);
-        expect(description.render().hasClass('open')).toEqual(false);
+        expect(item.html().includes('closed')).toEqual(true);
+        expect(item.html().includes('open')).toEqual(false);
     });
 
     it('toggleDescription called on click', function () {
-        const { item, itemData } = setup();
+        const { itemData } = setup();
         const toggleDescription = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
-        item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} toggleDescription={toggleDescription} />);
+        const item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} toggleDescription={toggleDescription} />);
         item.simulate('click');
         expect(toggleDescription).toBeCalled();
     });
 
     it('quickBid called on button click', function () {
-        const { item, itemData } = setup();
+        const { itemData } = setup();
         const quickBid = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
-        item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} quickBid={quickBid} />);
+        const item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} quickBid={quickBid} />);
         const button = item.find('button');
         button.simulate('click');
         expect(quickBid).toBeCalled();
