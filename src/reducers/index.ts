@@ -5,9 +5,9 @@ import {
     QUICK_BID,
     TOGGLE_DESCRIPTION,
     SELECT_ITEM,
-    DELETED_ITEM,
+    DELETE_ITEM_SUCCESS,
     INPUT_CHANGE,
-    ADD_ITEM, 
+    ADD_ITEM,
 } from '../actions/actionTypes';
 
 export type ItemData = {
@@ -30,7 +30,7 @@ export const BID_INCREMENT = 5;
 const initialState = {
     error: null,
     isLoaded: false,
-    auctionItems: null,
+    auctionItems: [],
     selectedIndex: 0,
     userTotal: 0,
 }
@@ -57,7 +57,7 @@ export const auctionItems = (state = initialState, action) => {
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
-        case DELETED_ITEM:
+        case DELETE_ITEM_SUCCESS:
         case TOGGLE_DESCRIPTION:
             return item(state, action);
         default:
@@ -80,7 +80,7 @@ const item = (state, action) => {
         case TOGGLE_DESCRIPTION:
             itemCopy.viewDetails = !itemCopy.viewDetails;
             return merge(state, { auctionItems: itemsCopy });
-        case DELETED_ITEM:
+        case DELETE_ITEM_SUCCESS:
             const { itemsAfterDelete } = action;
             const safeItemsAfterDelete = itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem({ id: 0 })];
             const newSelectedIndex = selectedIndex >= safeItemsAfterDelete.length ? safeItemsAfterDelete.length - 1 : selectedIndex;

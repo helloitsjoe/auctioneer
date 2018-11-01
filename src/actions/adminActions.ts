@@ -1,5 +1,5 @@
 import { DATA_URL } from '../utils';
-import { ADD_ITEM, SELECT_ITEM, INPUT_CHANGE, DELETED_ITEM } from './actionTypes';
+import { ADD_ITEM, SELECT_ITEM, INPUT_CHANGE, DELETE_ITEM_SUCCESS } from './actionTypes';
 import { InputKey } from '../admin/containers/ItemEditor';
 import { ItemData } from '../reducers';
 
@@ -11,11 +11,10 @@ export const putRequest = (body) => (dispatch, _, services) => {
 }
 export const deleteRequest = (itemID) => (dispatch, _, services) => {
     services.axios.delete(`${DATA_URL}/${itemID}`).then(response => {
-        if (response.data) {
-            dispatch(deleteItem(response.data));
-        } else {
-            console.error('response.data does not exist');
+        if (!response.data) {
+            throw new Error('The item you were trying to delete does not exist');
         }
+        dispatch(deleteItemSuccess(response.data));
     }).catch(err => console.error(err));
 }
-const deleteItem = (itemsAfterDelete: ItemData[]) => ({ type: DELETED_ITEM, itemsAfterDelete });
+const deleteItemSuccess = (itemsAfterDelete: ItemData[]) => ({ type: DELETE_ITEM_SUCCESS, itemsAfterDelete });
