@@ -130,6 +130,7 @@ describe("redux duck tests", () => {
 
             store.dispatch(deleteItemSuccess(1));
             store.dispatch(toggleDescriptionAction(2));
+            expect(store.getState().auctionItems.length).toBe(2);
             expect(store.getState().auctionItems.find(it => it.id === 0).viewDetails).toBe(true);
             expect(store.getState().auctionItems.find(it => it.id === 2).viewDetails).toBe(false);
         });
