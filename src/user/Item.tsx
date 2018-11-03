@@ -5,23 +5,23 @@ import { getHighBid } from '../utils';
 import { ItemView } from './ItemView';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 import { putRequest } from '../actions/adminActions';
-import { ItemData } from '../reducers';
+import { ItemData, merge } from '../reducers';
 
 type Props = {
-    itemData: any;
     user: string;
+    itemData: any;
     quickBidAction: (user: string, id: number) => void;
     putRequest: (itemData: ItemData) => void;
     toggleDescriptionAction: (id: number) => void;
 }
 
-export function Item({ itemData, user, quickBidAction, putRequest, toggleDescriptionAction }: Props) {
+export function Item({user, itemData, quickBidAction, putRequest, toggleDescriptionAction}: Props) {
 
     const quickBid = (e) => {
         e.stopPropagation();
 
         quickBidAction(user, itemData.id);
-        putRequest(itemData);
+        // putRequest(itemData);
     }
 
     const toggleDescription = (e) => {

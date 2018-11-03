@@ -14,10 +14,17 @@ export type Bid = {
     value: number;
 }
 
+export type StoreState = {
+    error: Error;
+    isLoaded: boolean;
+    auctionItems: ItemData[];
+    selectedIndex: number;
+    userTotal: number;
+}
+
 // TODO: Make this configurable by auction host
 export const BID_INCREMENT = 5;
 
-// Action types
 export const SET_AUCTION_DATA = 'SET_AUCTION_DATA';
 export const SET_AUCTION_ERROR = 'SET_AUCTION_ERROR';
 
@@ -29,7 +36,7 @@ export const SELECT_ITEM = 'SELECT_ITEM';
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 
-const initialState = {
+const initialState: StoreState = {
     error: null,
     isLoaded: false,
     auctionItems: [],
@@ -37,7 +44,7 @@ const initialState = {
     userTotal: 0,
 }
 
-const merge = (root, toMerge) => Object.assign({}, root, toMerge);
+export const merge = (...objects: Object[]) => Object.assign({}, ...objects);
 
 export const auctionItems = (state = initialState, action) => {
     switch (action.type) {
@@ -66,21 +73,28 @@ export const auctionItems = (state = initialState, action) => {
     }
 }
 
-const item = (state, action) => {
+const item = (state: StoreState, action: any) => {
     const { userName, itemID } = action;
     const { selectedIndex, auctionItems } = state;
 
-    const itemsCopy = [...auctionItems];
-    const itemCopy = (itemID != null) && itemsCopy.find(({id}) => id === itemID);
+    const item = (itemID != null) && auctionItems.find(({id}) => id === itemID);
     switch (action.type) {
         case QUICK_BID:
-            const newHighBid = getHighBid(itemCopy.bids).value + BID_INCREMENT;
-            itemCopy.bids.push({ name: userName, value: newHighBid });
-            const userTotal = getUserTotal(itemsCopy, userName);
-            return merge(state, { auctionItems: itemsCopy, userTotal });
+            if (!item) {
+                console.error('Item not found in auctionItems!');
+            }
+            const newHighBid = getHighBid(item.bids).value + BID_INCREMENT;
+            const bids = [...item.bids, {name: userName, value: newHighBid }];
+            const itemsWithBid = auctionItems.map(item => item.id === itemID ? merge(item, {bids}) : item)
+            const userTotal = getUserTotal(itemsWithBid, userName);
+            return merge(state, { auctionItems: itemsWithBid, userTotal });
         case TOGGLE_DESCRIPTION:
-            itemCopy.viewDetails = !itemCopy.viewDetails;
-            return merge(state, { auctionItems: itemsCopy });
+            if (!item) {
+                console.error('Item not found in auctionItems!');
+            }
+            const viewDetails = !item.viewDetails;
+            const itemsWithToggledDetails = auctionItems.map(item => item.id === itemID ? merge(item, {viewDetails}) : item)
+            return merge(state, { auctionItems: itemsWithToggledDetails });
         case DELETE_ITEM_SUCCESS:
             const { deletedItemID } = action;
             const itemsAfterDelete = auctionItems.filter(item => item.id !== deletedItemID);
@@ -88,17 +102,22 @@ const item = (state, action) => {
             const newSelectedIndex = selectedIndex >= safeItemsAfterDelete.length ? safeItemsAfterDelete.length - 1 : selectedIndex;
             return merge(state, { auctionItems: safeItemsAfterDelete, selectedIndex: newSelectedIndex });
         case ADD_ITEM:
-            const newItem = createNewAuctionItem(itemsCopy);
-            const auctionItemsWithNew = [...itemsCopy, newItem]
+            const newItem = createNewAuctionItem(auctionItems);
+            const auctionItemsWithNew = [...auctionItems, newItem]
             return merge(state, { auctionItems: auctionItemsWithNew, selectedIndex: auctionItemsWithNew.indexOf(newItem) });
         case INPUT_CHANGE:
-            const inputChangeItem = itemsCopy[selectedIndex];
             const { key, value } = action;
-            if (key === 'minBid') {
-                inputChangeItem.bids[0].value = parseInt(value);
-            } else {
-                inputChangeItem[key] = value;
-            }
-            return merge(state, { auctionItems: itemsCopy });
+            const itemsWithInputChange = auctionItems.map((item, index) => {
+                if (index === selectedIndex) {
+                    if (key === 'minBid') {
+                        const bidsWithNewMin = item.bids.map(bid =>
+                            bid.name === 'min' ? merge(bid, {value: parseInt(value)}) : bid);
+                        return merge(item, {bids: bidsWithNewMin});
+                    }
+                    return merge(item, {[key]: value});
+                }
+                return item;
+            })
+            return merge(state, { auctionItems: itemsWithInputChange });
     }
 }

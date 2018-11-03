@@ -5,6 +5,7 @@ import {
     QUICK_BID,
     TOGGLE_DESCRIPTION,
 } from '../reducers';
+import { putRequest } from './adminActions';
 
 export const setAuctionData = (rawAuctionItems: ItemData[], userName: string) => ({
     userName,
@@ -13,5 +14,9 @@ export const setAuctionData = (rawAuctionItems: ItemData[], userName: string) =>
 });
 export const setAuctionError = (err) => ({ type: SET_AUCTION_ERROR, err });
 
-export const quickBidAction = (userName: string, itemID: number) => ({ type: QUICK_BID, userName, itemID });
+export const quickBidAction = (userName: string, itemID: number) => (dispatch, getState) => {
+    dispatch({ type: QUICK_BID, userName, itemID });
+    const updatedItem = getState().auctionItems.find(({id}) => id === itemID);
+    dispatch(putRequest(updatedItem));
+};
 export const toggleDescriptionAction = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });

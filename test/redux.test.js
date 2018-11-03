@@ -16,6 +16,10 @@ import { InputKey } from "../src/admin/ItemEditor";
 
 describe("redux duck tests", () => {
 
+    const moxios = {
+        put: jest.fn()
+    }
+
     const initialState = {
         auctionItems: [],
         error: null,
@@ -27,7 +31,7 @@ describe("redux duck tests", () => {
     let store;
 
     beforeEach(() => {
-        store = initStore();
+        store = initStore({axios: moxios});
     });
 
     it("initial state", function () {
