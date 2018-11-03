@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { Provider } from 'react-redux';
+import { mount } from 'enzyme';
+import { initStore } from '../src/store';
 import { List } from '../src/user/List';
 import { clone, quickBid, TESTER_1 } from './testUtils';
 import { BID_INCREMENT } from '../src/reducers';
@@ -15,7 +17,11 @@ describe('List', function () {
             filter: false
         }, propOverrides);
 
-        const list = shallow(<List auctionItems={auctionItemsCopy} user={props.user} filter={props.filter} />);
+        const list = mount(
+            <Provider store={initStore()}>
+                <List auctionItems={auctionItemsCopy} user={props.user} filter={props.filter} />
+            </Provider>
+        );
 
         return { auctionItemsCopy, list }
     }
@@ -48,6 +54,6 @@ describe('List', function () {
             expect(item.bids.some(bid => bid.name === list.props('user'))).toEqual(false);
         });
 
-        expect(list.childAt(1).html()).toMatch(/<span>No bids yet!<\/span>/);
+        expect(list.html()).toMatch(/<span>No bids yet!<\/span>/);
     });
 });

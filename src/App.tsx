@@ -40,6 +40,10 @@ export class App extends React.Component<Props, any> {
         this.auctionDataPoll.stop();
     }
 
+    componentDidCatch(err, info) {
+        console.error(err, info);
+    }
+
     private fetchAuctionData = async () => {
         try {
             const response = await this.props.axios.get(DATA_URL);

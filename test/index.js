@@ -1,5 +1,6 @@
 describe('Auctioneer', function () {
     require('./redux.test');
+    require('./utils.test');
     require('./App.test');
     require('./Item.test');
     require('./List.test');

@@ -32,12 +32,13 @@ export const randFromArr = <T>(arr: T[]): T => arr[Math.floor(Math.random() * ar
 export const mapAllStateToProps = (state) => state;
 
 export const getHighBid = (bids: Bid[]): Bid => {
-    return bids.reduce((high, curr) => {
+    const safeBids = Array.isArray(bids) ? bids.filter(bid => !!bid) : [];
+    return safeBids.reduce((high, curr) => {
         return (curr.value > high.value) ? curr : high;
     }, { value: 0, name: '' });
 }
 
-export const getMinBidValue = (bids: Bid[]) => {
+export const getMinBidValue = (bids: Bid[]): number => {
     const minBid = bids.find(bid => bid.name === 'min');
     return minBid ? minBid.value : 0;
 }
