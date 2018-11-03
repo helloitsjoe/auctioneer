@@ -57,7 +57,7 @@ describe("redux duck tests", () => {
             expect(store.getState().auctionItems[1].id).toBe(2);
         });
 
-        it('add item no-op if selected has no title/description', function () {
+        it.skip('add item no-op if selected has no title/description', function () {
             store.dispatch(addItem());
             expect(store.getState().auctionItems.length).toBe(1);
             store.dispatch(addItem());
