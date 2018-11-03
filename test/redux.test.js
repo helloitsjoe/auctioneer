@@ -147,6 +147,7 @@ describe("redux duck tests", () => {
             expect(bids.length).toBe(2);
             expect(bids[1].name).toBe(TESTER_1);
             expect(bids[1].value).toBe(bids[0].value + BID_INCREMENT);
+            expect(moxios.put).toHaveBeenCalled();
         });
 
         it('input change', function () {

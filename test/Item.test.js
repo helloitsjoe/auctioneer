@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { mount, shallow } from 'enzyme';
 import { Item } from '../src/user/Item';
-import { ItemView } from '../src/user/ItemView';
 import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
+import { getHighBid } from '../src/utils';
 
 const auctionItems = require('../server/data.json');
 
@@ -16,10 +16,16 @@ describe('Item', function () {
 
         const props = Object.assign({}, {
             itemData,
-            user: TESTER_1
+            user: TESTER_1,
         }, propOverrides);
 
-        const item = mount(<Item itemData={props.itemData} user={props.user} />);
+        const item = mount(
+            <Item
+                user={props.user}
+                itemData={props.itemData}
+                highBid={getHighBid(itemData.bids)}
+            />
+        );
         const itemView = item.find('.item-container');
 
         return { props, item, itemView, itemData };
@@ -31,10 +37,11 @@ describe('Item', function () {
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         
         expect(highBid.text()).toEqual(`${maxBid}`);
+    
+        itemData.bids.push(quickBid(itemData, TESTER_1));
 
-        itemData.bids.push(quickBid(itemData, TESTER_1, BID_INCREMENT));
-        item.setProps({ itemData });
-
+        item.setProps({ highBid: getHighBid(itemData.bids) });
+    
         expect(highBid.text()).toEqual(`${maxBid + BID_INCREMENT}`);
     });
 
@@ -45,8 +52,9 @@ describe('Item', function () {
         
         expect(quickBidButton.text()).toEqual(`Bid ${maxBid + BID_INCREMENT}`);
 
-        itemData.bids.push(quickBid(itemData, TESTER_1, BID_INCREMENT));
-        item.setProps({ itemData });
+        itemData.bids.push(quickBid(itemData, TESTER_1));
+    
+        item.setProps({ highBid: getHighBid(itemData.bids) });
 
         expect(quickBidButton.text()).toEqual(`Bid ${maxBid + (BID_INCREMENT * 2) }`);
     });
@@ -57,9 +65,10 @@ describe('Item', function () {
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
-        item.setProps({ itemData });
+        item.setProps({ highBid: getHighBid(itemData.bids) });
 
         expect(itemView.html().includes('bid-bg')).toEqual(true);
+        expect(itemView.html().includes('outbid-bg')).toEqual(false);
     });
 
     it('item has outbid-bg class when they have been outbid', function () {
@@ -67,16 +76,17 @@ describe('Item', function () {
         expect(itemView.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
-        const newMax = maxBid + 5;
+        const newMax = maxBid + BID_INCREMENT;
 
         itemData.bids.push({ name: TESTER_1, value: newMax });
-        item.setProps({ itemData });
+        item.setProps({ highBid: getHighBid(itemData.bids) });
 
         expect(itemView.html().includes('bid-bg')).toEqual(true);
+        expect(itemView.html().includes('outbid-bg')).toEqual(false);
 
-        const outbidMax = newMax + 5;
+        const outbidMax = newMax + BID_INCREMENT;
         itemData.bids.push({ name: TESTER_2, value: outbidMax });
-        item.setProps({ itemData });
+        item.setProps({ highBid: getHighBid(itemData.bids) });
 
         expect(itemView.html().includes('outbid-bg')).toEqual(true);
     });
@@ -84,6 +94,7 @@ describe('Item', function () {
     it('item has no bid class when they havent bid', function () {
         const { item, itemData, itemView } = setup();
         expect(itemView.html().includes('bid-bg')).toEqual(false);
+        expect(itemView.html().includes('outbid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
 
@@ -106,20 +117,37 @@ describe('Item', function () {
 
     it('toggleDescription called on click', function () {
         const { itemData } = setup();
+        const quickBid = jest.fn();
         const toggleDescription = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
-        const item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} toggleDescription={toggleDescription} />);
+        const item = shallow(
+            <Item
+                itemData={itemData}
+                user={TESTER_1}
+                highBid={highBid}
+                toggleDescription={toggleDescription}
+            />);
         item.simulate('click');
         expect(toggleDescription).toBeCalled();
+        expect(quickBid).not.toBeCalled();
     });
 
     it('quickBid called on button click', function () {
         const { itemData } = setup();
         const quickBid = jest.fn();
+        const toggleDescription = jest.fn();
         const highBid = { name: TESTER_1, value: 20 };
-        const item = shallow(<ItemView itemData={itemData} user={TESTER_1} highBid={highBid} quickBid={quickBid} />);
+        const item = shallow(
+            <Item
+                itemData={itemData}
+                user={TESTER_1}
+                highBid={highBid}
+                quickBid={quickBid}
+                toggleDescription={toggleDescription}
+            />);
         const button = item.find('button');
         button.simulate('click');
         expect(quickBid).toBeCalled();
+        expect(toggleDescription).not.toBeCalled();
     });
 });

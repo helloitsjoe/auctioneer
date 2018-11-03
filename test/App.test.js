@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
 import ConnectedApp from '../src/App';
@@ -39,8 +39,10 @@ describe('App', function () {
         let app;
 
         beforeEach(async () => {
+            expect(moxios.get).not.toHaveBeenCalled();
             provider = mount(<Provider store={store}><ConnectedApp axios={moxios}/></Provider>);
             await wait(); // Wait for async moxios call to return
+            expect(moxios.get).toHaveBeenCalled();
             provider.update();
             app = provider.find('App');
         });
