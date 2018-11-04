@@ -24,22 +24,38 @@ const createServer = async (host, port) => {
     app.get('/*', (req, res) => {
         res.sendFile(path.join(__dirname, '../index.html'));
     });
+
+    // Currently only for unit tests to restore original auctionData
+    app.post('/data', async (req, res) => {
+        try {
+            const fileContents = await readFile(dataPath, 'utf-8');
+            auctionData = JSON.parse(fileContents);
+        } catch (err) {
+            res.status(500).send('Error reading data.json');
+        }
+        res.status(200).send(auctionData);
+    });
     
     app.put('/data/:id', (req, res) => {
         const body = JSON.parse(req.body.body);
-        const id = parseInt(req.params.id);
-        auctionData[id] = body;
-        console.log('bids:', body.bids);
-        console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
+        const id = Number(req.params.id);
+        if (!(body && body.bids && body.bids.length && body.id != null)) {
+            return res.status(400).send(req.body.body);
+        }
+        if (!auctionData.find(item => item.id === id)) {
+            auctionData.push(body);
+        } else {
+            auctionData = auctionData.map(item => (item.id === id) ? body : item);
+        }
+        // console.log('bids:', body.bids);
+        // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
         
-        // TODO: Use WebSockets to push updates to all users
-        
-        res.sendStatus(200);
+        res.status(200).send(auctionData.find(item => item.id === id));
     });
 
     app.delete('/data/:id', (req, res) => {
         const incomingID = Number(req.params.id);
-        auctionData = auctionData.filter(item => item.id !== incomingID)
+        auctionData = auctionData.filter(item => item.id !== incomingID);
 
         res.status(200).send({deletedItemID: incomingID});
     });
@@ -49,7 +65,6 @@ const createServer = async (host, port) => {
     try {
         const fileContents = await readFile(dataPath, 'utf-8');
         auctionData = JSON.parse(fileContents);
-        // auctionData = json.map((item, i) => Object.assign({}, item, { id: i }));
         
         const server = app.listen(port, () => {
             console.log(`Listening on ${host}:${port}`);
