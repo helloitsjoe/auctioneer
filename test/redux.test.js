@@ -1,14 +1,10 @@
+import { initStore } from "../src/store";
+import { addItem, deleteItemSuccess, inputChange, selectItem } from "../src/actions/adminActions";
 import {
-    initStore
-} from "../src/store";
-import {
-    addItem,
-    deleteItemSuccess,
-    inputChange,
-    selectItem
-} from "../src/actions/adminActions";
-import {
-    toggleDescriptionAction, quickBidAction, setAuctionError, setAuctionData
+    toggleDescriptionAction,
+    quickBidAction,
+    setAuctionError,
+    setAuctionData
 } from "../src/actions/auctionItemActions";
 import { TESTER_1 } from "./testUtils";
 import { BID_INCREMENT } from "../src/reducers";

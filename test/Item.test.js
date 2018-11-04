@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Item } from '../src/user/Item';
 import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
 import { getHighBid } from '../src/utils';
+import { Item } from '../src/user/Item';
 
 const auctionItems = require('../server/data.json');
 
@@ -13,11 +13,9 @@ describe('Item', function () {
     const setup = propOverrides => {
         const auctionItemsCopy = clone(auctionItems);
         const itemData = auctionItemsCopy.shift();
+        const user = TESTER_1;
 
-        const props = Object.assign({}, {
-            itemData,
-            user: TESTER_1,
-        }, propOverrides);
+        const props = { itemData, user, ...propOverrides };
 
         const item = mount(
             <Item
@@ -26,9 +24,8 @@ describe('Item', function () {
                 highBid={getHighBid(itemData.bids)}
             />
         );
-        const itemView = item.find('.item-container');
 
-        return { props, item, itemView, itemData };
+        return { item, itemData };
     }
 
     it('item high bid matches highest bid in array', function () {
@@ -60,20 +57,20 @@ describe('Item', function () {
     });
 
     it('item has bid-bg class when user has high bid', function () {
-        const { item, itemData, itemView } = setup();
-        expect(itemView.html().includes('bid-bg')).toEqual(false);
+        const { item, itemData } = setup();
+        expect(item.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
-        itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
+        itemData.bids.push({ name: TESTER_1, value: maxBid + BID_INCREMENT });
         item.setProps({ highBid: getHighBid(itemData.bids) });
 
-        expect(itemView.html().includes('bid-bg')).toEqual(true);
-        expect(itemView.html().includes('outbid-bg')).toEqual(false);
+        expect(item.html().includes('bid-bg')).toEqual(true);
+        expect(item.html().includes('outbid-bg')).toEqual(false);
     });
 
     it('item has outbid-bg class when they have been outbid', function () {
-        const { item, itemData, itemView } = setup();
-        expect(itemView.html().includes('bid-bg')).toEqual(false);
+        const { item, itemData } = setup();
+        expect(item.html().includes('bid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
         const newMax = maxBid + BID_INCREMENT;
@@ -81,32 +78,32 @@ describe('Item', function () {
         itemData.bids.push({ name: TESTER_1, value: newMax });
         item.setProps({ highBid: getHighBid(itemData.bids) });
 
-        expect(itemView.html().includes('bid-bg')).toEqual(true);
-        expect(itemView.html().includes('outbid-bg')).toEqual(false);
+        expect(item.html().includes('bid-bg')).toEqual(true);
+        expect(item.html().includes('outbid-bg')).toEqual(false);
 
         const outbidMax = newMax + BID_INCREMENT;
         itemData.bids.push({ name: TESTER_2, value: outbidMax });
         item.setProps({ highBid: getHighBid(itemData.bids) });
 
-        expect(itemView.html().includes('outbid-bg')).toEqual(true);
+        expect(item.html().includes('outbid-bg')).toEqual(true);
     });
 
     it('item has no bid class when they havent bid', function () {
-        const { item, itemData, itemView } = setup();
-        expect(itemView.html().includes('bid-bg')).toEqual(false);
-        expect(itemView.html().includes('outbid-bg')).toEqual(false);
+        const { item, itemData } = setup();
+        expect(item.html().includes('bid-bg')).toEqual(false);
+        expect(item.html().includes('outbid-bg')).toEqual(false);
 
         const maxBid = Math.max(itemData.bids.map(bid => bid.value));
 
-        itemData.bids.push({ name: TESTER_1, value: maxBid + 5 });
+        itemData.bids.push({ name: TESTER_1, value: maxBid + BID_INCREMENT });
         item.setProps({ itemData });
 
-        expect(itemView.html().includes('bid-bg')).toEqual(true);
+        expect(item.html().includes('bid-bg')).toEqual(true);
 
         item.setProps({ user: TESTER_2 });
 
-        expect(itemView.html().includes('bid-bg')).toEqual(false);
-        expect(itemView.html().includes('outbid-bg')).toEqual(false);
+        expect(item.html().includes('bid-bg')).toEqual(false);
+        expect(item.html().includes('outbid-bg')).toEqual(false);
     });
 
     it('description is hidden on load', function () {

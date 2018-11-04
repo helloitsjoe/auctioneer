@@ -12,10 +12,11 @@ describe('List', function () {
 
     const setup = propOverrides => {
         const auctionItemsCopy = clone(auctionItems);
-        const props = Object.assign({}, {
+        const props = {
             user: TESTER_1,
-            filter: false
-        }, propOverrides);
+            filter: false,
+            ...propOverrides
+        }
 
         const list = mount(
             <Provider store={initStore()}>
