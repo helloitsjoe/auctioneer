@@ -15,6 +15,6 @@ export const deleteRequest = (itemID: number) => (dispatch, _, services) => {
             throw new Error(`There was an error deleting item ${itemID}`);
         }
         dispatch(deleteItemSuccess(deletedItemID));
-    }).catch(err => console.error(err));
+    }).catch(console.error);
 }
 export const deleteItemSuccess = (deletedItemID: number) => ({ type: DELETE_ITEM_SUCCESS, deletedItemID });

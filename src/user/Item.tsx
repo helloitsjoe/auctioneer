@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { ItemData, Bid, BID_INCREMENT } from '../reducers';
+import { ItemData, Bid, BID_INCREMENT, selectItemHighBid } from '../reducers';
 import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
 
 type Props = {
@@ -52,8 +52,6 @@ export function Item({ user, highBid, itemData, toggleDescription, quickBid }: P
     );
 };
 
-const mapStateToProps = (state) => state;
-
 const mapDispatchToProps = {
     toggleDescriptionAction,
     quickBidAction,
@@ -72,8 +70,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...dispatchProps,
         ...ownProps,
         toggleDescription,
-        quickBid
+        quickBid,
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Item);
+export default connect(null, mapDispatchToProps, mergeProps)(Item);

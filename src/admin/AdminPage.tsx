@@ -6,8 +6,7 @@ import ConnectedItemEditor from './ItemEditor';
 import { Sidebar } from './Sidebar';
 import { AdminHeader } from './AdminHeader';
 import { addItem, selectItem } from '../actions/adminActions';
-import { ItemData } from '../reducers';
-import { mapAllStateToProps } from '../utils';
+import { ItemData, selectAuctionItems, selectSelectedIndex } from '../reducers';
 
 type Props = {
     auctionItems: ItemData[];
@@ -36,4 +35,9 @@ export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Pro
     </div>)
 }
 
-export default connect(mapAllStateToProps)(AdminPage);
+const mapStateToProps = state => ({
+    auctionItems: selectAuctionItems(state),
+    selectedIndex: selectSelectedIndex(state),
+});
+
+export default connect(mapStateToProps)(AdminPage);

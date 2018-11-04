@@ -40,11 +40,10 @@ export const ItemEditor = ({ itemData, onInputChange, putRequest, deleteRequest 
     )
 }
 
-const mapStateToProps = state => state;
 const mapDispatchToProps = {
     onInputChange: (e: any, key: InputKey) => inputChange(e.target.value, key),
     deleteRequest,
     putRequest
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ItemEditor);
+export default connect(null, mapDispatchToProps)(ItemEditor);

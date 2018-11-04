@@ -134,3 +134,14 @@ const item = (state: StoreState, action: any) => {
             return { ...state, auctionItems: itemsWithInputChange };
     }
 }
+
+export const selectError = state => state.error;
+export const selectIsLoaded = state => state.isLoaded;
+export const selectUserTotal = state => state.userTotal;
+
+export const selectAuctionItems = state => state.auctionItems;
+export const selectSelectedIndex = state => state.selectedIndex;
+export const selectItem = (state, itemID) => selectAuctionItems(state).find(({id}) => id === itemID);
+export const selectItemBids = (state, itemID) => selectItem(state, itemID).bids;
+export const selectItemHighBid = (state, itemID) => getHighBid(selectItem(state, itemID).bids);
+export const selectItemID = (state, itemID) => selectItem(state, itemID).id;

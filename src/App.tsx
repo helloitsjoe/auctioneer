@@ -5,10 +5,10 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { Poller } from './Poller';
 import { BidsPage } from './user/BidsPage';
-import { randFromArr, mapAllStateToProps, DEFAULT_NAMES, DATA_URL } from './utils';
+import { randFromArr, DEFAULT_NAMES, DATA_URL } from './utils';
 import ConnectedAdminPage from './admin/AdminPage';
 import { setAuctionData, setAuctionError } from './actions/auctionItemActions';
-import { ItemData } from './reducers';
+import { ItemData, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
 
 type Props = {
     axios: any
@@ -65,7 +65,7 @@ export class App extends React.Component<Props, any> {
                 <Router>
                     <Switch>
                         <Route exact path="/admin" render={() => 
-                            <ConnectedAdminPage poller={this.auctionDataPoll} auctionItems={auctionItems} />} />
+                            <ConnectedAdminPage poller={this.auctionDataPoll} />} />
                         <Route path="/" render={({location}) => 
                             <BidsPage
                                 poller={this.auctionDataPoll}
@@ -78,4 +78,10 @@ export class App extends React.Component<Props, any> {
     }
 }
 
-export default connect(mapAllStateToProps)(App);
+const mapStateToProps = state => ({
+  error: selectError(state),
+  isLoaded: selectIsLoaded(state),
+  auctionItems: selectAuctionItems(state)
+})
+
+export default connect(mapStateToProps)(App);
