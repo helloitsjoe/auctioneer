@@ -24,6 +24,7 @@ export const ItemEditor = ({ itemData, onInputChange, putRequest, deleteRequest 
     // TODO: Warn if user is going to click away from changes...
     // TODO: Warn if user is trying to add a second item without adding a title/description
     // TODO: Prohibit addItem submit without title and description
+    // TODO: Replace this container with a connect call in the view
 
     const submitChanges = (e) => {
         e.preventDefault();

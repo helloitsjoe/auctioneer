@@ -1,13 +1,16 @@
 import { initStore } from "../src/store";
-import { addItem, deleteItemSuccess, inputChange, selectItem } from "../src/actions/adminActions";
-import {
-    toggleDescriptionAction,
+import { addItem, itemFocus, deleteItemSuccess, inputChange } from "../src/actions/adminActions";
+import { toggleDescriptionAction,
     quickBidAction,
     setAuctionError,
-    setAuctionData
-} from "../src/actions/auctionItemActions";
+    setAuctionData } from "../src/actions/auctionItemActions";
 import { TESTER_1 } from "./testUtils";
-import { BID_INCREMENT } from "../src/reducers";
+import { BID_INCREMENT,
+    selectAuctionItems,
+    selectSelectedIndex,
+    selectIsLoaded,
+    selectError,
+    selectItem } from "../src/reducers";
 import { InputKey } from "../src/admin/ItemEditor";
 
 describe("redux duck tests", () => {
@@ -24,76 +27,79 @@ describe("redux duck tests", () => {
         userTotal: 0
     }
 
-    let store;
+    let getState;
+    let dispatch;
 
     beforeEach(() => {
-        store = initStore({axios: moxios});
+        const store = initStore({axios: moxios});
+        getState = store.getState;
+        dispatch = store.dispatch;
     });
 
     it("initial state", function () {
-        expect(store.getState()).toEqual(initialState);
+        expect(getState()).toEqual(initialState);
     });
 
     describe('Admin', function () {
 
         it("add item to store", function () {
-            expect(store.getState().auctionItems.length).toBe(0);
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(2);
-            expect(store.getState().auctionItems[0].id).toBe(0);
-            expect(store.getState().auctionItems[1].id).toBe(1);
-            expect(store.getState().selectedIndex).toBe(1);
+            expect(selectAuctionItems(getState()).length).toBe(0);
+            dispatch(addItem());
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            expect(selectAuctionItems(getState())[0].id).toBe(0);
+            expect(selectAuctionItems(getState())[1].id).toBe(1);
+            expect(selectSelectedIndex(getState())).toBe(1);
         });
 
         it('can add after deleting', function () {
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(2);
-            store.dispatch(deleteItemSuccess(0));
-            expect(store.getState().auctionItems.length).toBe(1);
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(2);
-            expect(store.getState().auctionItems[1].id).toBe(2);
+            dispatch(addItem());
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            dispatch(deleteItemSuccess(0));
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            expect(selectAuctionItems(getState())[1].id).toBe(2);
         });
 
         it.skip('add item no-op if selected has no title/description', function () {
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(1);
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(1);
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(1);
         });
 
         it('deleteItem removes item from store', function () {
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.length).toBe(2);
-            store.dispatch(deleteItemSuccess(0));
-            expect(store.getState().auctionItems.length).toBe(1);
-            expect(store.getState().auctionItems.find(item => item.id === 1)).toBeTruthy();
-            expect(store.getState().auctionItems.find(item => item.id === 0)).toBeUndefined();
+            dispatch(addItem());
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            dispatch(deleteItemSuccess(0));
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            expect(selectAuctionItems(getState()).find(item => item.id === 1)).toBeTruthy();
+            expect(selectAuctionItems(getState()).find(item => item.id === 0)).toBeUndefined();
         });
 
         it('deleting last item replaces item with blank item', function () {
-            store.dispatch(addItem());
-            store.dispatch(inputChange('Something', InputKey.title));
-            expect(store.getState().auctionItems.length).toBe(1);
-            expect(store.getState().auctionItems[0].id).toBe(0);
-            expect(store.getState().auctionItems[0].title).toBe('Something');
-            store.dispatch(deleteItemSuccess(0));
-            expect(store.getState().auctionItems.length).toBe(1);
-            expect(store.getState().auctionItems[0].title).toBe('');
+            dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            expect(selectAuctionItems(getState())[0].id).toBe(0);
+            expect(selectAuctionItems(getState())[0].title).toBe('Something');
+            dispatch(deleteItemSuccess(0));
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            expect(selectAuctionItems(getState())[0].title).toBe('');
         });
 
         it('save requires title and description', function () {});
 
         it('select item', function () {
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            expect(store.getState().selectedIndex).toBe(2);
-            store.dispatch(selectItem(0));
-            expect(store.getState().selectedIndex).toBe(0);
+            dispatch(addItem());
+            dispatch(addItem());
+            dispatch(addItem());
+            expect(selectSelectedIndex(getState())).toBe(2);
+            dispatch(itemFocus(0));
+            expect(selectSelectedIndex(getState())).toBe(0);
         });
     });
 
@@ -107,39 +113,41 @@ describe("redux duck tests", () => {
                 description: 'Hello',
                 bids: [{name: 'Me', value: 75}]
             };
-            store.dispatch(setAuctionData([fakeAuctionItem]));
-            expect(store.getState().auctionItems.length).toBe(1);
-            expect(store.getState().auctionItems[0]).toEqual(fakeAuctionItem);
+            dispatch(setAuctionData([fakeAuctionItem]));
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            expect(selectAuctionItems(getState())[0]).toEqual(fakeAuctionItem);
         });
 
         it('error getting auction data', function () {
-            store.dispatch(setAuctionError(new Error('Boo!')));
-            expect(store.getState().isLoaded).toBe(true);
-            expect(store.getState().error.message).toBe('Boo!');
+            dispatch(setAuctionError(new Error('Boo!')));
+            expect(selectIsLoaded(getState())).toBe(true);
+            expect(selectError(getState()).message).toBe('Boo!');
         });
 
         it('show/hide details', function () {
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems.some(item => item.viewDetails)).toBe(false);
-            store.dispatch(toggleDescriptionAction(0));
-            store.dispatch(toggleDescriptionAction(2));
-            expect(store.getState().auctionItems.find(it => it.id === 0).viewDetails).toBe(true);
-            expect(store.getState().auctionItems.find(it => it.id === 2).viewDetails).toBe(true);
+            dispatch(addItem());
+            dispatch(addItem());
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).some(item => item.viewDetails)).toBe(false);
+            dispatch(toggleDescriptionAction(0));
+            dispatch(toggleDescriptionAction(2));
+            expect(selectItem(getState(), 0).viewDetails).toBe(true);
+            expect(selectItem(getState(), 1).viewDetails).toBe(false);
+            expect(selectItem(getState(), 2).viewDetails).toBe(true);
 
-            store.dispatch(deleteItemSuccess(1));
-            store.dispatch(toggleDescriptionAction(2));
-            expect(store.getState().auctionItems.length).toBe(2);
-            expect(store.getState().auctionItems.find(it => it.id === 0).viewDetails).toBe(true);
-            expect(store.getState().auctionItems.find(it => it.id === 2).viewDetails).toBe(false);
+            dispatch(deleteItemSuccess(1));
+            dispatch(toggleDescriptionAction(2));
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            expect(selectItem(getState(), 0).viewDetails).toBe(true);
+            expect(selectItem(getState(), 2).viewDetails).toBe(false);
+
         });
 
         it('quick bid increments bid', function () {
-            store.dispatch(addItem())
-            expect(store.getState().auctionItems[0].bids.length).toBe(1)
-            store.dispatch(quickBidAction(TESTER_1, 0));
-            const bids = store.getState().auctionItems[0].bids;
+            dispatch(addItem())
+            expect(selectAuctionItems(getState())[0].bids.length).toBe(1)
+            dispatch(quickBidAction(TESTER_1, 0));
+            const bids = selectAuctionItems(getState())[0].bids;
             expect(bids.length).toBe(2);
             expect(bids[1].name).toBe(TESTER_1);
             expect(bids[1].value).toBe(bids[0].value + BID_INCREMENT);
@@ -147,22 +155,26 @@ describe("redux duck tests", () => {
         });
 
         it('input change', function () {
-            store.dispatch(addItem());
-            expect(store.getState().auctionItems[0].title).toBe('');
-            expect(store.getState().auctionItems[0].description).toBe('');
-            expect(store.getState().auctionItems[0].bids).toEqual([{name: 'min', value: 0}]);
-            store.dispatch(inputChange('Blah', InputKey.title));
-            expect(store.getState().auctionItems[0].title).toBe('Blah');
-            expect(store.getState().auctionItems[0].description).toBe('');
-            expect(store.getState().auctionItems[0].bids).toEqual([{name: 'min', value: 0}]);
-            store.dispatch(inputChange('Blah blah', InputKey.description));
-            expect(store.getState().auctionItems[0].title).toBe('Blah');
-            expect(store.getState().auctionItems[0].description).toBe('Blah blah');
-            expect(store.getState().auctionItems[0].bids).toEqual([{name: 'min', value: 0}]);
-            store.dispatch(inputChange('42', InputKey.minBid));
-            expect(store.getState().auctionItems[0].title).toBe('Blah');
-            expect(store.getState().auctionItems[0].description).toBe('Blah blah');
-            expect(store.getState().auctionItems[0].bids).toEqual([{name: 'min', value: 42}]);
+            dispatch(addItem());
+            const [firstItem] = selectAuctionItems(getState());
+            expect(firstItem.title).toBe('');
+            expect(firstItem.description).toBe('');
+            expect(firstItem.bids).toEqual([{name: 'min', value: 0}]);
+            dispatch(inputChange('Blah', InputKey.title));
+            const [firstItemTitleChange] = selectAuctionItems(getState());
+            expect(firstItemTitleChange.title).toBe('Blah');
+            expect(firstItemTitleChange.description).toBe('');
+            expect(firstItemTitleChange.bids).toEqual([{name: 'min', value: 0}]);
+            dispatch(inputChange('Blah blah', InputKey.description));
+            const [firstItemDescChange] = selectAuctionItems(getState());
+            expect(firstItemDescChange.title).toBe('Blah');
+            expect(firstItemDescChange.description).toBe('Blah blah');
+            expect(firstItemDescChange.bids).toEqual([{name: 'min', value: 0}]);
+            dispatch(inputChange('42', InputKey.minBid));
+            const [firstItemMinBidChange] = selectAuctionItems(getState());
+            expect(firstItemMinBidChange.title).toBe('Blah');
+            expect(firstItemMinBidChange.description).toBe('Blah blah');
+            expect(firstItemMinBidChange.bids).toEqual([{name: 'min', value: 42}]);
         });
     });
 });

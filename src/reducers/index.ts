@@ -32,7 +32,7 @@ export const QUICK_BID = 'QUICK_BID';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 
 export const ADD_ITEM = 'ADD_ITEM';
-export const SELECT_ITEM = 'SELECT_ITEM';
+export const ITEM_FOCUSED = 'ITEM_FOCUSED';
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 
@@ -50,7 +50,7 @@ export const auctionItems = (state = initialState, action) => {
             const { rawAuctionItems } = action;
             const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item) => {
                 // Is there a better way to do this?
-                const itemInState = state.auctionItems.find(({id}) => id === item.id)
+                const itemInState = selectItem(state, item.id)
                 const viewDetails = !!(itemInState && itemInState.viewDetails);
                 return {...item, viewDetails};
             }) : [createNewAuctionItem()];
@@ -58,7 +58,7 @@ export const auctionItems = (state = initialState, action) => {
             return {...state, auctionItems, userTotal: userTotalMaybeOutbid, isLoaded: true };
         case SET_AUCTION_ERROR:
             return { ...state, error: action.err, isLoaded: true };
-        case SELECT_ITEM:
+        case ITEM_FOCUSED:
             return { ...state, selectedIndex: action.itemIndex };
         case ADD_ITEM:
         case QUICK_BID:
@@ -75,7 +75,7 @@ const item = (state: StoreState, action: any) => {
     const { userName, itemID } = action;
     const { selectedIndex, auctionItems } = state;
 
-    const item = (itemID != null) && auctionItems.find(({id}) => id === itemID);
+    const item = (itemID != null) && selectItem(state, itemID);
     switch (action.type) {
         case QUICK_BID:
             if (!item) {

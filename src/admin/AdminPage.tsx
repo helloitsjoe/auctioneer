@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import ConnectedItemEditor from './ItemEditor';
 import { Sidebar } from './Sidebar';
 import { AdminHeader } from './AdminHeader';
-import { addItem, selectItem } from '../actions/adminActions';
+import { addItem, itemFocus } from '../actions/adminActions';
 import { ItemData, selectAuctionItems, selectSelectedIndex } from '../reducers';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 export const AdminPage = ({ auctionItems, selectedIndex, dispatch, poller }: Props) => {
 
     const handleSelect = (i) => {
-        dispatch((i === null) ? addItem() : selectItem(i));
+        dispatch((i === null) ? addItem() : itemFocus(i));
     };
 
     poller.stop();
