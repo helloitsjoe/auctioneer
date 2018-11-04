@@ -2,7 +2,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
-import ConnectedApp from '../src/App';
+import App from '../src/App';
 import { clone, wait, TESTER_1, TESTER_2 } from './testUtils';
 
 const auctionItems = require('../server/data.json');
@@ -28,7 +28,11 @@ describe('App', function () {
     })
     
     it('isLoaded = false until data returns', function () {
-        const provider = mount(<Provider store={store}><ConnectedApp axios={moxios}/></Provider>);
+        const provider = mount(
+            <Provider store={store}>
+                <App axios={moxios}/>
+            </Provider>
+        );
         const app = provider.find('App');
         expect(app.html()).toEqual('<div>Loading...</div>');
     });
@@ -40,7 +44,11 @@ describe('App', function () {
 
         beforeEach(async () => {
             expect(moxios.get).not.toHaveBeenCalled();
-            provider = mount(<Provider store={store}><ConnectedApp axios={moxios}/></Provider>);
+            provider = mount(
+                <Provider store={store}>
+                    <App axios={moxios}/>
+                </Provider>
+            );
             await wait(); // Wait for async moxios call to return
             expect(moxios.get).toHaveBeenCalled();
             provider.update();

@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Poller } from './Poller';
 import { BidsPage } from './user/BidsPage';
 import { randFromArr, DEFAULT_NAMES, DATA_URL } from './utils';
-import ConnectedAdminPage from './admin/AdminPage';
+import { AdminPage } from './admin/AdminPage';
 import { setAuctionData, setAuctionError } from './actions/auctionItemActions';
 import { ItemData, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
 
@@ -30,13 +30,13 @@ export class App extends React.Component<Props, any> {
         sessionStorage.setItem('userName', name);
     }
 
-    public async componentDidMount() {
+    async componentDidMount() {
         await this.fetchAuctionData();
         // Kick off poll every second for new auction data... TODO: Make this a socket?
         this.auctionDataPoll.start();
     }
 
-    public componentWillUnmount() {
+    componentWillUnmount() {
         this.auctionDataPoll.stop();
     }
 
@@ -44,7 +44,7 @@ export class App extends React.Component<Props, any> {
         console.error(err, info);
     }
 
-    private fetchAuctionData = async () => {
+    fetchAuctionData = async () => {
         try {
             const response = await this.props.axios.get(DATA_URL);
             const auctionItems = response && response.data;
@@ -56,7 +56,7 @@ export class App extends React.Component<Props, any> {
         }
     }
 
-    public render() {
+    render() {
         const { error, isLoaded, auctionItems } = this.props;
 
         return !isLoaded ? <div>Loading...</div>
@@ -65,7 +65,7 @@ export class App extends React.Component<Props, any> {
                 <Router>
                     <Switch>
                         <Route exact path="/admin" render={() => 
-                            <ConnectedAdminPage poller={this.auctionDataPoll} />} />
+                            <AdminPage poller={this.auctionDataPoll} />} />
                         <Route path="/" render={({location}) => 
                             <BidsPage
                                 poller={this.auctionDataPoll}

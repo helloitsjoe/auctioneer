@@ -17,5 +17,4 @@ export const Footer = ({ userTotal }: Props) => (
 
 const mapStateToProps = state => ({ userTotal: selectUserTotal(state) });
 
-const ConnectedFooter = connect(mapStateToProps)(Footer);
-export default ConnectedFooter;
+export default connect(mapStateToProps)(Footer);

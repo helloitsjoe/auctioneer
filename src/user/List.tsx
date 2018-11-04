@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ConnectedItem from './Item';
+import Item from './Item';
 import { EmptyList } from './EmptyListView';
 import { ItemData } from '../reducers';
 import { getHighBid } from '../utils';
@@ -11,24 +11,24 @@ type Props = {
 }
 
 export const List = ({ user, auctionItems, filter }: Props) => {
-    let items = auctionItems.map(item =>
-        <ConnectedItem
-            itemData={item}
-            highBid={getHighBid(item.bids)}
-            user={user}
-            key={item.id}
-        />);
 
-    if (filter) {
-        items = items.filter((itemComponent, i) => {
-            return auctionItems[i].bids.some(({ name }) => name === user);
-        });
-    }
+    const filteredItems = filter
+        ? auctionItems.filter(item => item.bids.some(({name}) => name === user))
+        : auctionItems;
 
     return (
         <div className="list">
             <hr />
-            {items.length ? items : <EmptyList />}
+            {filteredItems.length ? filteredItems
+                .map(item => 
+                    <Item
+                        user={user}
+                        key={item.id}
+                        itemData={item}
+                        highBid={getHighBid(item.bids)}
+                    />            
+                ) : <EmptyList />
+            }
         </div>
     )
 };

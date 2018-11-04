@@ -3,12 +3,12 @@ import { ItemData } from '../reducers';
 
 type Props = {
     itemData: ItemData;
-    selected: boolean;
+    focused: boolean;
     onSelect: () => void;
 }
 
-export const SidebarItem = ({ itemData, selected, onSelect }: Props) => (
-    <div className={`sidebar-item ${selected ? 'selected' : ''}`} onClick={onSelect}>
+export const SidebarItem = ({ itemData, focused, onSelect }: Props) => (
+    <div className={`sidebar-item ${focused ? 'focused' : ''}`} onClick={onSelect}>
         <span className="sidebar-item-text">{itemData.title}</span>
     </div>
 )

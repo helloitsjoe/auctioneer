@@ -2,12 +2,12 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import ConnectedApp from './App';
+import App from './App';
 import { initStore } from './store';
 
 import axios from 'axios';
 
 ReactDOM.render(
     <Provider store={initStore({ axios })}>
-        <ConnectedApp axios={axios} />
+        <App axios={axios} />
     </Provider>, document.getElementById('main'));

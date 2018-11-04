@@ -7,7 +7,7 @@ import { toggleDescription,
 import { TESTER_1 } from "./testUtils";
 import { BID_INCREMENT,
     selectAuctionItems,
-    selectSelectedIndex,
+    selectFocusedIndex,
     selectIsLoaded,
     selectError,
     selectItem } from "../src/reducers";
@@ -23,7 +23,7 @@ describe("redux duck tests", () => {
         auctionItems: [],
         error: null,
         isLoaded: false,
-        selectedIndex: 0,
+        focusedIndex: 0,
         userTotal: 0
     }
 
@@ -49,7 +49,7 @@ describe("redux duck tests", () => {
             expect(selectAuctionItems(getState()).length).toBe(2);
             expect(selectAuctionItems(getState())[0].id).toBe(0);
             expect(selectAuctionItems(getState())[1].id).toBe(1);
-            expect(selectSelectedIndex(getState())).toBe(1);
+            expect(selectFocusedIndex(getState())).toBe(1);
         });
 
         it('can add after deleting', function () {
@@ -97,9 +97,9 @@ describe("redux duck tests", () => {
             dispatch(addItem());
             dispatch(addItem());
             dispatch(addItem());
-            expect(selectSelectedIndex(getState())).toBe(2);
+            expect(selectFocusedIndex(getState())).toBe(2);
             dispatch(itemFocus(0));
-            expect(selectSelectedIndex(getState())).toBe(0);
+            expect(selectFocusedIndex(getState())).toBe(0);
         });
     });
 
