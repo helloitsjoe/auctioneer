@@ -1,7 +1,7 @@
 import { initStore } from "../src/store";
 import { addItem, itemFocus, deleteItemSuccess, inputChange } from "../src/actions/adminActions";
-import { toggleDescriptionAction,
-    quickBidAction,
+import { toggleDescription,
+    quickBid,
     setAuctionError,
     setAuctionData } from "../src/actions/auctionItemActions";
 import { TESTER_1 } from "./testUtils";
@@ -129,14 +129,14 @@ describe("redux duck tests", () => {
             dispatch(addItem());
             dispatch(addItem());
             expect(selectAuctionItems(getState()).some(item => item.viewDetails)).toBe(false);
-            dispatch(toggleDescriptionAction(0));
-            dispatch(toggleDescriptionAction(2));
+            dispatch(toggleDescription(0));
+            dispatch(toggleDescription(2));
             expect(selectItem(getState(), 0).viewDetails).toBe(true);
             expect(selectItem(getState(), 1).viewDetails).toBe(false);
             expect(selectItem(getState(), 2).viewDetails).toBe(true);
 
             dispatch(deleteItemSuccess(1));
-            dispatch(toggleDescriptionAction(2));
+            dispatch(toggleDescription(2));
             expect(selectAuctionItems(getState()).length).toBe(2);
             expect(selectItem(getState(), 0).viewDetails).toBe(true);
             expect(selectItem(getState(), 2).viewDetails).toBe(false);
@@ -146,7 +146,7 @@ describe("redux duck tests", () => {
         it('quick bid increments bid', function () {
             dispatch(addItem())
             expect(selectAuctionItems(getState())[0].bids.length).toBe(1)
-            dispatch(quickBidAction(TESTER_1, 0));
+            dispatch(quickBid(TESTER_1, 0));
             const bids = selectAuctionItems(getState())[0].bids;
             expect(bids.length).toBe(2);
             expect(bids[1].name).toBe(TESTER_1);

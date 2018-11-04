@@ -1,23 +1,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { ItemData, Bid, BID_INCREMENT, selectItemHighBid } from '../reducers';
-import { quickBidAction, toggleDescriptionAction } from '../actions/auctionItemActions';
+import { ItemData, Bid, BID_INCREMENT } from '../reducers';
+import { quickBid, toggleDescription } from '../actions/auctionItemActions';
 
 type Props = {
     user: string;
     highBid: Bid;
     itemData: ItemData;
-    quickBid: (e: any) => void;
-    toggleDescription: (e: any) => void;
+    onQuickBid: (e: any) => void;
+    onToggleDescription: (e: any) => void;
 }
 
-export function Item({ user, highBid, itemData, toggleDescription, quickBid }: Props) {
+export function Item({ user, highBid, itemData, onToggleDescription, onQuickBid }: Props) {
 
     let itemClass = '';
     let bidClass = '';
     let bidSuffix = '';
-
+// TODO: Pass this in as a prop
     if (highBid.name === user) {
         itemClass = 'bid-bg';
         bidClass = 'user-high-bid';
@@ -31,7 +31,7 @@ export function Item({ user, highBid, itemData, toggleDescription, quickBid }: P
     const descriptionClass = itemData.viewDetails ? 'open' : 'closed';
 
     return (
-        <div className="item-group" onClick={toggleDescription}>
+        <div className="item-group" onClick={onToggleDescription}>
             <div className={`item-container ${itemClass}`} id={`item-${itemData.id}`}>
                 <div className="item-title u-pull-left">
                     <span>{itemData.title}</span>
@@ -41,7 +41,7 @@ export function Item({ user, highBid, itemData, toggleDescription, quickBid }: P
                     <span className="high-bid">{highBid.value}</span>
                     <button
                         className="bid btn"
-                        onClick={quickBid}
+                        onClick={onQuickBid}
                     >
                         Bid {highBid.value + BID_INCREMENT}
                     </button>
@@ -53,24 +53,24 @@ export function Item({ user, highBid, itemData, toggleDescription, quickBid }: P
 };
 
 const mapDispatchToProps = {
-    toggleDescriptionAction,
-    quickBidAction,
+    toggleDescription,
+    quickBid,
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const itemID = ownProps.itemData.id;
-    const toggleDescription = (e) => dispatchProps.toggleDescriptionAction(itemID);
+    const toggleDescription = (e) => dispatchProps.toggleDescription(itemID);
     const quickBid = (e) => {
         e.stopPropagation();
-        dispatchProps.quickBidAction(ownProps.user, itemID);
+        dispatchProps.quickBid(ownProps.user, itemID);
     };
 
     return {
         ...stateProps,
         ...dispatchProps,
         ...ownProps,
-        toggleDescription,
-        quickBid,
+        onToggleDescription: toggleDescription,
+        onQuickBid: quickBid,
     }
 };
 

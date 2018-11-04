@@ -122,7 +122,8 @@ describe('Item', function () {
                 itemData={itemData}
                 user={TESTER_1}
                 highBid={highBid}
-                toggleDescription={toggleDescription}
+                onQuickBid={quickBid}
+                onToggleDescription={toggleDescription}
             />);
         item.simulate('click');
         expect(toggleDescription).toBeCalled();
@@ -139,8 +140,8 @@ describe('Item', function () {
                 itemData={itemData}
                 user={TESTER_1}
                 highBid={highBid}
-                quickBid={quickBid}
-                toggleDescription={toggleDescription}
+                onQuickBid={quickBid}
+                onToggleDescription={toggleDescription}
             />);
         const button = item.find('button');
         button.simulate('click');

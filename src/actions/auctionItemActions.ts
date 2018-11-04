@@ -15,9 +15,9 @@ export const setAuctionData = (rawAuctionItems: ItemData[], userName: string) =>
 });
 export const setAuctionError = (err) => ({ type: SET_AUCTION_ERROR, err });
 
-export const quickBidAction = (userName: string, itemID: number) => (dispatch, getState) => {
+export const quickBid = (userName: string, itemID: number) => (dispatch, getState) => {
     dispatch({ type: QUICK_BID, userName, itemID });
     const updatedItem = selectItem(getState(), itemID);
     dispatch(putRequest(updatedItem));
 };
-export const toggleDescriptionAction = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });
+export const toggleDescription = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });
