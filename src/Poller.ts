@@ -1,14 +1,18 @@
 export class Poller {
 
-    public isPolling = true;
+    public isPolling = false;
     private interval = null;
     private func: () => any;
 
-    constructor(func) {
+    init(func) {
         this.func = func;
+        this.start();
     }
 
     start() {
+        if (this.isPolling) {
+            return;
+        }
         this.isPolling = true;
         this.interval = setInterval(async () => {
             await this.func();

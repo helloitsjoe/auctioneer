@@ -13,9 +13,7 @@ type Props = {
 
 export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
     
-    if (!poller.isPolling) {
-        poller.start();
-    }
+    poller.start();
 
     return (
         <div className="well container">

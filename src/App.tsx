@@ -1,5 +1,5 @@
-import { Dispatch } from 'redux';
 import * as React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -15,29 +15,32 @@ type Props = {
     error: Error,
     isLoaded: boolean,
     auctionItems: ItemData[],
-    dispatch: Dispatch
+    setAuctionData: (auctionItems: ItemData[], userName: string) => void;
+    setAuctionError: (errorMessage: string) => void;
+    poller: Poller,
 }
 
-export class App extends React.Component<Props, any> {
+export class App extends React.Component<Props> {
 
-    private auctionDataPoll: Poller;
+    static defaultProps = {
+        poller: new Poller(),
+        axios: axios,
+    }
 
     constructor(props) {
         super(props);
-        // TODO: Might be able to simplify by moving polling to BidsPage
-        this.auctionDataPoll= new Poller(this.fetchAuctionData);
-        const name = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
-        sessionStorage.setItem('userName', name);
+        const userName = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
+        sessionStorage.setItem('userName', userName);
     }
 
     async componentDidMount() {
         await this.fetchAuctionData();
         // Kick off poll every second for new auction data... TODO: Make this a socket?
-        this.auctionDataPoll.start();
+        this.props.poller.init(this.fetchAuctionData);
     }
 
     componentWillUnmount() {
-        this.auctionDataPoll.stop();
+        this.props.poller.stop();
     }
 
     componentDidCatch(err, info) {
@@ -45,14 +48,15 @@ export class App extends React.Component<Props, any> {
     }
 
     fetchAuctionData = async () => {
+        // TODO: Move this into a thunk
         try {
             const response = await this.props.axios.get(DATA_URL);
             const auctionItems = response && response.data;
-            this.props.dispatch(setAuctionData(auctionItems, sessionStorage.getItem('userName')));
+            this.props.setAuctionData(auctionItems, sessionStorage.getItem('userName'));
         } catch (err) {
             console.error(err);
-            this.props.dispatch(setAuctionError(err.message));
-            this.auctionDataPoll.stop();
+            this.props.setAuctionError(err.message);
+            this.props.poller.stop();
         }
     }
 
@@ -65,10 +69,10 @@ export class App extends React.Component<Props, any> {
                 <Router>
                     <Switch>
                         <Route exact path="/admin" render={() => 
-                            <AdminPage poller={this.auctionDataPoll} />} />
+                            <AdminPage poller={this.props.poller} />} />
                         <Route path="/" render={({location}) => 
                             <BidsPage
-                                poller={this.auctionDataPoll}
+                                poller={this.props.poller}
                                 auctionItems={auctionItems}
                                 user={sessionStorage.getItem('userName')}
                                 filter={location.pathname === '/user'} />} />
@@ -82,6 +86,11 @@ const mapStateToProps = state => ({
   error: selectError(state),
   isLoaded: selectIsLoaded(state),
   auctionItems: selectAuctionItems(state)
-})
+});
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+    setAuctionData,
+    setAuctionError
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

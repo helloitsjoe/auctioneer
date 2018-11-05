@@ -9,5 +9,5 @@ import axios from 'axios';
 
 ReactDOM.render(
     <Provider store={initStore({ axios })}>
-        <App axios={axios} />
+        <App />
     </Provider>, document.getElementById('main'));

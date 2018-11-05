@@ -11,7 +11,7 @@ export const Footer = ({ userTotal }: Props) => (
     <div className="footer centered">
         <p className="user-total">Your total bids:</p>
         <h5>$ {userTotal}</h5>
-        <Link exact="true" to="/admin" className="small">Admin page</Link>
+        <Link exact="true" to="/admin" className="small admin-link">Admin page</Link>
     </div>
 )
 

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { initStore } from '../src/store';
+import { Poller } from '../src/Poller';
 import App from '../src/App';
 import { clone, wait, TESTER_1, TESTER_2 } from './testUtils';
 
@@ -39,6 +40,7 @@ describe('App', function () {
 
     describe('after data loads', function () {
 
+        const poller = new Poller();
         let provider;
         let app;
 
@@ -46,11 +48,10 @@ describe('App', function () {
             expect(moxios.get).not.toHaveBeenCalled();
             provider = mount(
                 <Provider store={store}>
-                    <App axios={moxios}/>
+                    <App axios={moxios} poller={poller}/>
                 </Provider>
             );
             await wait(); // Wait for async moxios call to return
-            expect(moxios.get).toHaveBeenCalled();
             provider.update();
             app = provider.find('App');
         });
@@ -60,6 +61,7 @@ describe('App', function () {
         });
         
         it('isLoaded = true after data returns', function () {
+            expect(moxios.get).toHaveBeenCalled();
             expect(app.prop('isLoaded')).toEqual(true);
             expect(app.prop('auctionItems')).toEqual(auctionItems);
         });
@@ -92,6 +94,12 @@ describe('App', function () {
             expect(firstItem.html().includes('bid-bg')).toEqual(false);
             firstButton.simulate('click');
             expect(firstItem.html().includes('bid-bg')).toEqual(true);      
+        });
+
+        it('starts poller on mount, stops on unmount', function () {
+            expect(poller.isPolling).toBe(true);
+            provider.unmount();
+            expect(poller.isPolling).toBe(false);
         });
     });
 });

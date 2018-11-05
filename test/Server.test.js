@@ -6,8 +6,6 @@ const { createServer } = require('../server/serverFactory');
 const lib = path.join(path.dirname(require.resolve('axios')),'lib/adapters/http');
 const adapter = require(lib);
 
-const auctionItems = require('../server/data.json');
-
 describe('Server', function () {
     
     let server;
@@ -79,7 +77,7 @@ describe('Server', function () {
         expect(deleteRes.data).toEqual({deletedItemID: 0});
 
         const getResAfter = await axios.get(url + '/data', { adapter });
-        expect(getResAfter.data).toEqual(getResBefore.data.slice(1));
+        expect(getResAfter.data).not.toEqual(getResBefore.data);
 
         await axios.post(url + '/data', {}, { adapter });
 
