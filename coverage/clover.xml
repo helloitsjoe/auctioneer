@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1541393690397" clover="3.2.0">
-  <project timestamp="1541393690397" name="All files">
-    <metrics statements="365" coveredstatements="328" conditionals="111" coveredconditionals="89" methods="116" coveredmethods="85" elements="592" coveredelements="502" complexity="0" loc="365" ncloc="365" packages="5" files="21" classes="21">
+<coverage generated="1541394107502" clover="3.2.0">
+  <project timestamp="1541394107502" name="All files">
+    <metrics statements="366" coveredstatements="329" conditionals="111" coveredconditionals="89" methods="117" coveredmethods="86" elements="594" coveredelements="504" complexity="0" loc="366" ncloc="366" packages="5" files="21" classes="21">
       <package name="server">
         <metrics statements="51" coveredstatements="48" conditionals="8" coveredconditionals="5" methods="14" coveredmethods="13"/>
         <file name="serverFactory.js" path="/Users/joe/PROJECTS/auctioneer/server/serverFactory.js">
@@ -60,7 +60,7 @@
         </file>
       </package>
       <package name="src">
-        <metrics statements="142" coveredstatements="133" conditionals="66" coveredconditionals="56" methods="45" coveredmethods="36"/>
+        <metrics statements="143" coveredstatements="134" conditionals="66" coveredconditionals="56" methods="46" coveredmethods="37"/>
         <file name="App.tsx" path="/Users/joe/PROJECTS/auctioneer/src/App.tsx">
           <metrics statements="34" coveredstatements="31" conditionals="10" coveredconditionals="8" methods="10" coveredmethods="8"/>
           <line num="1" count="1" type="stmt"/>
@@ -99,10 +99,11 @@
           <line num="84" count="1" type="stmt"/>
         </file>
         <file name="Poller.ts" path="/Users/joe/PROJECTS/auctioneer/src/Poller.ts">
-          <metrics statements="17" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="4"/>
+          <metrics statements="18" coveredstatements="17" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="5"/>
           <line num="1" count="1" type="stmt"/>
           <line num="3" count="4" type="stmt"/>
           <line num="4" count="4" type="stmt"/>
+          <line num="5" count="4" type="stmt"/>
           <line num="7" count="1" type="stmt"/>
           <line num="8" count="7" type="stmt"/>
           <line num="9" count="7" type="stmt"/>
@@ -111,7 +112,7 @@
           <line num="14" count="8" type="stmt"/>
           <line num="16" count="8" type="stmt"/>
           <line num="17" count="8" type="stmt"/>
-          <line num="18" count="7" type="stmt"/>
+          <line num="18" count="8" type="stmt"/>
           <line num="19" count="0" type="stmt"/>
           <line num="23" count="1" type="stmt"/>
           <line num="24" count="6" type="stmt"/>

@@ -39,18 +39,23 @@ const createServer = async (host, port) => {
     app.put('/data/:id', (req, res) => {
         const body = JSON.parse(req.body.body);
         const id = Number(req.params.id);
-        if (!(body && body.bids && body.bids.length && body.id != null)) {
-            return res.status(400).send(req.body.body);
+
+        try {
+            if (body.id == null) {
+                throw new Error('ID is required');
+            }
+            if (!auctionData.find(item => item.id === id)) {
+                auctionData.push(body);
+            } else {
+                auctionData = auctionData.map(item => (item.id === id) ? body : item);
+            }
+            // console.log('bids:', body.bids);
+            // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
+            res.status(200).send(auctionData.find(item => item.id === id));
+        } catch (err) {
+            // console.error(err);
+            res.status(400).send(err);
         }
-        if (!auctionData.find(item => item.id === id)) {
-            auctionData.push(body);
-        } else {
-            auctionData = auctionData.map(item => (item.id === id) ? body : item);
-        }
-        // console.log('bids:', body.bids);
-        // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
-        
-        res.status(200).send(auctionData.find(item => item.id === id));
     });
 
     app.delete('/data/:id', (req, res) => {
