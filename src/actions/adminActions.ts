@@ -5,10 +5,21 @@ import { InputKey } from '../admin/ItemEditor';
 export const addItem = () => ({ type: ADD_ITEM });
 export const itemFocus = (itemIndex: number) => ({ type: ITEM_FOCUSED, itemIndex });
 export const inputChange = (value: string, key: InputKey) => ({ type: INPUT_CHANGE, key, value });
-export const putRequest = (body: ItemData, dataURL: string = DATA_URL, adapter: any = null) => (dispatch, _, services) => {
-    return services.axios.put(`${dataURL}/${body.id}`, { body: JSON.stringify(body) }, { adapter });
+export const putRequest = (
+    body: ItemData,
+    dataURL: string = DATA_URL,
+    adapter: any = null
+) => (dispatch, getState, services) => {
+    return services.axios.put(`${dataURL}/${body.id}`,
+        { body: JSON.stringify(body) },
+        { adapter }
+    );
 }
-export const deleteRequest = (itemID: number, dataURL: string = DATA_URL, adapter: any = null) => (dispatch, _, services) => {
+export const deleteRequest = (
+    itemID: number,
+    dataURL: string = DATA_URL,
+    adapter: any = null
+) => (dispatch, getState, services) => {
     return services.axios.delete(`${dataURL}/${itemID}`, { adapter }).then(response => {
         const { deletedItemID } = response.data;
         if (deletedItemID == null) {

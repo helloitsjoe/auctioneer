@@ -2,8 +2,8 @@ import { initStore } from "../src/store";
 import { addItem, itemFocus, deleteItemSuccess, inputChange } from "../src/actions/adminActions";
 import { toggleDescription,
     quickBid,
-    setAuctionError,
-    setAuctionData } from "../src/actions/auctionItemActions";
+    fetchAuctionError,
+    fetchAuctionSuccess } from "../src/actions/auctionItemActions";
 import { TESTER_1 } from "./testUtils";
 import { BID_INCREMENT,
     selectAuctionItems,
@@ -106,20 +106,20 @@ describe("redux duck tests", () => {
     describe('User', function () {
 
         it('load auction data', function () {
-            const fakeAuctionItem = {
+            const rawAuctionItems = [{
                 id: 45,
                 title: 'Boo',
                 viewDetails: false,
                 description: 'Hello',
                 bids: [{name: 'Me', value: 75}]
-            };
-            dispatch(setAuctionData([fakeAuctionItem]));
+            }];
+            dispatch(fetchAuctionSuccess({ rawAuctionItems }));
             expect(selectAuctionItems(getState()).length).toBe(1);
-            expect(selectAuctionItems(getState())[0]).toEqual(fakeAuctionItem);
+            expect(selectAuctionItems(getState())).toEqual(rawAuctionItems);
         });
 
         it('error getting auction data', function () {
-            dispatch(setAuctionError(new Error('Boo!')));
+            dispatch(fetchAuctionError(new Error('Boo!')));
             expect(selectIsLoaded(getState())).toBe(true);
             expect(selectError(getState()).message).toBe('Boo!');
         });

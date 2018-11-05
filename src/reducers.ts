@@ -25,8 +25,8 @@ export type StoreState = {
 // TODO: Make this configurable by auction host
 export const BID_INCREMENT = 5;
 
-export const SET_AUCTION_DATA = 'SET_AUCTION_DATA';
-export const SET_AUCTION_ERROR = 'SET_AUCTION_ERROR';
+export const FETCH_AUCTION_SUCCESS = 'FETCH_AUCTION_SUCCESS';
+export const FETCH_AUCTION_ERROR = 'FETCH_AUCTION_ERROR';
 
 export const QUICK_BID = 'QUICK_BID';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
@@ -46,7 +46,7 @@ const initialState: StoreState = {
 
 export const auctionItems = (state = initialState, action) => {
     switch (action.type) {
-        case SET_AUCTION_DATA:
+        case FETCH_AUCTION_SUCCESS:
             const { rawAuctionItems } = action;
             const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item) => {
                 // Is there a better way to do this?
@@ -56,7 +56,7 @@ export const auctionItems = (state = initialState, action) => {
             }) : [createNewAuctionItem()];
             const userTotalMaybeOutbid = getUserTotal(auctionItems, action.userName);
             return {...state, auctionItems, userTotal: userTotalMaybeOutbid, isLoaded: true };
-        case SET_AUCTION_ERROR:
+        case FETCH_AUCTION_ERROR:
             return { ...state, error: action.err, isLoaded: true };
         case ITEM_FOCUSED:
             return { ...state, focusedIndex: action.itemIndex };

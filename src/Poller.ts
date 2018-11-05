@@ -9,13 +9,14 @@ export class Poller {
         this.start();
     }
 
-    start() {
+    async start() {
         if (this.isPolling) {
             return;
         }
         this.isPolling = true;
-        this.interval = setInterval(async () => {
-            await this.func();
+        this.func();
+        this.interval = setInterval(() => {
+            this.func();
         }, 1000);
     }
 
