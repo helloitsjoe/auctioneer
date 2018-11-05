@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.49% </span>
+        <span class="strong">93.22% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>55/57</span>
+        <span class='fraction'>55/59</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">62.5% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>12/12</span>
+        <span class='fraction'>5/8</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">92.86% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>14/14</span>
+        <span class='fraction'>13/14</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">95.92% </span>
+        <span class="strong">94.12% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>47/49</span>
+        <span class='fraction'>48/51</span>
       </div>
     </div>
     <p class="quiet">
@@ -136,7 +136,12 @@
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -175,20 +180,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -267,18 +277,23 @@ const createServer = async (host, port) =&gt; {
     app.put('/data/:id', (req, res) =&gt; {
         const body = JSON.parse(req.body.body);
         const id = Number(req.params.id);
-        if (!(body &amp;&amp; body.bids &amp;&amp; body.bids.length &amp;&amp; body.id != null)) {
-            return res.status(400).send(req.body.body);
+&nbsp;
+        try {
+            if (!id) {
+                throw new Error('ID is required');
+            }
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!auctionData.find(item =&gt; item.id === id)) {
+                auctionData.push(body);
+            } else {
+<span class="cstat-no" title="statement not covered" >                auctionData = auctionData.map(<span class="fstat-no" title="function not covered" >item =&gt; <span class="cstat-no" title="statement not covered" >(item.id === id) ? body : item)</span>;</span></span>
+            }
+            // console.log('bids:', body.bids);
+            // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
+            res.status(200).send(auctionData.find(item =&gt; item.id === id));
+        } catch (err) {
+            // console.error(err);
+            res.status(400).send(err);
         }
-        if (!auctionData.find(item =&gt; item.id === id)) {
-            auctionData.push(body);
-        } else {
-            auctionData = auctionData.map(item =&gt; (item.id === id) ? body : item);
-        }
-        // console.log('bids:', body.bids);
-        // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
-        
-        res.status(200).send(auctionData.find(item =&gt; item.id === id));
     });
 &nbsp;
     app.delete('/data/:id', (req, res) =&gt; {
@@ -322,7 +337,7 @@ module.exports = {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Nov 04 2018 22:49:14 GMT-0500 (EST)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Nov 04 2018 23:54:50 GMT-0500 (EST)
 </div>
 </div>
 <script src="../prettify.js"></script>

@@ -2,7 +2,7 @@ export class Poller {
 
     public isPolling = false;
     private interval = null;
-    private func: () => any;
+    private func: () => any = () => {};
 
     init(func) {
         this.func = func;

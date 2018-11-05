@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">89.58% </span>
+        <span class="strong">92.86% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>43/48</span>
+        <span class='fraction'>39/42</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">90% </span>
+        <span class="strong">80% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>9/10</span>
+        <span class='fraction'>8/10</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">80% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>8/10</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">87.18% </span>
+        <span class="strong">91.18% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>34/39</span>
+        <span class='fraction'>31/34</span>
       </div>
     </div>
     <p class="quiet">
@@ -129,19 +129,7 @@
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -152,7 +140,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,7 +164,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,21 +176,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,8 +209,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import * as React from 'react';
@@ -243,9 +219,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 &nbsp;
 import { Poller } from './Poller';
 import { BidsPage } from './user/BidsPage';
-import { randFromArr, DEFAULT_NAMES, DATA_URL } from './utils';
+import { randFromArr, DEFAULT_NAMES } from './utils';
 import { AdminPage } from './admin/AdminPage';
-import { setAuctionData, setAuctionError } from './actions/auctionItemActions';
+import { fetchAuctionData } from './actions/auctionItemActions';
 import { ItemData, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
 &nbsp;
 type Props = {
@@ -253,8 +229,7 @@ type Props = {
     error: Error,
     isLoaded: boolean,
     auctionItems: ItemData[],
-    setAuctionData: (auctionItems: ItemData[], userName: string) =&gt; void;
-    setAuctionError: (errorMessage: string) =&gt; void;
+    fetchAuctionData: (userName: string) =&gt; void;
     poller: Poller,
 }
 &nbsp;
@@ -272,9 +247,8 @@ export class App extends React.Component&lt;Props&gt; {
     }
 &nbsp;
     async componentDidMount() {
-        await this.fetchAuctionData();
         // Kick off poll every second for new auction data... TODO: Make this a socket?
-        this.props.poller.init(this.fetchAuctionData);
+        this.props.poller.init(this.props.fetchAuctionData);
     }
 &nbsp;
     componentWillUnmount() {
@@ -285,21 +259,12 @@ export class App extends React.Component&lt;Props&gt; {
 <span class="cstat-no" title="statement not covered" >        console.error(err, info);</span>
     }
 &nbsp;
-    fetchAuctionData = async () =&gt; {
-        // TODO: Move this into a thunk
-        try {
-            const response = await this.props.axios.get(DATA_URL);
-            const auctionItems = response &amp;&amp; response.data;
-            this.props.setAuctionData(auctionItems, sessionStorage.getItem('userName'));
-        } catch (err) {
-<span class="cstat-no" title="statement not covered" >            console.error(err);</span>
-<span class="cstat-no" title="statement not covered" >            this.props.setAuctionError(err.message);</span>
-<span class="cstat-no" title="statement not covered" >            this.props.poller.stop();</span>
-        }
-    }
-&nbsp;
     render() {
-        const { error, isLoaded, auctionItems } = this.props;
+        const { error, isLoaded, auctionItems, poller } = this.props;
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (error) {
+<span class="cstat-no" title="statement not covered" >            poller.stop();</span>
+        }
 &nbsp;
         return !isLoaded ? &lt;div&gt;Loading...&lt;/div&gt;
             : error ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;div&gt;Error: {JSON.stringify(error)}&lt;/div&gt;</span>
@@ -327,9 +292,8 @@ const mapStateToProps = state =&gt; ({
 });
 &nbsp;
 const mapDispatchToProps = {
-    setAuctionData,
-    setAuctionError
-}
+    fetchAuctionData: () =&gt; fetchAuctionData(sessionStorage.getItem('userName'))
+};
 &nbsp;
 export default connect(mapStateToProps, mapDispatchToProps)(App);</pre></td></tr>
 </table></pre>
@@ -337,7 +301,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);</pre></td></tr
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Nov 04 2018 22:49:14 GMT-0500 (EST)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Nov 04 2018 23:54:50 GMT-0500 (EST)
 </div>
 </div>
 <script src="../prettify.js"></script>
