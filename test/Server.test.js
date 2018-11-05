@@ -1,6 +1,8 @@
-const path = require('path');
-const axios = require('axios');
-const { createServer } = require('../server/serverFactory');
+import * as path from 'path';
+import axios from 'axios';
+import { putRequest, deleteRequest } from '../src/actions/adminActions';
+import { initStore } from '../src/store';
+import { createServer } from '../server/serverFactory';
 
 // This nonsense is required to get around jest CORS issue with localhost
 const lib = path.join(path.dirname(require.resolve('axios')),'lib/adapters/http');
@@ -9,11 +11,15 @@ const adapter = require(lib);
 describe('Server', function () {
     
     let server;
+    let dispatch;
     const host = 'localhost';
     const port = 1234;
     const url = `http://${host}:${port}`;
 
     beforeAll(async () => {
+        const store = initStore({ axios });
+        dispatch = store.dispatch;
+
         server = await createServer(host, port);
     });
 
@@ -97,6 +103,29 @@ describe('Server', function () {
         const res = await axios.get(url + '/data', { adapter });
         res.data.forEach((auctionItem, i) => {
             expect(auctionItem.id).toEqual(i);
+        });
+    });
+
+    describe('integration', function () {
+        
+        it('fetch auctionData', function () {
+            // TODO: Make a fetch thunk
+        });
+    
+        it('putRequest', async function () {
+            const fakeItem = {
+                id: 123,
+                title: 'Blah',
+                description: 'Babababa',
+                bids: [{name: 'me', value: 1}],
+            };
+            const res = await dispatch(putRequest(fakeItem, `${url}/data`, adapter));
+            expect(res.data).toEqual(fakeItem);
+        });
+    
+        it('deleteRequest', async function () {
+            const res = await dispatch(deleteRequest(1, `${url}/data`, adapter));
+            expect(res.data).toEqual({ deletedItemID: 1 });
         });
     });
 });
