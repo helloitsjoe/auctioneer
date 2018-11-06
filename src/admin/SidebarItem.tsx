@@ -7,8 +7,10 @@ type Props = {
     onSelect: () => void;
 }
 
-export const SidebarItem = ({ itemData, focused, onSelect }: Props) => (
-    <div className={`sidebar-item ${focused ? 'focused' : ''}`} onClick={onSelect}>
-        <span className="sidebar-item-text">{itemData.title}</span>
-    </div>
-)
+export function SidebarItem({ itemData, focused, onSelect }: Props) {
+    return (
+        <div className={`sidebar-item ${focused ? 'focused' : ''}`} onClick={onSelect}>
+            <span className="sidebar-item-text">{itemData.title}</span>
+        </div>
+    )
+}

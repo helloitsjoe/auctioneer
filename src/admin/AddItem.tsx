@@ -4,8 +4,10 @@ type Props = {
     onSelect: () => void;
 }
 
-export const AddItem = ({ onSelect }: Props) => (
-    <div className="sidebar-add-item sidebar-item" onClick={onSelect}>
-        <span className="plus">+</span>
-    </div>
-)
+export function AddItem ({ onSelect }: Props) {
+    return (
+        <div className="sidebar-add-item sidebar-item" onClick={onSelect}>
+            <span className="plus">+</span>
+        </div>
+    )
+}
