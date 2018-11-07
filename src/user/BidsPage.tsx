@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
-    
+
     poller.start();
 
     return (

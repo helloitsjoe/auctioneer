@@ -14,6 +14,7 @@ export class Poller {
             return;
         }
         this.isPolling = true;
+        // console.log(`this.func:`, this.func);
         this.func();
         this.interval = setInterval(() => {
             this.func();
@@ -22,6 +23,7 @@ export class Poller {
 
     stop() {
         clearInterval(this.interval);
+        this.interval = null;
         this.isPolling = false;
     }
 }

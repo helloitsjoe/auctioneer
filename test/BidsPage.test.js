@@ -8,7 +8,9 @@ describe('BidsPage', function () {
     it('starts poller on mount', function () {
         const poller = new Poller();
         expect(poller.isPolling).toBe(false);
-        shallow(<BidsPage poller={poller} auctionItems={[]} filter={false} user="Foo" />);
+        const bidsPage = shallow(<BidsPage poller={poller} auctionItems={[]} filter={false} user="Foo" />);
         expect(poller.isPolling).toBe(true);
+        bidsPage.unmount();
+        poller.stop();
     });
 });

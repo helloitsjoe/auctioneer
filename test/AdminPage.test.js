@@ -46,9 +46,9 @@ const fakeItems = [{
 
 describe('AdminPage', function () {
 
-    it('starts poller on mount', function () {
+    it('stops poller on mount', function () {
         const poller = new Poller();
-        poller.init();
+        poller.init(() => {});
         expect(poller.isPolling).toBe(true);
         shallow(<AdminPage poller={poller} />);
         expect(poller.isPolling).toBe(false);

@@ -5,6 +5,7 @@ describe('Auctioneer', function () {
     require('./Item.test');
     require('./List.test');
     require('./Server.test');
+    require('./Poller.test');
     require('./BidsPage.test');
     require('./AdminPage.test');
 });
