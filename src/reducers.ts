@@ -80,6 +80,7 @@ const item = (state: StoreState, action: any) => {
         case QUICK_BID:
             if (!item) {
                 console.error('Item not found in auctionItems!');
+                return state;
             }
             const newHighBid = getHighBid(item.bids).value + BID_INCREMENT;
             const bids = [...item.bids, {name: userName, value: newHighBid }];
@@ -93,6 +94,7 @@ const item = (state: StoreState, action: any) => {
         case TOGGLE_DESCRIPTION:
             if (!item) {
                 console.error('Item not found in auctionItems!');
+                return state;
             }
             const viewDetails = !item.viewDetails;
             const itemsWithToggledDetails = auctionItems.map(item => item.id === itemID ? { ...item, viewDetails} : item);

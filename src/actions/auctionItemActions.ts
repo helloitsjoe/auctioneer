@@ -27,6 +27,8 @@ export const fetchAuctionSuccess = ({userName, rawAuctionItems}) =>
 export const quickBid = (userName: string, itemID: number) => (dispatch, getState) => {
     dispatch({ type: QUICK_BID, userName, itemID });
     const updatedItem = selectItem(getState(), itemID);
-    dispatch(putRequest(updatedItem));
+    if (updatedItem != null) {
+        dispatch(putRequest(updatedItem));
+    }
 };
 export const toggleDescription = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });
