@@ -41,10 +41,6 @@ export class App extends React.Component<Props> {
         this.props.poller.stop();
     }
 
-    componentDidCatch(err, info) {
-        console.error(err, info);
-    }
-
     render() {
         const { error, isLoaded, auctionItems, poller } = this.props;
 

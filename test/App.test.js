@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import { initStore } from '../src/store';
 import { Poller } from '../src/Poller';
 import App from '../src/App';
@@ -31,15 +32,51 @@ describe('App', function () {
     it('isLoaded = false until data returns', function () {
         const provider = mount(
             <Provider store={store}>
-                <App axios={moxios}/>
+                <App />
             </Provider>
         );
         const app = provider.find('App');
         expect(app.html()).toEqual('<div>Loading...</div>');
     });
 
-    describe('after data loads', function () {
+    it('error from data', async function () {
+        const poller = new Poller();
+        moxios.get = jest.fn().mockRejectedValue('Poop!');
+        store = initStore({ axios: moxios });
+        const provider = mount(
+            <Provider store={store}>
+                <App poller={poller}/>
+            </Provider>
+        );
+        await wait();
+        provider.update();
+        const app = provider.find('App');
+        expect(app.html()).toEqual('<div>Error: \"Poop!\"</div>');
+        expect(poller.isPolling).toBe(false);
+    });
 
+    // it('/admin route', async function () {
+    //     const poller = new Poller();
+    //     const wrapper = mount(
+    //         <Provider store={store}>
+    //             <MemoryRouter initialEntries={["/admin"]}>
+    //                 <App poller={poller}/>
+    //             </MemoryRouter>
+    //         </Provider>
+    //     );
+    //     await wait(); // Wait for async moxios call to return
+    //     wrapper.update();
+    //     // const router = wrapper.find('Router');
+    //     // console.log(`router.debug():`, router.debug());
+    //     // const history = router.get(1).props;
+    //     // console.log(`history:`, history);
+    //     // console.log(`wrapper.debug():`, wrapper.debug());
+    //     expect(wrapper.find('Admin')).toHaveLength(1);
+    //     expect(wrapper.find('BidsPage')).toHaveLength(0);
+    // });
+    
+    describe('after data loads', function () {
+        
         const poller = new Poller();
         let provider;
         let app;
@@ -48,7 +85,7 @@ describe('App', function () {
             expect(moxios.get).not.toHaveBeenCalled();
             provider = mount(
                 <Provider store={store}>
-                    <App axios={moxios} poller={poller}/>
+                    <App poller={poller}/>
                 </Provider>
             );
             await wait(); // Wait for async moxios call to return
