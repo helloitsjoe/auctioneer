@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auctioneer AdminPage Sidebar AddItem works as expected 1`] = `"<div class=\\"sidebar-add-item sidebar-item\\"><span class=\\"plus\\">+</span></div>"`;
+
+exports[`Auctioneer AdminPage Sidebar SidebarItem works as expected 1`] = `"<div class=\\"sidebar-item \\"><span class=\\"sidebar-item-text\\">Donovan&#x27;s Greatest Hits</span></div>"`;
+
+exports[`Auctioneer redux duck tests User load auction data 1`] = `
+Array [
+  Object {
+    "bids": Array [
+      Object {
+        "name": "Me",
+        "value": 75,
+      },
+    ],
+    "description": "Hello",
+    "id": 45,
+    "title": "Boo",
+    "viewDetails": false,
+  },
+]
+`;
+
+exports[`Auctioneer redux duck tests User load auction data 2`] = `
+Array [
+  Object {
+    "bids": Array [
+      Object {
+        "name": "Me",
+        "value": 75,
+      },
+    ],
+    "description": "Hello",
+    "id": 45,
+    "title": "Boo",
+    "viewDetails": false,
+  },
+  Object {
+    "bids": Array [
+      Object {
+        "name": "You",
+        "value": 75,
+      },
+    ],
+    "description": "Hi again",
+    "id": 50,
+    "title": "Bee",
+    "viewDetails": false,
+  },
+]
+`;
