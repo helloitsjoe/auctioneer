@@ -54,26 +54,6 @@ describe('App', function () {
         expect(app.html()).toEqual('<div>Error: \"Poop!\"</div>');
         expect(poller.isPolling).toBe(false);
     });
-
-    // it('/admin route', async function () {
-    //     const poller = new Poller();
-    //     const wrapper = mount(
-    //         <Provider store={store}>
-    //             <MemoryRouter initialEntries={["/admin"]}>
-    //                 <App poller={poller}/>
-    //             </MemoryRouter>
-    //         </Provider>
-    //     );
-    //     await wait(); // Wait for async moxios call to return
-    //     wrapper.update();
-    //     // const router = wrapper.find('Router');
-    //     // console.log(`router.debug():`, router.debug());
-    //     // const history = router.get(1).props;
-    //     // console.log(`history:`, history);
-    //     // console.log(`wrapper.debug():`, wrapper.debug());
-    //     expect(wrapper.find('Admin')).toHaveLength(1);
-    //     expect(wrapper.find('BidsPage')).toHaveLength(0);
-    // });
     
     describe('after data loads', function () {
         

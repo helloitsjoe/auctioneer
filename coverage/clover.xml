@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1541645868161" clover="3.2.0">
-  <project timestamp="1541645868161" name="All files">
-    <metrics statements="370" coveredstatements="344" conditionals="113" coveredconditionals="104" methods="116" coveredmethods="95" elements="599" coveredelements="543" complexity="0" loc="370" ncloc="370" packages="5" files="21" classes="21">
+<coverage generated="1541647494085" clover="3.2.0">
+  <project timestamp="1541647494085" name="All files">
+    <metrics statements="372" coveredstatements="348" conditionals="115" coveredconditionals="108" methods="116" coveredmethods="97" elements="603" coveredelements="553" complexity="0" loc="372" ncloc="372" packages="5" files="21" classes="21">
       <package name="server">
         <metrics statements="51" coveredstatements="49" conditionals="8" coveredconditionals="8" methods="14" coveredmethods="14"/>
         <file name="serverFactory.js" path="/Users/joe/PROJECTS/auctioneer/server/serverFactory.js">
@@ -60,7 +60,7 @@
         </file>
       </package>
       <package name="src">
-        <metrics statements="144" coveredstatements="141" conditionals="66" coveredconditionals="64" methods="45" coveredmethods="38"/>
+        <metrics statements="146" coveredstatements="145" conditionals="68" coveredconditionals="68" methods="45" coveredmethods="40"/>
         <file name="App.tsx" path="/Users/joe/PROJECTS/auctioneer/src/App.tsx">
           <metrics statements="32" coveredstatements="31" conditionals="10" coveredconditionals="10" methods="9" coveredmethods="8"/>
           <line num="1" count="1" type="stmt"/>
@@ -202,7 +202,7 @@
           <line num="9" count="28" type="stmt"/>
         </file>
         <file name="utils.ts" path="/Users/joe/PROJECTS/auctioneer/src/utils.ts">
-          <metrics statements="16" coveredstatements="14" conditionals="12" coveredconditionals="10" methods="10" coveredmethods="8"/>
+          <metrics statements="18" coveredstatements="18" conditionals="14" coveredconditionals="14" methods="10" coveredmethods="10"/>
           <line num="3" count="1" type="stmt"/>
           <line num="28" count="1" type="stmt"/>
           <line num="30" count="1" type="stmt"/>
@@ -211,14 +211,16 @@
           <line num="34" count="108" type="stmt"/>
           <line num="35" count="116" type="cond" truecount="2" falsecount="0"/>
           <line num="39" count="1" type="stmt"/>
-          <line num="40" count="0" type="stmt"/>
-          <line num="41" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="44" count="15" type="stmt"/>
-          <line num="45" count="44" type="stmt"/>
-          <line num="46" count="44" type="cond" truecount="2" falsecount="0"/>
-          <line num="50" count="23" type="cond" truecount="2" falsecount="0"/>
-          <line num="51" count="20" type="cond" truecount="2" falsecount="0"/>
-          <line num="52" count="20" type="stmt"/>
+          <line num="40" count="9" type="cond" truecount="2" falsecount="0"/>
+          <line num="41" count="3" type="stmt"/>
+          <line num="43" count="7" type="stmt"/>
+          <line num="44" count="6" type="cond" truecount="2" falsecount="0"/>
+          <line num="47" count="15" type="stmt"/>
+          <line num="48" count="44" type="stmt"/>
+          <line num="49" count="44" type="cond" truecount="2" falsecount="0"/>
+          <line num="53" count="23" type="cond" truecount="2" falsecount="0"/>
+          <line num="54" count="20" type="cond" truecount="2" falsecount="0"/>
+          <line num="55" count="20" type="stmt"/>
         </file>
       </package>
       <package name="src.actions">

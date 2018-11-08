@@ -27,6 +27,7 @@ describe('Server', function () {
 
     afterEach(async () => {
         // Restore original data on server
+        jest.restoreAllMocks();
         await axios.post(dataURL, {}, { adapter });
     });
 

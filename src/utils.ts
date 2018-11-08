@@ -37,6 +37,9 @@ export const getHighBid = (bids: Bid[]): Bid => {
 }
 
 export const getMinBidValue = (bids: Bid[]): number => {
+    if (!Array.isArray(bids)) {
+        throw new Error('Bids must be an array');
+    }
     const minBid = bids.find(bid => bid.name === 'min');
     return minBid ? minBid.value : 0;
 }
