@@ -22,11 +22,8 @@ export const deleteRequest = (
 ) => (dispatch, getState, services) => {
     return services.axios.delete(`${dataURL}/${itemID}`, { adapter }).then(response => {
         const { deletedItemID } = response.data;
-        if (deletedItemID == null) {
-            throw new Error(`There was an error deleting item ${itemID}`);
-        }
         dispatch(deleteItemSuccess(deletedItemID));
-        return response;
-    }).catch(console.error);
+        return { deletedItemID };
+    }).catch(err => console.error(err.message));
 }
 export const deleteItemSuccess = (deletedItemID: number) => ({ type: DELETE_ITEM_SUCCESS, deletedItemID });

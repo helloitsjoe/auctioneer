@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1541647494085" clover="3.2.0">
-  <project timestamp="1541647494085" name="All files">
-    <metrics statements="372" coveredstatements="348" conditionals="115" coveredconditionals="108" methods="116" coveredmethods="97" elements="603" coveredelements="553" complexity="0" loc="372" ncloc="372" packages="5" files="21" classes="21">
+<coverage generated="1541979953082" clover="3.2.0">
+  <project timestamp="1541979953083" name="All files">
+    <metrics statements="375" coveredstatements="370" conditionals="117" coveredconditionals="111" methods="118" coveredmethods="108" elements="610" coveredelements="589" complexity="0" loc="375" ncloc="375" packages="5" files="21" classes="21">
       <package name="server">
-        <metrics statements="51" coveredstatements="49" conditionals="8" coveredconditionals="8" methods="14" coveredmethods="14"/>
+        <metrics statements="53" coveredstatements="51" conditionals="12" coveredconditionals="12" methods="15" coveredmethods="15"/>
         <file name="serverFactory.js" path="/Users/joe/PROJECTS/auctioneer/server/serverFactory.js">
-          <metrics statements="51" coveredstatements="49" conditionals="8" coveredconditionals="8" methods="14" coveredmethods="14"/>
+          <metrics statements="53" coveredstatements="51" conditionals="12" coveredconditionals="12" methods="15" coveredmethods="15"/>
           <line num="1" count="1" type="stmt"/>
           <line num="2" count="1" type="stmt"/>
           <line num="3" count="1" type="stmt"/>
@@ -24,10 +24,10 @@
           <line num="24" count="1" type="stmt"/>
           <line num="25" count="1" type="stmt"/>
           <line num="29" count="1" type="stmt"/>
-          <line num="31" count="12" type="stmt"/>
-          <line num="32" count="12" type="stmt"/>
+          <line num="31" count="13" type="stmt"/>
+          <line num="32" count="13" type="stmt"/>
           <line num="34" count="0" type="stmt"/>
-          <line num="36" count="12" type="stmt"/>
+          <line num="36" count="13" type="stmt"/>
           <line num="39" count="1" type="stmt"/>
           <line num="40" count="4" type="stmt"/>
           <line num="41" count="4" type="stmt"/>
@@ -40,23 +40,25 @@
           <line num="54" count="11" type="stmt"/>
           <line num="57" count="1" type="stmt"/>
           <line num="61" count="1" type="stmt"/>
-          <line num="62" count="3" type="stmt"/>
-          <line num="63" count="12" type="stmt"/>
-          <line num="65" count="3" type="stmt"/>
-          <line num="68" count="1" type="stmt"/>
+          <line num="62" count="4" type="stmt"/>
+          <line num="63" count="8" type="cond" truecount="4" falsecount="0"/>
+          <line num="64" count="1" type="stmt"/>
+          <line num="66" count="12" type="stmt"/>
+          <line num="68" count="3" type="stmt"/>
           <line num="71" count="1" type="stmt"/>
-          <line num="72" count="1" type="stmt"/>
           <line num="74" count="1" type="stmt"/>
           <line num="75" count="1" type="stmt"/>
+          <line num="77" count="1" type="stmt"/>
           <line num="78" count="1" type="stmt"/>
-          <line num="80" count="0" type="stmt"/>
-          <line num="85" count="1" type="stmt"/>
-          <line num="86" count="1" type="stmt"/>
-          <line num="87" count="1" type="stmt"/>
-          <line num="88" count="8" type="stmt"/>
-          <line num="89" count="5" type="cond" truecount="2" falsecount="0"/>
-          <line num="91" count="1" type="stmt"/>
+          <line num="81" count="1" type="stmt"/>
+          <line num="83" count="0" type="stmt"/>
+          <line num="88" count="1" type="stmt"/>
+          <line num="89" count="1" type="stmt"/>
+          <line num="90" count="1" type="stmt"/>
+          <line num="91" count="8" type="stmt"/>
+          <line num="92" count="5" type="cond" truecount="2" falsecount="0"/>
           <line num="94" count="1" type="stmt"/>
+          <line num="97" count="1" type="stmt"/>
         </file>
       </package>
       <package name="src">
@@ -211,10 +213,10 @@
           <line num="34" count="108" type="stmt"/>
           <line num="35" count="116" type="cond" truecount="2" falsecount="0"/>
           <line num="39" count="1" type="stmt"/>
-          <line num="40" count="9" type="cond" truecount="2" falsecount="0"/>
+          <line num="40" count="17" type="cond" truecount="2" falsecount="0"/>
           <line num="41" count="3" type="stmt"/>
-          <line num="43" count="7" type="stmt"/>
-          <line num="44" count="6" type="cond" truecount="2" falsecount="0"/>
+          <line num="43" count="15" type="stmt"/>
+          <line num="44" count="14" type="cond" truecount="2" falsecount="0"/>
           <line num="47" count="15" type="stmt"/>
           <line num="48" count="44" type="stmt"/>
           <line num="49" count="44" type="cond" truecount="2" falsecount="0"/>
@@ -224,9 +226,9 @@
         </file>
       </package>
       <package name="src.actions">
-        <metrics statements="42" coveredstatements="40" conditionals="20" coveredconditionals="16" methods="18" coveredmethods="18"/>
+        <metrics statements="41" coveredstatements="40" conditionals="18" coveredconditionals="15" methods="19" coveredmethods="19"/>
         <file name="adminActions.ts" path="/Users/joe/PROJECTS/auctioneer/src/actions/adminActions.ts">
-          <metrics statements="21" coveredstatements="20" conditionals="10" coveredconditionals="7" methods="9" coveredmethods="9"/>
+          <metrics statements="20" coveredstatements="20" conditionals="8" coveredconditionals="6" methods="10" coveredmethods="10"/>
           <line num="1" count="1" type="stmt"/>
           <line num="2" count="1" type="stmt"/>
           <line num="5" count="17" type="stmt"/>
@@ -238,16 +240,15 @@
           <line num="12" count="5" type="stmt"/>
           <line num="13" count="5" type="stmt"/>
           <line num="18" count="1" type="stmt"/>
-          <line num="20" count="1" type="cond" truecount="1" falsecount="1"/>
-          <line num="21" count="1" type="cond" truecount="1" falsecount="1"/>
-          <line num="22" count="1" type="stmt"/>
-          <line num="23" count="1" type="stmt"/>
+          <line num="20" count="2" type="cond" truecount="1" falsecount="1"/>
+          <line num="21" count="2" type="cond" truecount="1" falsecount="1"/>
+          <line num="22" count="2" type="stmt"/>
+          <line num="23" count="2" type="stmt"/>
           <line num="24" count="1" type="stmt"/>
-          <line num="25" count="1" type="cond" truecount="1" falsecount="1"/>
-          <line num="26" count="0" type="stmt"/>
-          <line num="28" count="1" type="stmt"/>
-          <line num="29" count="1" type="stmt"/>
-          <line num="32" count="5" type="stmt"/>
+          <line num="25" count="1" type="stmt"/>
+          <line num="26" count="1" type="stmt"/>
+          <line num="27" count="1" type="stmt"/>
+          <line num="29" count="5" type="stmt"/>
         </file>
         <file name="auctionItemActions.ts" path="/Users/joe/PROJECTS/auctioneer/src/actions/auctionItemActions.ts">
           <metrics statements="21" coveredstatements="20" conditionals="10" coveredconditionals="9" methods="9" coveredmethods="9"/>
@@ -275,7 +276,7 @@
         </file>
       </package>
       <package name="src.admin">
-        <metrics statements="59" coveredstatements="43" conditionals="6" coveredconditionals="4" methods="19" coveredmethods="8"/>
+        <metrics statements="60" coveredstatements="59" conditionals="6" coveredconditionals="4" methods="19" coveredmethods="15"/>
         <file name="AddItem.tsx" path="/Users/joe/PROJECTS/auctioneer/src/admin/AddItem.tsx">
           <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
           <line num="1" count="1" type="stmt"/>
@@ -299,7 +300,7 @@
           <line num="15" count="1" type="stmt"/>
         </file>
         <file name="ItemEditor.tsx" path="/Users/joe/PROJECTS/auctioneer/src/admin/ItemEditor.tsx">
-          <metrics statements="29" coveredstatements="14" conditionals="2" coveredconditionals="2" methods="9" coveredmethods="1"/>
+          <metrics statements="30" coveredstatements="30" conditionals="2" coveredconditionals="2" methods="9" coveredmethods="8"/>
           <line num="1" count="1" type="stmt"/>
           <line num="2" count="1" type="stmt"/>
           <line num="4" count="1" type="stmt"/>
@@ -310,25 +311,26 @@
           <line num="10" count="1" type="stmt"/>
           <line num="11" count="1" type="stmt"/>
           <line num="24" count="1" type="stmt"/>
-          <line num="25" count="0" type="stmt"/>
-          <line num="26" count="0" type="stmt"/>
-          <line num="27" count="0" type="stmt"/>
-          <line num="28" count="0" type="stmt"/>
-          <line num="29" count="0" type="stmt"/>
-          <line num="30" count="0" type="stmt"/>
-          <line num="38" count="0" type="stmt"/>
-          <line num="64" count="0" type="stmt"/>
+          <line num="25" count="8" type="stmt"/>
+          <line num="26" count="8" type="stmt"/>
+          <line num="27" count="8" type="stmt"/>
+          <line num="28" count="8" type="stmt"/>
+          <line num="29" count="8" type="stmt"/>
+          <line num="30" count="8" type="stmt"/>
+          <line num="38" count="8" type="stmt"/>
+          <line num="64" count="1" type="stmt"/>
           <line num="70" count="1" type="stmt"/>
           <line num="74" count="1" type="stmt"/>
-          <line num="77" count="0" type="stmt"/>
-          <line num="78" count="0" type="stmt"/>
-          <line num="79" count="0" type="stmt"/>
+          <line num="80" count="1" type="stmt"/>
+          <line num="81" count="1" type="stmt"/>
           <line num="82" count="1" type="stmt"/>
-          <line num="83" count="0" type="stmt"/>
-          <line num="84" count="0" type="stmt"/>
-          <line num="89" count="0" type="stmt"/>
-          <line num="90" count="0" type="stmt"/>
-          <line num="95" count="1" type="stmt"/>
+          <line num="83" count="1" type="stmt"/>
+          <line num="86" count="1" type="stmt"/>
+          <line num="87" count="1" type="stmt"/>
+          <line num="88" count="1" type="stmt"/>
+          <line num="90" count="1" type="stmt"/>
+          <line num="91" count="1" type="stmt"/>
+          <line num="96" count="1" type="stmt"/>
         </file>
         <file name="Sidebar.tsx" path="/Users/joe/PROJECTS/auctioneer/src/admin/Sidebar.tsx">
           <metrics statements="14" coveredstatements="13" conditionals="2" coveredconditionals="0" methods="6" coveredmethods="4"/>
@@ -355,7 +357,7 @@
         </file>
       </package>
       <package name="src.user">
-        <metrics statements="74" coveredstatements="71" conditionals="13" coveredconditionals="12" methods="20" coveredmethods="17"/>
+        <metrics statements="75" coveredstatements="75" conditionals="13" coveredconditionals="12" methods="20" coveredmethods="19"/>
         <file name="BidsPage.tsx" path="/Users/joe/PROJECTS/auctioneer/src/user/BidsPage.tsx">
           <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
           <line num="1" count="1" type="stmt"/>
@@ -433,23 +435,24 @@
           <line num="12" count="16" type="stmt"/>
         </file>
         <file name="UserNameForm.tsx" path="/Users/joe/PROJECTS/auctioneer/src/user/UserNameForm.tsx">
-          <metrics statements="16" coveredstatements="13" conditionals="3" coveredconditionals="3" methods="5" coveredmethods="3"/>
+          <metrics statements="17" coveredstatements="17" conditionals="3" coveredconditionals="3" methods="5" coveredmethods="5"/>
           <line num="1" count="1" type="stmt"/>
-          <line num="3" count="6" type="cond" truecount="3" falsecount="0"/>
-          <line num="5" count="6" type="stmt"/>
-          <line num="6" count="6" type="stmt"/>
-          <line num="10" count="6" type="stmt"/>
-          <line num="11" count="2" type="stmt"/>
-          <line num="12" count="2" type="stmt"/>
-          <line num="13" count="2" type="stmt"/>
-          <line num="16" count="6" type="stmt"/>
-          <line num="17" count="0" type="stmt"/>
-          <line num="18" count="0" type="stmt"/>
-          <line num="21" count="6" type="stmt"/>
-          <line num="22" count="0" type="stmt"/>
-          <line num="25" count="1" type="stmt"/>
-          <line num="26" count="10" type="stmt"/>
-          <line num="40" count="1" type="stmt"/>
+          <line num="7" count="10" type="cond" truecount="3" falsecount="0"/>
+          <line num="9" count="10" type="stmt"/>
+          <line num="10" count="10" type="stmt"/>
+          <line num="14" count="10" type="stmt"/>
+          <line num="15" count="3" type="stmt"/>
+          <line num="16" count="3" type="stmt"/>
+          <line num="17" count="3" type="stmt"/>
+          <line num="20" count="10" type="stmt"/>
+          <line num="21" count="1" type="stmt"/>
+          <line num="22" count="1" type="stmt"/>
+          <line num="25" count="10" type="stmt"/>
+          <line num="26" count="2" type="stmt"/>
+          <line num="27" count="2" type="stmt"/>
+          <line num="30" count="1" type="stmt"/>
+          <line num="31" count="15" type="stmt"/>
+          <line num="45" count="1" type="stmt"/>
         </file>
       </package>
     </metrics>

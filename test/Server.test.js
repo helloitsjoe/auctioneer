@@ -129,9 +129,14 @@ describe('Server', function () {
             expect(putResponse.data).toEqual(fakeItem);
         });
     
-        it('deleteRequest', async function () {
+        it('deleteRequest returns id of deleted item', async function () {
             const deleteResponse = await dispatch(deleteRequest(1, dataURL, adapter));
-            expect(deleteResponse.data).toEqual({ deletedItemID: 1 });
+            expect(deleteResponse).toEqual({ deletedItemID: 1 });
+        });
+
+        it('deleteRequest returns undefined if item not found', async function () {
+            const deleteResponse = await dispatch(deleteRequest(null, dataURL, adapter));
+            expect(deleteResponse).toBeUndefined();
         });
     });
 });

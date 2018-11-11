@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { shallow, mount } from 'enzyme';
 import { initStore } from '../src/store';
+import { fakeItems } from './testUtils';
 import { Poller } from '../src/Poller';
 import { AdminPage } from '../src/admin/AdminPage';
 import { Sidebar } from '../src/admin/Sidebar';
@@ -14,18 +15,6 @@ const moxios = {
     put: jest.fn(),
     delete: jest.fn(),
 }
-
-const fakeItems = [{
-    id: 0,
-    title: 'Donovan\'s Greatest Hits',
-    description: 'Includes Barabbajaggle of course',
-    bids: [{value: 30000, name: 'min'}],
-},{
-    id: 2,
-    title: 'A Very Donovan Christmas',
-    description: 'And a Happy New Year',
-    bids: [{value: 40000, name: 'min'}]
-}];
 
 // const setup = () => {
 //     const poller = new Poller();
@@ -112,7 +101,7 @@ describe('AdminPage', function () {
             const addItem = shallow(<AddItem onSelect={onSelect} />);
             expect(onSelect).not.toBeCalled();
             addItem.simulate('click');
-            expect(onSelect).toBeCalled();
+            expect(onSelect).toBeCalledTimes(1);
             expect(addItem.html()).toMatchSnapshot();
         });
 
@@ -127,7 +116,7 @@ describe('AdminPage', function () {
             );
             expect(onSelect).not.toBeCalled();
             sidebarItem.simulate('click');
-            expect(onSelect).toBeCalled();
+            expect(onSelect).toBeCalledTimes(1);
             expect(sidebarItem.html()).toMatchSnapshot();
             expect(sidebarItem.hasClass('focused')).toBe(false);
             sidebarItem.setProps({ focused: true });

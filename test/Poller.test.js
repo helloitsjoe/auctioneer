@@ -14,7 +14,7 @@ describe('Poller', function () {
         expect(func).toBeCalledTimes(2);
         poller.stop();
         expect(poller.isPolling).toBe(false);
-        expect(clearInterval).toBeCalled();
+        expect(clearInterval).toBeCalledTimes(1);
         poller.start();
         expect(poller.isPolling).toBe(true);
         poller.stop();

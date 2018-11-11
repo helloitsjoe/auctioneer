@@ -17,3 +17,15 @@ export const wait = (ms) => {
         }, ms);
     });
 };
+
+export const fakeItems = [{
+    id: 0,
+    title: 'Donovan\'s Greatest Hits',
+    description: 'Includes Barabbajaggle of course',
+    bids: [{value: 30000, name: 'min'}],
+},{
+    id: 2,
+    title: 'A Very Donovan Christmas',
+    description: 'And a Happy New Year',
+    bids: [{value: 40000, name: 'min'}]
+}];

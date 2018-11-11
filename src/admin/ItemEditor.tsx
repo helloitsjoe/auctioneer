@@ -74,21 +74,22 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     putRequest,
     deleteRequest,
-    onChangeTitle: (e: any) => inputChange(e.target.value, InputKey.title),
-    onChangeMinBid: (e: any) => inputChange(e.target.value, InputKey.minBid),
-    onChangeDescription: (e: any) => inputChange(e.target.value, InputKey.description),
+    inputChange,
 };
 
-const mergeProps = (stateProps, dispatchProps) => {
+export const mergeProps = (stateProps, dispatchProps) => {
     const {itemData} = stateProps;
+    const { putRequest, deleteRequest, inputChange} = dispatchProps;
     return {
-        ...stateProps,
-        ...dispatchProps,
         itemData,
+        deleteRequest,
+        onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
+        onChangeMinBid: (e) => inputChange(e.target.value, InputKey.minBid),
+        onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
         onSubmitChanges(e) {
             e.preventDefault();
-            dispatchProps.putRequest(itemData);
-        }
+            putRequest(itemData);
+        },
     }
 }
 

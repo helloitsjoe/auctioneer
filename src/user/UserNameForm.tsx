@@ -1,10 +1,14 @@
 import * as React from 'react';
 
-export class UserNameForm extends React.Component<any, any> {
+type Props = {
+    user: string,
+}
+
+export class UserNameForm extends React.Component<Props, any> {
 
     nameInput = React.createRef<HTMLInputElement>();
     state = {
-        userName: sessionStorage.getItem('userName')
+        userName: this.props.user.toUpperCase()
     }
 
     changeUserName = (e) => {
@@ -20,6 +24,7 @@ export class UserNameForm extends React.Component<any, any> {
     
     focusUserName = (e) => {
         e.target.select();
+        this.nameInput.current.focus();
     }
     
     render() {

@@ -126,7 +126,7 @@ describe('Item', function () {
                 onToggleDescription={toggleDescription}
             />);
         item.simulate('click');
-        expect(toggleDescription).toBeCalled();
+        expect(toggleDescription).toBeCalledTimes(1);
         expect(quickBid).not.toBeCalled();
     });
 
@@ -145,7 +145,7 @@ describe('Item', function () {
             />);
         const button = item.find('button');
         button.simulate('click');
-        expect(quickBid).toBeCalled();
+        expect(quickBid).toBeCalledTimes(1);
         expect(toggleDescription).not.toBeCalled();
     });
 });

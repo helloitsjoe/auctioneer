@@ -17,7 +17,7 @@ export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
 
     return (
         <div className="well container">
-            <UserNameForm />
+            <UserNameForm user={user}/>
             <Nav />
             <List auctionItems={auctionItems} user={user} filter={filter}/>
             <Footer />
