@@ -137,7 +137,7 @@ describe('Item', function () {
                 onQuickBid={quickBid}
                 onToggleDescription={toggleDescription}
             />);
-        item.simulate('click');
+        item.prop('onClick')();
         expect(toggleDescription).toBeCalledTimes(1);
         expect(quickBid).not.toBeCalled();
     });
@@ -156,7 +156,7 @@ describe('Item', function () {
                 onToggleDescription={toggleDescription}
             />);
         const button = item.find('button');
-        button.simulate('click');
+        button.prop('onClick')();
         expect(quickBid).toBeCalledTimes(1);
         expect(toggleDescription).not.toBeCalled();
     });

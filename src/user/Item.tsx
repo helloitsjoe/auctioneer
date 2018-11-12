@@ -61,18 +61,16 @@ const mapDispatchToProps = {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const itemID = ownProps.itemData.id;
-    const toggleDescription = (e) => dispatchProps.toggleDescription(itemID);
-    const quickBid = (e) => {
+    const onToggleDescription = (e) => dispatchProps.toggleDescription(itemID);
+    const onQuickBid = (e) => {
         e.stopPropagation();
         dispatchProps.quickBid(ownProps.user, itemID);
     };
 
     return {
-        ...stateProps,
-        ...dispatchProps,
         ...ownProps,
-        onToggleDescription: toggleDescription,
-        onQuickBid: quickBid,
+        onToggleDescription,
+        onQuickBid,
     }
 };
 

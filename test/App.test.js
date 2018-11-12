@@ -86,11 +86,11 @@ describe('App', function () {
         it('two users get the same initial data', function () {
             const list = app.find('.list');
             const input = app.find('input');
-            provider.find('input').simulate('change', { target: { value: TESTER_1 }});
+            provider.find('input').prop('onChange')({ target: { value: TESTER_1 }});
 
             const inputHTMLTester1 = input.html();
             const listHTMLTester1 = list.html();
-            input.simulate('change', { target: { value: TESTER_2 }});
+            input.prop('onChange')({ target: { value: TESTER_2 }});
             
             const inputHTMLTester2 = input.html();
             const listHTMLTester2 = list.html();
@@ -101,7 +101,7 @@ describe('App', function () {
         it('bid updates when user clicks button', async function () {
             const firstButton = app.find('button.btn').first();
             expect(firstButton.text()).toEqual('Bid 155');
-            firstButton.simulate('click');
+            firstButton.prop('onClick')({ stopPropagation: jest.fn() });
             expect(firstButton.text()).toEqual('Bid 160');
         });
     
@@ -109,7 +109,7 @@ describe('App', function () {
             const firstItem = app.find('#item-0');
             const firstButton = firstItem.find('button.btn');
             expect(firstItem.html().includes('bid-bg')).toEqual(false);
-            firstButton.simulate('click');
+            firstButton.prop('onClick')({ stopPropagation: jest.fn() });
             expect(firstItem.html().includes('bid-bg')).toEqual(true);      
         });
 

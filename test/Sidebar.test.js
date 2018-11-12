@@ -64,7 +64,7 @@ describe('Sidebar', function () {
         const onSelect = jest.fn();
         const addItem = shallow(<AddItem onSelect={onSelect} />);
         expect(onSelect).not.toBeCalled();
-        addItem.simulate('click');
+        addItem.prop('onClick')();
         expect(onSelect).toBeCalledTimes(1);
         expect(addItem.html()).toMatchSnapshot();
     });
@@ -79,7 +79,7 @@ describe('Sidebar', function () {
             />
         );
         expect(onSelect).not.toBeCalled();
-        sidebarItem.simulate('click');
+        sidebarItem.prop('onClick')();
         expect(onSelect).toBeCalledTimes(1);
         expect(sidebarItem.html()).toMatchSnapshot();
         expect(sidebarItem.hasClass('focused')).toBe(false);
