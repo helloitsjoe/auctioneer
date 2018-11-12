@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { mount, shallow } from 'enzyme';
-import { clone, quickBid, TESTER_1, TESTER_2 } from './testUtils';
+import { clone, quickBid, fakeItems, TESTER_1, TESTER_2 } from './testUtils';
 import { getHighBid } from '../src/utils';
 import { Item } from '../src/user/Item';
 
@@ -106,10 +106,22 @@ describe('Item', function () {
         expect(item.html().includes('outbid-bg')).toEqual(false);
     });
 
-    it('description is hidden on load', function () {
-        const { item } = setup();
-        expect(item.html().includes('closed')).toEqual(true);
-        expect(item.html().includes('open')).toEqual(false);
+    it.each`
+        viewDetails | state
+        ${true}     | ${'open'}
+        ${false}    | ${'closed'}
+    `('description is $state if item.viewDetails is $viewDetails', function ({ viewDetails }) {
+        const itemData = { ...fakeItems[0], viewDetails };
+        const item = mount(
+            <Item
+                user={TESTER_1}
+                itemData={itemData}
+                highBid={getHighBid(itemData.bids)}
+            />
+        );
+
+        expect(item.html().includes('open')).toEqual(viewDetails);
+        expect(item.html().includes('closed')).toEqual(!viewDetails);
     });
 
     it('toggleDescription called on click', function () {

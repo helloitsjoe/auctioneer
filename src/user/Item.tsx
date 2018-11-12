@@ -47,7 +47,9 @@ export function Item({ user, highBid, itemData, onToggleDescription, onQuickBid 
                     </button>
                 </div>
             </div>
-            <div className={`description ${descriptionClass} ${itemClass}`}>{itemData.description}</div>
+            <div
+                className={`description ${descriptionClass} ${itemClass}`}
+            >{itemData.description}</div>
         </div>
     );
 };

@@ -15,11 +15,7 @@ export const putRequest = (
         { adapter }
     );
 }
-export const deleteRequest = (
-    itemID: number,
-    dataURL: string = DATA_URL,
-    adapter: any = null
-) => (dispatch, getState, services) => {
+export const deleteRequest = (itemID: number, dataURL: string = DATA_URL, adapter: any = null) => (dispatch, getState, services) => {
     return services.axios.delete(`${dataURL}/${itemID}`, { adapter }).then(response => {
         const { deletedItemID } = response.data;
         dispatch(deleteItemSuccess(deletedItemID));

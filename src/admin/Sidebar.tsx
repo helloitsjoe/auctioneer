@@ -8,19 +8,20 @@ import { ItemData, selectAuctionItems, selectFocusedIndex } from '../reducers';
 type Props = {
     auctionItems: ItemData[];
     focusedIndex: number;
-    onItemClick: (i: number) => void;
+    addItem: () => void,
+    itemFocus: (i: number) => void
 }
 
-export const Sidebar = ({ auctionItems, focusedIndex, onItemClick }: Props) => (
+export const Sidebar = ({ auctionItems, focusedIndex, addItem, itemFocus }: Props) => (
     <div className="sidebar">
         {auctionItems.map((item, i) => (
             <SidebarItem
                 key={item.id}
                 itemData={item}
                 focused={i === focusedIndex}
-                onSelect={() => onItemClick(i)} />
+                onSelect={() => itemFocus(i)} />
         ))}
-        <AddItem onSelect={() => onItemClick(null)} />
+        <AddItem onSelect={addItem} />
     </div>
 )
 
@@ -29,10 +30,6 @@ const mapState = state => ({
     focusedIndex: selectFocusedIndex(state),
 })
 
-const mapDispatch = {
-    onItemClick(i: number) {
-        return (i === null) ? addItem() : itemFocus(i);
-    }
-}
+export const mapDispatchToProps = { addItem, itemFocus }
 
-export default connect(mapState, mapDispatch)(Sidebar);
+export default connect(mapState, mapDispatchToProps)(Sidebar);
