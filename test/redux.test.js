@@ -4,7 +4,7 @@ import { toggleDescription,
     quickBid,
     fetchAuctionError,
     fetchAuctionSuccess } from "../src/actions/auctionItemActions";
-import { TESTER_1 } from "./testUtils";
+import { TESTER_1, fakeItems } from "./testUtils";
 import { BID_INCREMENT,
     selectAuctionItems,
     selectFocusedIndex,
@@ -54,19 +54,42 @@ describe("redux duck tests", () => {
 
     describe('Admin', function () {
 
-        it("add item to store", function () {
+        it("add items to store", function () {
             expect(selectAuctionItems(getState()).length).toBe(0);
             dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('Something Else', InputKey.title));
             expect(selectAuctionItems(getState()).length).toBe(2);
             expect(selectAuctionItems(getState())[0].id).toBe(0);
             expect(selectAuctionItems(getState())[1].id).toBe(1);
             expect(selectFocusedIndex(getState())).toBe(1);
         });
 
+        it('add item no-op if current item has no title', function () {
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(1);
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(1);
+        });
+
+        it('add item selects item without title if one exists', function () {
+            dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            dispatch(itemFocus(0));
+            expect(selectFocusedIndex(getState())).toBe(0);
+            dispatch(addItem());
+            expect(selectAuctionItems(getState()).length).toBe(2);
+            expect(selectFocusedIndex(getState())).toBe(1);
+        });
+
         it('can add after deleting', function () {
             dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('Something Else', InputKey.title));
             expect(selectAuctionItems(getState()).length).toBe(2);
             dispatch(deleteItemSuccess(0));
             expect(selectAuctionItems(getState()).length).toBe(1);
@@ -75,16 +98,11 @@ describe("redux duck tests", () => {
             expect(selectAuctionItems(getState())[1].id).toBe(2);
         });
 
-        it.skip('add item no-op if selected has no title/description', function () {
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(1);
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(1);
-        });
-
         it('deleteItem removes item from store', function () {
             dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('Something Else', InputKey.title));
             expect(selectAuctionItems(getState()).length).toBe(2);
             dispatch(deleteItemSuccess(0));
             expect(selectAuctionItems(getState()).length).toBe(1);
@@ -107,8 +125,11 @@ describe("redux duck tests", () => {
 
         it('select item', function () {
             dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('Something Else', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('A Third Something', InputKey.title));
             expect(selectFocusedIndex(getState())).toBe(2);
             dispatch(itemFocus(0));
             expect(selectFocusedIndex(getState())).toBe(0);
@@ -166,8 +187,11 @@ describe("redux duck tests", () => {
 
         it('show/hide details', function () {
             dispatch(addItem());
+            dispatch(inputChange('Something', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('Something Else', InputKey.title));
             dispatch(addItem());
+            dispatch(inputChange('A Third Something', InputKey.title));
             expect(selectAuctionItems(getState()).some(item => item.viewDetails)).toBe(false);
             dispatch(toggleDescription(0));
             dispatch(toggleDescription(2));

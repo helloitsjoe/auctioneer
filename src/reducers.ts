@@ -113,6 +113,10 @@ const item = (state: StoreState, action: any) => {
                 focusedIndex: newfocusedIndex
             };
         case ADD_ITEM:
+            const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
+            if (blankItemIndex > -1) {
+                return { ...state, focusedIndex: blankItemIndex };
+            }
             const newItem = createNewAuctionItem(auctionItems);
             const auctionItemsWithNew = [...auctionItems, newItem]
             return {
@@ -144,6 +148,7 @@ export const selectAuctionItems = state => state.auctionItems;
 export const selectFocusedIndex = state => state.focusedIndex;
 
 export const selectFocusedItem = state => selectAuctionItems(state)[selectFocusedIndex(state)];
+export const selectLastItem = state => selectAuctionItems(state).slice(-1)[0];
 export const selectItem = (state, itemID) => selectAuctionItems(state).find(({id}) => id === itemID);
 export const selectItemBids = (state, itemID) => selectItem(state, itemID).bids;
 export const selectItemHighBid = (state, itemID) => getHighBid(selectItem(state, itemID).bids);

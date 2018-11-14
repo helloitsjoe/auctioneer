@@ -24,7 +24,7 @@ export const fakeItems = [{
     description: 'Includes Barabbajaggle of course',
     bids: [{value: 30000, name: 'min'}],
 },{
-    id: 2,
+    id: 1,
     title: 'A Very Donovan Christmas',
     description: 'And a Happy New Year',
     bids: [{value: 40000, name: 'min'}]
