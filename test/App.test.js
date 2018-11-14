@@ -99,7 +99,7 @@ describe('App', function () {
         });
 
         it('bid updates when user clicks button', async function () {
-            const firstButton = app.find('button.btn').first();
+            const firstButton = app.find('button.btn').at(0);
             expect(firstButton.text()).toEqual('Bid 155');
             firstButton.prop('onClick')({ stopPropagation: jest.fn() });
             expect(firstButton.text()).toEqual('Bid 160');

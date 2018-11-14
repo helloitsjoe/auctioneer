@@ -17,7 +17,6 @@ describe('UserNameForm', function() {
 
     it('displays uppercase username', function() {
         expect(input.html()).toMatch(/JOE/);
-        userNameForm.unmount();
     });
 
     it('update username on change', function() {
@@ -29,12 +28,12 @@ describe('UserNameForm', function() {
     it('blur input on submit', function() {
         const select = jest.fn();
         const preventDefault = jest.fn();
-        expect(document.activeElement).toMatchSnapshot();
+        expect(document.activeElement.tagName).toBe('BODY');
         input.prop('onFocus')({ target: { select } });
-        expect(document.activeElement).toMatchSnapshot();
+        expect(document.activeElement.tagName).toBe('INPUT');
         userNameForm.find('form').prop('onSubmit')({ preventDefault });
         expect(preventDefault).toBeCalledTimes(1);
-        expect(document.activeElement).toMatchSnapshot();
+        expect(document.activeElement.tagName).toBe('BODY');
     });
 
     it('select all text on focus', function() {

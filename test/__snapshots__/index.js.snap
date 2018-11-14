@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Auctioneer Sidebar AddItem works as expected 1`] = `"<div class=\\"sidebar-add-item sidebar-item\\"><span class=\\"plus\\">+</span></div>"`;
-
-exports[`Auctioneer Sidebar SidebarItem works as expected 1`] = `"<div class=\\"sidebar-item \\"><span class=\\"sidebar-item-text\\">Donovan&#x27;s Greatest Hits</span></div>"`;
-
-exports[`Auctioneer UserNameForm blur input on submit 1`] = `<body />`;
-
-exports[`Auctioneer UserNameForm blur input on submit 2`] = `
-<input
-  type="text"
-  value="JOE"
-/>
-`;
-
-exports[`Auctioneer UserNameForm blur input on submit 3`] = `<body />`;
-
 exports[`Auctioneer redux duck tests User load auction data 1`] = `
 Array [
   Object {

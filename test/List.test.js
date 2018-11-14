@@ -55,6 +55,6 @@ describe('List', function () {
             expect(item.bids.some(bid => bid.name === list.props('user'))).toEqual(false);
         });
 
-        expect(list.html()).toMatch(/<span>No bids yet!<\/span>/);
+        expect(list.text()).toBe('No bids yet!');
     });
 });
