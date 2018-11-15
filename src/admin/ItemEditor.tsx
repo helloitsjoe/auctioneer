@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { getMinBidValue } from '../utils';
 import { ItemData, selectFocusedItem } from '../reducers';
-import { inputChange, deleteRequest, putRequest } from '../actions/adminActions';
+import { inputChange, deleteRequest, submitChange } from '../actions/adminActions';
 
 export enum InputKey {
     title = 'title',
@@ -13,7 +13,7 @@ export enum InputKey {
 
 type Props = {
     itemData: ItemData;
-    putRequest: (itemData: ItemData) => void;
+    submitChange: (itemData: ItemData) => void;
     deleteRequest: (id: number) => void;
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;
@@ -24,8 +24,8 @@ type Props = {
 export const ItemEditor = ({
     itemData,
     onChangeTitle,
-    onChangeMinBid,
     onChangeDescription,
+    onChangeMinBid,
     onSubmitChanges,
     deleteRequest
 }: Props) => {
@@ -72,14 +72,14 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    putRequest,
+    submitChange,
     deleteRequest,
     inputChange,
 };
 
 export const mergeProps = (stateProps, dispatchProps) => {
     const {itemData} = stateProps;
-    const { putRequest, deleteRequest, inputChange} = dispatchProps;
+    const { submitChange, deleteRequest, inputChange} = dispatchProps;
     return {
         itemData,
         deleteRequest,
@@ -88,7 +88,7 @@ export const mergeProps = (stateProps, dispatchProps) => {
         onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
         onSubmitChanges(e) {
             e.preventDefault();
-            putRequest(itemData);
+            submitChange(itemData);
         },
     }
 }

@@ -11,7 +11,7 @@ describe('ItemEditor', function () {
     const onChangeMinBid = jest.fn();
     const onChangeTitle = jest.fn();
     const deleteRequest = jest.fn();
-    const putRequest = jest.fn();
+    const submitChange = jest.fn();
 
     const fakeItem = {
         id: 'FakeID',
@@ -45,11 +45,16 @@ describe('ItemEditor', function () {
         expect(func).toBeCalledWith({ target: { value: 'X' }});
     });
 
+    it('save disabled until user changes input', function () {
+        // test click
+        // test enter
+    });
+
     it('calls onSubmitChanges when user clicks save or hits enter', function () {
-        const putRequest = jest.fn();
+        const submitChange = jest.fn();
         const itemEditor = shallow(<ItemEditor
             onSubmitChanges={onSubmitChanges}
-            putRequest={putRequest}
+            submitChange={submitChange}
             itemData={fakeItem}
         />);
         const saveButton = itemEditor.find(`#submit`);
@@ -81,7 +86,7 @@ describe('ItemEditor', function () {
         const dispatchProps = {
             deleteRequest,
             inputChange,
-            putRequest,
+            submitChange,
         }
         const {
             onChangeDescription,
@@ -94,12 +99,12 @@ describe('ItemEditor', function () {
         expect(rest).toEqual({ itemData, deleteRequest });
         expect(preventDefault).not.toBeCalled();
         expect(inputChange).not.toBeCalled();
-        expect(putRequest).not.toBeCalled();
+        expect(submitChange).not.toBeCalled();
 
         const e = { preventDefault, target: { value: 'Bla' }};
         onSubmitChanges(e);
         expect(preventDefault).toBeCalledTimes(1);
-        expect(putRequest).toBeCalledTimes(1);
+        expect(submitChange).toBeCalledTimes(1);
 
         onChangeDescription(e);
         onChangeMinBid(e);

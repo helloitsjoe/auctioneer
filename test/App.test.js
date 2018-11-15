@@ -19,7 +19,7 @@ describe('App', function () {
         auctionItemsCopy = clone(auctionItems);
         moxios = {
             get: jest.fn().mockResolvedValue({ data: auctionItemsCopy }),
-            put: jest.fn(),
+            put: jest.fn().mockResolvedValue({ data: { updatedItem: {} } }),
         }
         store = initStore({ axios: moxios });
     });

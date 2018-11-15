@@ -1,5 +1,5 @@
 import { initStore } from "../src/store";
-import { addItem, itemFocus, deleteItemSuccess, inputChange } from "../src/actions/adminActions";
+import { addItem, itemFocus, deleteItemSuccess, inputChange, submitChangeSuccess } from "../src/actions/adminActions";
 import { toggleDescription,
     quickBid,
     fetchAuctionError,
@@ -10,14 +10,11 @@ import { BID_INCREMENT,
     selectFocusedIndex,
     selectIsLoaded,
     selectError,
-    selectItem } from "../src/reducers";
+    selectItem, 
+    selectFirstItem} from "../src/reducers";
 import { InputKey } from "../src/admin/ItemEditor";
 
 describe("redux duck tests", () => {
-
-    const moxios = {
-        put: jest.fn()
-    }
 
     const initialState = {
         auctionItems: [],
@@ -39,13 +36,13 @@ describe("redux duck tests", () => {
     let dispatch;
 
     beforeEach(() => {
-        const store = initStore({axios: moxios});
+        const store = initStore({});
         getState = store.getState;
         dispatch = store.dispatch;
     });
 
     afterEach(() => {
-        moxios.put.mockClear();
+        // moxios.put.mockClear();
     });
 
     it("initial state", function () {
@@ -147,6 +144,45 @@ describe("redux duck tests", () => {
             dispatch(itemFocus(0));
             expect(selectFocusedIndex(getState())).toBe(0);
         });
+
+        it('input change', function () {
+            const bids = [{name: 'min', value: 0}];
+            dispatch(addItem());
+            dispatch(itemFocus(0));
+            const [firstItem] = selectAuctionItems(getState());
+            expect(firstItem.title).toBe('');
+            expect(firstItem.description).toBe('');
+            expect(firstItem.bids).toEqual(bids);
+            dispatch(inputChange('Blah', InputKey.title));
+            const [firstItemTitleChange] = selectAuctionItems(getState());
+            expect(firstItemTitleChange.title).toBe('Blah');
+            expect(firstItemTitleChange.description).toBe('');
+            expect(firstItemTitleChange.bids).toEqual(bids);
+            dispatch(inputChange('Blah blah', InputKey.description));
+            const [firstItemDescChange] = selectAuctionItems(getState());
+            expect(firstItemDescChange.title).toBe('Blah');
+            expect(firstItemDescChange.description).toBe('Blah blah');
+            expect(firstItemDescChange.bids).toEqual(bids);
+            dispatch(inputChange('42', InputKey.minBid));
+            const [firstItemMinBidChange] = selectAuctionItems(getState());
+            expect(firstItemMinBidChange.title).toBe('Blah');
+            expect(firstItemMinBidChange.description).toBe('Blah blah');
+            expect(firstItemMinBidChange.bids).toEqual([{name: 'min', value: 42}]);
+        });
+
+        it('submit updates store', function () {
+            const fakeItem = {
+                id: 0,
+                title: 'Blah',
+                viewDetails: false,
+                description: 'Hello',
+                bids: [{name: 'Me', value: 5 }]
+            };
+            dispatch(addItem());
+            expect(selectFirstItem(getState())).toEqual(newItem);
+            dispatch(submitChangeSuccess(fakeItem));
+            expect(selectFirstItem(getState())).toEqual(fakeItem);
+        });
     });
 
     describe('User', function () {
@@ -227,48 +263,33 @@ describe("redux duck tests", () => {
 
         it('quick bid increments bid', function () {
             dispatch(addItem())
-            expect(selectAuctionItems(getState())[0].bids.length).toBe(1)
-            dispatch(quickBid(TESTER_1, 0));
-            const bids = selectAuctionItems(getState())[0].bids;
+            expect(selectFirstItem(getState()).bids.length).toBe(1)
+            dispatch(quickBid(TESTER_1, 0, true));
+            const bids = selectFirstItem(getState()).bids;
             expect(bids.length).toBe(2);
             expect(bids[1].name).toBe(TESTER_1);
             expect(bids[1].value).toBe(bids[0].value + BID_INCREMENT);
-            expect(moxios.put).toHaveBeenCalled();
+        });
+
+        it('quick bid calls put', function () {
+            const moxios = {
+                put: jest.fn().mockResolvedValue({ data: { updatedItem: {}}})
+            }
+            const { dispatch } = initStore({axios: moxios});
+            expect(moxios.put).not.toBeCalled();
+            dispatch(addItem());
+            dispatch(quickBid(TESTER_1, 0));
+            expect(moxios.put).toBeCalledTimes(1);
         });
 
         it('quick bid does nothing if item not in store', function () {
+            const moxios = { put: jest.fn() };
+            const { dispatch, getState } = initStore({axios: moxios});
             expect(moxios.put).not.toBeCalled();
             expect(selectAuctionItems(getState()).length).toBe(0);
             dispatch(quickBid(TESTER_1, 0));
             expect(getState()).toEqual(initialState);
             expect(moxios.put).not.toBeCalled()
-        });
-
-        it('input change', function () {
-            const bids = [{name: 'min', value: 0}, {name: TESTER_1, value: 5}];
-            dispatch(addItem());
-            dispatch(addItem());
-            dispatch(quickBid(TESTER_1, 0));
-            dispatch(itemFocus(0));
-            const [firstItem] = selectAuctionItems(getState());
-            expect(firstItem.title).toBe('');
-            expect(firstItem.description).toBe('');
-            expect(firstItem.bids).toEqual(bids);
-            dispatch(inputChange('Blah', InputKey.title));
-            const [firstItemTitleChange] = selectAuctionItems(getState());
-            expect(firstItemTitleChange.title).toBe('Blah');
-            expect(firstItemTitleChange.description).toBe('');
-            expect(firstItemTitleChange.bids).toEqual(bids);
-            dispatch(inputChange('Blah blah', InputKey.description));
-            const [firstItemDescChange] = selectAuctionItems(getState());
-            expect(firstItemDescChange.title).toBe('Blah');
-            expect(firstItemDescChange.description).toBe('Blah blah');
-            expect(firstItemDescChange.bids).toEqual(bids);
-            dispatch(inputChange('42', InputKey.minBid));
-            const [firstItemMinBidChange] = selectAuctionItems(getState());
-            expect(firstItemMinBidChange.title).toBe('Blah');
-            expect(firstItemMinBidChange.description).toBe('Blah blah');
-            expect(firstItemMinBidChange.bids).toEqual([{name: 'min', value: 42}, {name: TESTER_1, value: 5}]);
         });
     });
 });

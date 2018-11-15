@@ -34,6 +34,7 @@ export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 export const ADD_ITEM = 'ADD_ITEM';
 export const ITEM_FOCUSED = 'ITEM_FOCUSED';
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
+export const SUBMIT_CHANGE_SUCCESS = 'SUBMIT_CHANGE_SUCCESS';
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 
 const initialState: StoreState = {
@@ -64,6 +65,7 @@ export const auctionItems = (state = initialState, action) => {
         case QUICK_BID:
         case INPUT_CHANGE:
         case DELETE_ITEM_SUCCESS:
+        case SUBMIT_CHANGE_SUCCESS:
         case TOGGLE_DESCRIPTION:
             return item(state, action);
         default:
@@ -112,6 +114,11 @@ const item = (state: StoreState, action: any) => {
                 auctionItems: safeItemsAfterDelete,
                 focusedIndex: newfocusedIndex
             };
+        case SUBMIT_CHANGE_SUCCESS:
+            const { updatedItem } = action;
+            const itemsAfterUpdate = auctionItems.map(item =>
+                item.id === updatedItem.id ? { ...item, ...updatedItem } : item);
+            return { ...state, auctionItems: itemsAfterUpdate };
         case ADD_ITEM:
             const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
             if (blankItemIndex > -1) {
@@ -149,6 +156,7 @@ export const selectFocusedIndex = state => state.focusedIndex;
 
 export const selectFocusedItem = state => selectAuctionItems(state)[selectFocusedIndex(state)];
 export const selectLastItem = state => selectAuctionItems(state).slice(-1)[0];
+export const selectFirstItem = state => selectAuctionItems(state)[0];
 export const selectItem = (state, itemID) => selectAuctionItems(state).find(({id}) => id === itemID);
 export const selectItemBids = (state, itemID) => selectItem(state, itemID).bids;
 export const selectItemHighBid = (state, itemID) => getHighBid(selectItem(state, itemID).bids);

@@ -6,7 +6,7 @@ import {
     TOGGLE_DESCRIPTION,
     selectItem
 } from '../reducers';
-import { putRequest } from './adminActions';
+import { submitChange } from './adminActions';
 import { DATA_URL } from '../utils';
 
 export const fetchAuctionData = (userName: string, dataURL: string = DATA_URL, adapter: any = null) =>
@@ -24,11 +24,11 @@ export const fetchAuctionError = (err) => ({ type: FETCH_AUCTION_ERROR, err });
 export const fetchAuctionSuccess = ({userName, rawAuctionItems}) =>
     ({ type: FETCH_AUCTION_SUCCESS, userName, rawAuctionItems });
 
-export const quickBid = (userName: string, itemID: number) => (dispatch, getState) => {
+export const quickBid = (userName: string, itemID: number, unitTest: boolean = false) => (dispatch, getState) => {
     dispatch({ type: QUICK_BID, userName, itemID });
     const updatedItem = selectItem(getState(), itemID);
-    if (updatedItem != null) {
-        dispatch(putRequest(updatedItem));
+    if (updatedItem && !unitTest) {
+        dispatch(submitChange(updatedItem));
     }
 };
 export const toggleDescription = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });

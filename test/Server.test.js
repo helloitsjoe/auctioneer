@@ -1,6 +1,6 @@
 import * as path from 'path';
 import axios from 'axios';
-import { putRequest, deleteRequest } from '../src/actions/adminActions';
+import { submitChange, deleteRequest } from '../src/actions/adminActions';
 import { initStore } from '../src/store';
 import { createServer } from '../server/serverFactory';
 import { fetchAuctionData } from '../src/actions/auctionItemActions';
@@ -118,15 +118,15 @@ describe('Server', function () {
             expect(fetchResponse.data).toEqual(auctionData.data);
         });
     
-        it('putRequest', async function () {
+        it('submitChange', async function () {
             const fakeItem = {
                 id: 123,
                 title: 'Blah',
                 description: 'Babababa',
                 bids: [{name: 'me', value: 1}],
             };
-            const putResponse = await dispatch(putRequest(fakeItem, dataURL, adapter));
-            expect(putResponse.data).toEqual(fakeItem);
+            const putResponse = await dispatch(submitChange(fakeItem, dataURL, adapter));
+            expect(putResponse).toEqual({ updatedItem: fakeItem });
         });
     
         it('deleteRequest returns id of deleted item', async function () {
