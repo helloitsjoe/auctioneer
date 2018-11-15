@@ -4,7 +4,7 @@ import { toggleDescription,
     quickBid,
     fetchAuctionError,
     fetchAuctionSuccess } from "../src/actions/auctionItemActions";
-import { TESTER_1, fakeItems } from "./testUtils";
+import { TESTER_1 } from "./testUtils";
 import { BID_INCREMENT,
     selectAuctionItems,
     selectFocusedIndex,
@@ -121,7 +121,20 @@ describe("redux duck tests", () => {
             expect(selectAuctionItems(getState())[0].title).toBe('');
         });
 
-        it('save requires title and description', function () {});
+        // it('save requires title', function () {
+        //     dispatch(addItem());
+        //     dispatch()
+        // });
+
+        // it('save is disabled if no changes', function () {
+            
+        // });
+
+        // it('focus on another item warns if not saved', function () {
+        //     dispatch(addItem());
+        //     dispatch(inputChange('Something', InputKey.title));
+        //     dispatch(addItem());
+        // });
 
         it('select item', function () {
             dispatch(addItem());
