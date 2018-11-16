@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { getMinBidValue } from '../utils';
-import { ItemData, selectFocusedItem } from '../reducers';
+import { ItemData, selectFocusedItem, selectFocusedIndex } from '../reducers';
 import { inputChange, deleteRequest, submitChange } from '../actions/adminActions';
 
 export enum InputKey {
@@ -12,85 +12,124 @@ export enum InputKey {
 }
 
 type Props = {
-    itemData: ItemData;
+    initialItemData: ItemData;
     submitChange: (itemData: ItemData) => void;
     deleteRequest: (id: number) => void;
     onChangeTitle: (e: any) => void;
-    onChangeMinBid: (e: any) => void;
-    onChangeDescription: (e: any) => void;
     onSubmitChanges: (e: any) => void;
 }
 
-export const ItemEditor = ({
-    itemData,
-    onChangeTitle,
-    onChangeDescription,
-    onChangeMinBid,
-    onSubmitChanges,
-    deleteRequest
-}: Props) => {
+type State = {
+    dirty: boolean,
+    // itemData: ItemData
+    title: string,
+    description: string,
+    minBid: number,
+    id: number
+}
+
+export class ItemEditor extends React.Component<Props, State> {
 
     // FIXME: Sidebar title changes remain after clicking on another item
     // TODO: Warn if user is going to click away from changes...
     // TODO: Warn if user is trying to add a second item without adding a title/description
     // TODO: Prohibit addItem submit without title and description
 
-    return (
-        <div className="main-item">
-            <form action="submit" onSubmit={onSubmitChanges}>
-                <div className="main-element">
-                    Title:
-                    <input id="title" type="text" value={itemData.title} onChange={onChangeTitle} />
-                </div>
-                <div className="main-element">
-                    Minimum Bid: $
-                    <input
-                        id="minimum"
-                        type="number"
-                        value={getMinBidValue(itemData.bids)}
-                        onChange={onChangeMinBid}
-                    />
-                </div>
-                <div className="main-element">
-                    <p>Description:</p>
-                    <textarea
-                        form="item-form"
-                        name="description"
-                        id="description"
-                        value={itemData.description}
-                        onChange={onChangeDescription} />
-                </div>
-                <button id="submit" className="save" type="submit" onClick={onSubmitChanges}>Save</button>
-                <button id="delete" className="u-pull-right delete" type="button" onClick={() => deleteRequest(itemData.id)}>Delete</button>
-            </form>
-        </div>
-    )
+    state = {
+        dirty: false,
+        // itemData: this.props.initialItemData
+        title: this.props.initialItemData.title,
+        description: this.props.initialItemData.description,
+        minBid: getMinBidValue(this.props.initialItemData.bids),
+        id: this.props.initialItemData.id
+    }
+
+    handleTitle = (e) => {
+        const { value: title } = e.target;
+        this.setState({ dirty: true, title });
+        this.props.onChangeTitle(e);
+    }
+
+    handleMinBid = (e) => {
+        const { value: minBid } = e.target;
+        this.setState({ dirty: true, minBid: Number(minBid) });
+    }
+
+    handleDescription = (e) => {
+        const { value: description } = e.target;
+        this.setState({ dirty: true, description });
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.setState({ dirty: false });
+        const { title, description, minBid } = this.state;
+        const bids = this.props.initialItemData.bids.map(bid =>
+            bid.name === 'min' ? { ...bid, value: minBid } : bid);
+        this.props.submitChange({
+            ...this.props.initialItemData,
+            title,
+            description,
+            bids
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.initialItemData.id === this.props.initialItemData.id) {
+            return;
+        }
+        const { initialItemData: item } = this.props;
+        this.setState({
+            title: item.title,
+            description: item.description,
+            id: item.id,
+            minBid: getMinBidValue(item.bids)
+        });
+    }
+
+    render() {
+        const { title, description, minBid } = this.state;
+        return (
+            <div className="main-item">
+                <form action="submit" onSubmit={this.handleSubmit}>
+                    <div className="main-element">
+                        Title:
+                        <input id="title" type="text" value={title} onChange={this.handleTitle} />
+                    </div>
+                    <div className="main-element">
+                        Minimum Bid: $
+                        <input
+                            id="minimum"
+                            type="number"
+                            value={minBid}
+                            onChange={this.handleMinBid}
+                        />
+                    </div>
+                    <div className="main-element">
+                        <p>Description:</p>
+                        <textarea
+                            form="item-form"
+                            name="description"
+                            id="description"
+                            value={description}
+                            onChange={this.handleDescription} />
+                    </div>
+                    <button id="submit" className="save" type="submit" onClick={this.handleSubmit}>Save</button>
+                    <button id="delete" className="u-pull-right delete" type="button" onClick={() => this.props.deleteRequest(this.state.id)}>Delete</button>
+                </form>
+            </div>
+        )
+    }
 }
 
 const mapStateToProps = (state) => ({
-    itemData: selectFocusedItem(state)
+    initialItemData: selectFocusedItem(state)
 })
 
 const mapDispatchToProps = {
     submitChange,
     deleteRequest,
-    inputChange,
+    onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
 };
 
-export const mergeProps = (stateProps, dispatchProps) => {
-    const {itemData} = stateProps;
-    const { submitChange, deleteRequest, inputChange} = dispatchProps;
-    return {
-        itemData,
-        deleteRequest,
-        onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
-        onChangeMinBid: (e) => inputChange(e.target.value, InputKey.minBid),
-        onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
-        onSubmitChanges(e) {
-            e.preventDefault();
-            submitChange(itemData);
-        },
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ItemEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ItemEditor);

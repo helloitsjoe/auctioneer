@@ -145,7 +145,7 @@ describe("redux duck tests", () => {
             expect(selectFocusedIndex(getState())).toBe(0);
         });
 
-        it('input change', function () {
+        it('title input change', function () {
             const bids = [{name: 'min', value: 0}];
             dispatch(addItem());
             dispatch(itemFocus(0));
@@ -158,16 +158,6 @@ describe("redux duck tests", () => {
             expect(firstItemTitleChange.title).toBe('Blah');
             expect(firstItemTitleChange.description).toBe('');
             expect(firstItemTitleChange.bids).toEqual(bids);
-            dispatch(inputChange('Blah blah', InputKey.description));
-            const [firstItemDescChange] = selectAuctionItems(getState());
-            expect(firstItemDescChange.title).toBe('Blah');
-            expect(firstItemDescChange.description).toBe('Blah blah');
-            expect(firstItemDescChange.bids).toEqual(bids);
-            dispatch(inputChange('42', InputKey.minBid));
-            const [firstItemMinBidChange] = selectAuctionItems(getState());
-            expect(firstItemMinBidChange.title).toBe('Blah');
-            expect(firstItemMinBidChange.description).toBe('Blah blah');
-            expect(firstItemMinBidChange.bids).toEqual([{name: 'min', value: 42}]);
         });
 
         it('submit updates store', function () {

@@ -14,6 +14,7 @@ describe('App', function () {
     let store;
     let moxios;
     let auctionItemsCopy;
+    let provider;
 
     beforeEach(async () => {
         auctionItemsCopy = clone(auctionItems);
@@ -25,12 +26,13 @@ describe('App', function () {
     });
 
     afterEach(() => {
+        provider.unmount();
         auctionItemsCopy = null;
         store = null;
     })
     
     it('isLoaded = false until data returns', function () {
-        const provider = mount(
+        provider = mount(
             <Provider store={store}>
                 <App />
             </Provider>
@@ -43,7 +45,7 @@ describe('App', function () {
         const poller = new Poller();
         moxios.get = jest.fn().mockRejectedValue('Poop!');
         store = initStore({ axios: moxios });
-        const provider = mount(
+        provider = mount(
             <Provider store={store}>
                 <App poller={poller}/>
             </Provider>
@@ -58,7 +60,6 @@ describe('App', function () {
     describe('after data loads', function () {
         
         const poller = new Poller();
-        let provider;
         let app;
 
         beforeEach(async () => {
@@ -71,10 +72,6 @@ describe('App', function () {
             await wait(); // Wait for async moxios call to return
             provider.update();
             app = provider.find('App');
-        });
-
-        afterEach(() => {
-            provider.unmount();
         });
         
         it('isLoaded = true after data returns', function () {

@@ -11,13 +11,15 @@ describe('AdminPage', function () {
         const poller = new Poller();
         poller.init(() => {});
         expect(poller.isPolling).toBe(true);
-        shallow(<AdminPage poller={poller} />);
+        const admin = shallow(<AdminPage poller={poller} />);
         expect(poller.isPolling).toBe(false);
+        admin.unmount();
     });
 
     it('AdminHeader links back to /', function () {
         const header = mount(<Router><AdminHeader /></Router>);
         const link = header.find('Link');
         expect(link.prop('to')).toBe('/');
+        header.unmount();
     });
 });

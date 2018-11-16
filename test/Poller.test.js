@@ -18,5 +18,6 @@ describe('Poller', function () {
         poller.start();
         expect(poller.isPolling).toBe(true);
         poller.stop();
+        jest.useRealTimers();
     });
 });
