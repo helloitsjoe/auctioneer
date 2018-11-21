@@ -54,13 +54,18 @@ export class App extends React.Component<Props> {
                 <Router>
                     <Switch>
                         <Route exact path="/admin" render={() => 
-                            <AdminPage poller={this.props.poller} />} />
+                            <AdminPage
+                                poller={this.props.poller}
+                            />
+                        } />
                         <Route path="/" render={({location}) => 
                             <BidsPage
                                 poller={this.props.poller}
                                 auctionItems={auctionItems}
                                 user={sessionStorage.getItem('userName')}
-                                filter={location.pathname === '/user'} />} />
+                                filter={location.pathname === '/user'}
+                            />
+                        } />
                     </Switch>
                 </Router>
             );

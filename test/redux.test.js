@@ -4,21 +4,26 @@ import { toggleDescription,
     quickBid,
     fetchAuctionError,
     fetchAuctionSuccess } from "../src/actions/auctionItemActions";
-import { TESTER_1 } from "./testUtils";
+import { TESTER_1, fakeItems } from "./testUtils";
 import { BID_INCREMENT,
     selectAuctionItems,
     selectFocusedIndex,
     selectIsLoaded,
     selectError,
     selectItem, 
-    selectFirstItem} from "../src/reducers";
+    selectFirstItem,
+    selectFocusedItem,
+    selectConfirmDiscard } from "../src/reducers";
 import { InputKey } from "../src/admin/ItemEditor";
+import { createNewAuctionItem } from "../src/utils";
 
 describe("redux duck tests", () => {
 
     const initialState = {
         auctionItems: [],
         error: null,
+        confirmDiscard: false,
+        dirty: false,
         isLoaded: false,
         focusedIndex: 0,
         userTotal: 0
@@ -71,22 +76,18 @@ describe("redux duck tests", () => {
         });
 
         it('add item selects item without title if one exists', function () {
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(2);
+            expect(selectAuctionItems(getState()).length).toBe(3);
             dispatch(itemFocus(0));
             expect(selectFocusedIndex(getState())).toBe(0);
             dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(2);
-            expect(selectFocusedIndex(getState())).toBe(1);
+            expect(selectAuctionItems(getState()).length).toBe(3);
+            expect(selectFocusedIndex(getState())).toBe(2);
         });
 
         it('can add after deleting', function () {
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('Something Else', InputKey.title));
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             expect(selectAuctionItems(getState()).length).toBe(2);
             dispatch(deleteItemSuccess(0));
             expect(selectAuctionItems(getState()).length).toBe(1);
@@ -96,10 +97,7 @@ describe("redux duck tests", () => {
         });
 
         it('deleteItem removes item from store', function () {
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('Something Else', InputKey.title));
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             expect(selectAuctionItems(getState()).length).toBe(2);
             dispatch(deleteItemSuccess(0));
             expect(selectAuctionItems(getState()).length).toBe(1);
@@ -111,11 +109,11 @@ describe("redux duck tests", () => {
             dispatch(addItem());
             dispatch(inputChange('Something', InputKey.title));
             expect(selectAuctionItems(getState()).length).toBe(1);
-            expect(selectAuctionItems(getState())[0].id).toBe(0);
-            expect(selectAuctionItems(getState())[0].title).toBe('Something');
+            expect(selectFocusedItem(getState()).id).toBe(0);
+            expect(selectFocusedItem(getState()).title).toBe('Something');
             dispatch(deleteItemSuccess(0));
             expect(selectAuctionItems(getState()).length).toBe(1);
-            expect(selectAuctionItems(getState())[0].title).toBe('');
+            expect(selectFocusedItem(getState()).title).toBe('');
         });
 
         // it('save requires title', function () {
@@ -127,47 +125,44 @@ describe("redux duck tests", () => {
             
         // });
 
-        // it('focus on another item warns if not saved', function () {
-        //     dispatch(addItem());
-        //     dispatch(inputChange('Something', InputKey.title));
-        //     dispatch(addItem());
-        // });
-
         it('select item', function () {
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('Something Else', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('A Third Something', InputKey.title));
-            expect(selectFocusedIndex(getState())).toBe(2);
-            dispatch(itemFocus(0));
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             expect(selectFocusedIndex(getState())).toBe(0);
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(1);
         });
 
         it('input change', function () {
             const bids = [{name: 'min', value: 0}];
             dispatch(addItem());
             dispatch(itemFocus(0));
-            const [firstItem] = selectAuctionItems(getState());
-            expect(firstItem.title).toBe('');
-            expect(firstItem.description).toBe('');
-            expect(firstItem.bids).toEqual(bids);
+            expect(selectFocusedItem(getState()))
+                .toMatchObject({
+                    title: '',
+                    description: '',
+                    bids
+                });
             dispatch(inputChange('Blah', InputKey.title));
-            const [firstItemTitleChange] = selectAuctionItems(getState());
-            expect(firstItemTitleChange.title).toBe('Blah');
-            expect(firstItemTitleChange.description).toBe('');
-            expect(firstItemTitleChange.bids).toEqual(bids);
+            expect(selectFocusedItem(getState()))
+                .toMatchObject({
+                    title: 'Blah',
+                    description: '',
+                    bids
+                });
             dispatch(inputChange('Blah blah', InputKey.description));
-            const [firstItemDescChange] = selectAuctionItems(getState());
-            expect(firstItemDescChange.title).toBe('Blah');
-            expect(firstItemDescChange.description).toBe('Blah blah');
-            expect(firstItemDescChange.bids).toEqual(bids);
+            expect(selectFocusedItem(getState()))
+                .toMatchObject({
+                    title: 'Blah',
+                    description: 'Blah blah',
+                    bids
+                });
             dispatch(inputChange('42', InputKey.minBid));
-            const [firstItemMinBidChange] = selectAuctionItems(getState());
-            expect(firstItemMinBidChange.title).toBe('Blah');
-            expect(firstItemMinBidChange.description).toBe('Blah blah');
-            expect(firstItemMinBidChange.bids).toEqual([{name: 'min', value: 42}]);
+            expect(selectFocusedItem(getState()))
+                .toMatchObject({
+                    title: 'Blah',
+                    description: 'Blah blah',
+                    bids: [{name: 'min', value: 42}]
+                });
         });
 
         it('submit updates store', function () {
@@ -182,6 +177,22 @@ describe("redux duck tests", () => {
             expect(selectFirstItem(getState())).toEqual(newItem);
             dispatch(submitChangeSuccess(fakeItem));
             expect(selectFirstItem(getState())).toEqual(fakeItem);
+        });
+
+        it('select item does nothing if unsaved changes', function () {
+            dispatch(submitChangeSuccess({rawAuctionItems: fakeItems}));
+            dispatch(inputChange('New description', InputKey.description));
+            expect(selectFocusedIndex(getState())).toBe(0);
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(0);
+        });
+
+        it('confirm discard if unsaved changes', function () {
+            dispatch(submitChangeSuccess({rawAuctionItems: fakeItems}));
+            expect(selectConfirmDiscard(getState())).toBe(false);
+            dispatch(inputChange('New title', InputKey.title));
+            dispatch(itemFocus(1));
+            expect(selectConfirmDiscard(getState())).toBe(true);            
         });
     });
 
@@ -235,12 +246,9 @@ describe("redux duck tests", () => {
         });
 
         it('show/hide details', function () {
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('Something Else', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('A Third Something', InputKey.title));
+            const thirdItem = {...createNewAuctionItem(fakeItems), title: 'Third'};
+            const fakeWithThree = [...fakeItems, thirdItem];
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeWithThree}));
             expect(selectAuctionItems(getState()).some(item => item.viewDetails)).toBe(false);
             dispatch(toggleDescription(0));
             dispatch(toggleDescription(2));

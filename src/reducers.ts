@@ -16,6 +16,8 @@ export type Bid = {
 
 export type StoreState = {
     error: Error;
+    dirty: boolean;
+    confirmDiscard: boolean;
     isLoaded: boolean;
     auctionItems: ItemData[];
     focusedIndex: number;
@@ -39,6 +41,8 @@ export const INPUT_CHANGE = 'INPUT_CHANGE';
 
 const initialState: StoreState = {
     error: null,
+    dirty: false,
+    confirmDiscard: false,
     isLoaded: false,
     auctionItems: [],
     focusedIndex: 0,
@@ -60,7 +64,8 @@ export const auctionItems = (state = initialState, action) => {
         case FETCH_AUCTION_ERROR:
             return { ...state, error: action.err, isLoaded: true };
         case ITEM_FOCUSED:
-            return { ...state, focusedIndex: action.itemIndex };
+            return state.dirty ? {...state, confirmDiscard: true }
+                : { ...state, focusedIndex: action.itemIndex };
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -118,7 +123,7 @@ const item = (state: StoreState, action: any) => {
             const { updatedItem } = action;
             const itemsAfterUpdate = auctionItems.map(item =>
                 item.id === updatedItem.id ? { ...item, ...updatedItem } : item);
-            return { ...state, auctionItems: itemsAfterUpdate };
+            return { ...state, dirty: false, auctionItems: itemsAfterUpdate };
         case ADD_ITEM:
             const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
             if (blankItemIndex > -1) {
@@ -144,7 +149,7 @@ const item = (state: StoreState, action: any) => {
                 }
                 return item;
             })
-            return { ...state, auctionItems: itemsWithInputChange };
+            return { ...state, dirty: true, auctionItems: itemsWithInputChange };
     }
 }
 
@@ -153,6 +158,7 @@ export const selectIsLoaded = state => state.isLoaded;
 export const selectUserTotal = state => state.userTotal;
 export const selectAuctionItems = state => state.auctionItems;
 export const selectFocusedIndex = state => state.focusedIndex;
+export const selectConfirmDiscard = state => state.confirmDiscard;
 
 export const selectFocusedItem = state => selectAuctionItems(state)[selectFocusedIndex(state)];
 export const selectLastItem = state => selectAuctionItems(state).slice(-1)[0];
