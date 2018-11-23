@@ -32,16 +32,22 @@ describe('ConfirmDiscard', function () {
     });
 
     it('save changes', function () {
-        wrapper = mount(<ConfirmDiscard onCloseModal={() => {}} />)
+        const onSaveChanges = jest.fn();
+        wrapper = mount(<ConfirmDiscard
+            onSaveChanges={onSaveChanges}
+            onCloseModal={() => {}} />)
         const save = wrapper.find('.save');
         save.prop('onClick')();
-        expect(onSubmitChanges).toBeCalledTimes(1);
+        expect(onSaveChanges).toBeCalledTimes(1);
     });
 
     it('discard changes', function () {
-        wrapper = mount(<ConfirmDiscard onCloseModal={() => {}} />)
-        const discard = wrapper.find('.discard-continue');
+        const onDiscardChanges = jest.fn();
+        wrapper = mount(<ConfirmDiscard
+            onDiscardChanges={onDiscardChanges}
+            onCloseModal={() => {}} />)
+        const discard = wrapper.find('.discard');
         discard.prop('onClick')();
-        expect(onSubmitChanges).toBeCalledTimes(0);
+        expect(onDiscardChanges).toBeCalledTimes(1);
     });
 });

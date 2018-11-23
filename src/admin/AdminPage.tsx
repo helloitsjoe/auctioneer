@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {closeModal, submitChange, discardChange } from '../actions/adminActions';
-import {selectConfirmDiscard} from '../reducers';
+import {selectConfirmDiscard, selectFocusedItem, ItemData} from '../reducers';
 
 import ItemEditor from './ItemEditor';
 import { Poller } from '../Poller';
@@ -12,8 +12,9 @@ import {ConfirmDiscard} from './ConfirmDiscard';
 type Props = {
     poller: Poller;
     confirmDiscard: boolean;
+    focusedItem: ItemData;
     closeModal: () => void;
-    submitChange: () => void;
+    submitChange: (item: ItemData) => void;
     discardChange: () => void;
 }
 
@@ -39,7 +40,7 @@ export class AdminPage extends React.Component<Props> {
             <div>
                 {this.props.confirmDiscard &&
                     <ConfirmDiscard
-                        onSaveChanges={this.props.submitChange}
+                        onSaveChanges={() => this.props.submitChange(this.props.focusedItem)}
                         onDiscardChanges={this.props.discardChange}
                         onCloseModal={this.handleCloseModal} />}
                 <AdminHeader />
@@ -54,6 +55,7 @@ export class AdminPage extends React.Component<Props> {
 
 const mStP = state => ({
     confirmDiscard: selectConfirmDiscard(state),
+    focusedItem: selectFocusedItem(state),
 });
 
 const mDtP = {

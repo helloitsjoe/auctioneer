@@ -68,7 +68,7 @@ export const ItemEditor = ({
 }
 
 const mapStateToProps = (state) => ({
-    itemData: selectFocusedItem(state)
+    itemData: selectFocusedItem(state),
 })
 
 const mapDispatchToProps = {
@@ -79,7 +79,7 @@ const mapDispatchToProps = {
 
 export const mergeProps = (stateProps, dispatchProps) => {
     const {itemData} = stateProps;
-    const { submitChange, deleteRequest, inputChange} = dispatchProps;
+    const {submitChange, deleteRequest, inputChange} = dispatchProps;
     return {
         itemData,
         deleteRequest,
