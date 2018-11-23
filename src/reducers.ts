@@ -17,10 +17,10 @@ export type Bid = {
 export type StoreState = {
     error: Error;
     dirty: boolean;
+    focusedIndex: number;
     confirmDiscard: boolean;
     isLoaded: boolean;
     auctionItems: ItemData[];
-    focusedIndex: number;
     userTotal: number;
 }
 
@@ -31,6 +31,8 @@ export const FETCH_AUCTION_SUCCESS = 'FETCH_AUCTION_SUCCESS';
 export const FETCH_AUCTION_ERROR = 'FETCH_AUCTION_ERROR';
 
 export const QUICK_BID = 'QUICK_BID';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const DISCARD_CHANGE = 'DISCARD_CHANGE';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 
 export const ADD_ITEM = 'ADD_ITEM';
@@ -42,10 +44,10 @@ export const INPUT_CHANGE = 'INPUT_CHANGE';
 const initialState: StoreState = {
     error: null,
     dirty: false,
+    focusedIndex: 0,
     confirmDiscard: false,
     isLoaded: false,
     auctionItems: [],
-    focusedIndex: 0,
     userTotal: 0,
 }
 
@@ -66,6 +68,8 @@ export const auctionItems = (state = initialState, action) => {
         case ITEM_FOCUSED:
             return state.dirty ? {...state, confirmDiscard: true }
                 : { ...state, focusedIndex: action.itemIndex };
+        case CLOSE_MODAL:
+            return {...state, confirmDiscard: false }
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -137,6 +141,7 @@ const item = (state: StoreState, action: any) => {
                 focusedIndex: auctionItemsWithNew.indexOf(newItem)
             };
         case INPUT_CHANGE:
+        // TODO: Maybe store dirty info in a temp variable in store instead of auctionItems, easier to discard that way
             const { key, value } = action;
             const itemsWithInputChange = auctionItems.map((item, index) => {
                 if (index === focusedIndex) {

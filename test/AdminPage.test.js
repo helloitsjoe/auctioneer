@@ -1,23 +1,84 @@
 import * as React from 'react';
+import { Provider } from 'react-redux';
 import { shallow, mount } from 'enzyme';
 import { Poller } from '../src/Poller';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { AdminPage } from '../src/admin/AdminPage';
+import ConnectedAdminPage, {AdminPage} from '../src/admin/AdminPage';
 import { AdminHeader } from '../src/admin/AdminHeader';
+import { initStore } from '../src/store';
+import { fetchAuctionSuccess } from '../src/actions/auctionItemActions';
+import { fakeItems, AdminRouter } from './testUtils';
 
 describe('AdminPage', function () {
+
+    let wrapper;
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        wrapper.unmount();
+    })
 
     it('stops poller on mount', function () {
         const poller = new Poller();
         poller.init(() => {});
         expect(poller.isPolling).toBe(true);
-        shallow(<AdminPage poller={poller} />);
+        wrapper = shallow(<AdminPage poller={poller} />);
         expect(poller.isPolling).toBe(false);
     });
 
     it('AdminHeader links back to /', function () {
-        const header = mount(<Router><AdminHeader /></Router>);
-        const link = header.find('Link');
+        wrapper = mount(<AdminRouter><AdminHeader /></AdminRouter>);
+        const link = wrapper.find('Link');
         expect(link.prop('to')).toBe('/');
+    });
+
+    it('warns user if they navigate away from unsaved changes', function () {
+        const store = initStore();
+        store.dispatch(fetchAuctionSuccess({ rawAuctionItems: fakeItems }));
+        wrapper = mount(
+            <Provider store={store}>
+                <AdminRouter>
+                    <ConnectedAdminPage />
+                </AdminRouter>
+            </Provider>
+        )
+        const title = wrapper.find('#title');
+        const first = wrapper.find('.sidebar-item').at(0);
+        const second = wrapper.find('.sidebar-item').at(1);
+
+        expect(first.hasClass('focused')).toBe(true);
+        expect(second.hasClass('focused')).toBe(false);
+        expect(wrapper.find('.confirm-discard').length).toBe(0);
+
+        title.prop('onChange')({target: {value: 'Foo'}});
+        second.prop('onClick')();
+
+        expect(first.hasClass('focused')).toBe(true);
+        expect(second.hasClass('focused')).toBe(false);
+        wrapper.update();
+        expect(wrapper.find('.confirm-discard').length).toBe(1);
+    });
+
+    it('clicking outside modal clears modal with no change', function () {
+        const store = initStore();
+        store.dispatch(fetchAuctionSuccess({ rawAuctionItems: fakeItems }));
+        wrapper = mount(
+            <Provider store={store}>
+                <AdminRouter>
+                    <ConnectedAdminPage />
+                </AdminRouter>
+            </Provider>
+        )
+        const title = wrapper.find('#title');
+        const second = wrapper.find('.sidebar-item').at(1);
+
+        // Change first item title
+        title.prop('onChange')({target: {value: 'Foo'}});
+        second.prop('onClick')();
+        wrapper.update();
+        expect(wrapper.find('.confirm-discard').length).toBe(1);
+
+        wrapper.find('.confirm-discard-background').prop('onClick')({stopPropagation: jest.fn()});
+        wrapper.update();
+        expect(wrapper.find('.confirm-discard').length).toBe(0);
     });
 });

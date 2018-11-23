@@ -6,17 +6,19 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Poller } from './Poller';
 import { BidsPage } from './user/BidsPage';
 import { randFromArr, DEFAULT_NAMES } from './utils';
-import { AdminPage } from './admin/AdminPage';
+import AdminPage from './admin/AdminPage';
 import { fetchAuctionData } from './actions/auctionItemActions';
 import { ItemData, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
 
 type Props = {
-    axios: any
     error: Error,
     isLoaded: boolean,
     auctionItems: ItemData[],
+    confirmDiscard: boolean,
     fetchAuctionData: (userName: string) => void;
-    poller: Poller,
+    axios?: any
+    poller?: Poller,
+    router?: Router,
 }
 
 export class App extends React.Component<Props> {
@@ -24,15 +26,13 @@ export class App extends React.Component<Props> {
     static defaultProps = {
         poller: new Poller(),
         axios: axios,
+        router: Router,
     }
 
-    constructor(props) {
-        super(props);
+    componentDidMount() {
         const userName = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
         sessionStorage.setItem('userName', userName);
-    }
 
-    async componentDidMount() {
         // Kick off poll every second for new auction data... TODO: Make this a socket?
         this.props.poller.init(this.props.fetchAuctionData);
     }
@@ -42,7 +42,14 @@ export class App extends React.Component<Props> {
     }
 
     render() {
-        const { error, isLoaded, auctionItems, poller } = this.props;
+        const {
+            error,
+            isLoaded,
+            auctionItems,
+            poller,
+            router: Router,
+            confirmDiscard,
+        } = this.props;
 
         if (error) {
             poller.stop();
@@ -75,7 +82,7 @@ export class App extends React.Component<Props> {
 const mapStateToProps = state => ({
   error: selectError(state),
   isLoaded: selectIsLoaded(state),
-  auctionItems: selectAuctionItems(state)
+  auctionItems: selectAuctionItems(state),
 });
 
 const mapDispatchToProps = {

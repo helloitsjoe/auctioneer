@@ -8,6 +8,7 @@ describe('Auctioneer', function () {
     require('./Poller.test');
     require('./Sidebar.test');
     require('./BidsPage.test');
+    require('./ConfirmDiscard');
     require('./AdminPage.test');
     require('./ItemEditor.test');
     require('./UserNameForm.test');

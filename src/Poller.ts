@@ -9,7 +9,7 @@ export class Poller {
         this.start();
     }
 
-    async start() {
+    start() {
         if (this.isPolling) {
             return;
         }

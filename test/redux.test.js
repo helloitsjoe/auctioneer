@@ -1,5 +1,12 @@
 import { initStore } from "../src/store";
-import { addItem, itemFocus, deleteItemSuccess, inputChange, submitChangeSuccess } from "../src/actions/adminActions";
+import {
+    addItem,
+    itemFocus,
+    closeModal,
+    deleteItemSuccess,
+    inputChange,
+    submitChangeSuccess
+} from "../src/actions/adminActions";
 import { toggleDescription,
     quickBid,
     fetchAuctionError,
@@ -193,6 +200,24 @@ describe("redux duck tests", () => {
             dispatch(inputChange('New title', InputKey.title));
             dispatch(itemFocus(1));
             expect(selectConfirmDiscard(getState())).toBe(true);            
+        });
+
+        it('clear confirm discard without changing focus', function () {
+            dispatch(submitChangeSuccess({rawAuctionItems: fakeItems}));
+            dispatch(inputChange('New title', InputKey.title));
+            dispatch(itemFocus(1));
+            expect(selectConfirmDiscard(getState())).toBe(true);
+            dispatch(closeModal());
+            expect(selectConfirmDiscard(getState())).toBe(false);
+            expect(selectFocusedIndex(getState())).toBe(0);
+        });
+
+        it('save and continue focuses on new item', function () {
+            
+        });
+
+        it('discard and continue focuses on new item', function () {
+            
         });
     });
 

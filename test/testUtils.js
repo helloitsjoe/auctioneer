@@ -1,3 +1,6 @@
+import * as React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+
 import { BID_INCREMENT } from "../src/reducers";
 
 export const TESTER_1 = 'TESTER 1';
@@ -29,3 +32,7 @@ export const fakeItems = [{
     description: 'And a Happy New Year',
     bids: [{value: 40000, name: 'min'}]
 }];
+
+export function AdminRouter(props) {
+    return <MemoryRouter initialEntries={['/admin']}>{props.children}</MemoryRouter>
+}
