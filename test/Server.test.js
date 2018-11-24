@@ -134,6 +134,11 @@ describe('Server', function () {
             expect(deleteResponse).toEqual({ deletedItemID: 1 });
         });
 
+        it('deleteRequest returns id if item not in auctionItems', async function () {
+            const deleteResponse = await dispatch(deleteRequest(5000, dataURL, adapter));
+            expect(deleteResponse).toEqual({ deletedItemID: 5000 });
+        });
+
         it('deleteRequest returns undefined if item not found', async function () {
             const deleteResponse = await dispatch(deleteRequest(null, dataURL, adapter));
             expect(deleteResponse).toBeUndefined();

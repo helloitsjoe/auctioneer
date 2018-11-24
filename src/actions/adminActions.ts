@@ -1,10 +1,21 @@
 import { DATA_URL } from '../utils';
-import { ItemData, ADD_ITEM, ITEM_FOCUSED, INPUT_CHANGE, SUBMIT_CHANGE_SUCCESS, DELETE_ITEM_SUCCESS } from '../reducers';
+import {
+    ItemData,
+    ADD_ITEM,
+    ITEM_FOCUSED,
+    INPUT_CHANGE,
+    SUBMIT_CHANGE_SUCCESS,
+    DELETE_ITEM_SUCCESS,
+    DISCARD_CHANGE,
+    CLOSE_MODAL
+} from '../reducers';
 import { InputKey } from '../admin/ItemEditor';
 
 export const addItem = () => ({ type: ADD_ITEM });
+export const closeModal = () => ({ type: CLOSE_MODAL });
 export const itemFocus = (itemIndex: number) => ({ type: ITEM_FOCUSED, itemIndex });
 export const inputChange = (value: string, key: InputKey) => ({ type: INPUT_CHANGE, key, value });
+export const discardChange = () => ({ type: DISCARD_CHANGE });
 export const submitChange = (
     body: ItemData,
     dataURL: string = DATA_URL,

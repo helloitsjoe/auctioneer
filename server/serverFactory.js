@@ -61,8 +61,8 @@ const createServer = async (host, port) => {
 
     app.delete('/data/:id', (req, res) => {
         const incomingID = Number(req.params.id);
-        if (incomingID == null || !auctionData.find(({id}) => id === incomingID)) {
-            return res.status(400).send('Item not found!');
+        if (isNaN(incomingID)) {
+            return res.status(400).send('ID is NaN');
         }
         auctionData = auctionData.filter(({id}) => id !== incomingID);
 

@@ -30,6 +30,6 @@ test.each([
     [1, 0],
     [null, 0],
     ['Joe', 0],
-])('getMinBidValue %% throws', (bids, expected) => {
+])('getMinBidValue %% throws', () => {
     expect(utils.getMinBidValue).toThrow('Bids must be an array');
 })

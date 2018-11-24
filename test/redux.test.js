@@ -1,5 +1,13 @@
 import { initStore } from "../src/store";
-import { addItem, itemFocus, deleteItemSuccess, inputChange, submitChangeSuccess } from "../src/actions/adminActions";
+import {
+    addItem,
+    itemFocus,
+    closeModal,
+    deleteItemSuccess,
+    inputChange,
+    submitChangeSuccess,
+    discardChange
+} from "../src/actions/adminActions";
 import { toggleDescription,
     quickBid,
     fetchAuctionError,
@@ -23,6 +31,7 @@ describe("redux duck tests", () => {
         auctionItems: [],
         error: null,
         confirmDiscard: false,
+        origItem: null,
         dirty: false,
         isLoaded: false,
         focusedIndex: 0,
@@ -44,10 +53,6 @@ describe("redux duck tests", () => {
         const store = initStore({});
         getState = store.getState;
         dispatch = store.dispatch;
-    });
-
-    afterEach(() => {
-        // moxios.put.mockClear();
     });
 
     it("initial state", function () {
@@ -180,7 +185,7 @@ describe("redux duck tests", () => {
         });
 
         it('select item does nothing if unsaved changes', function () {
-            dispatch(submitChangeSuccess({rawAuctionItems: fakeItems}));
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             dispatch(inputChange('New description', InputKey.description));
             expect(selectFocusedIndex(getState())).toBe(0);
             dispatch(itemFocus(1));
@@ -188,11 +193,56 @@ describe("redux duck tests", () => {
         });
 
         it('confirm discard if unsaved changes', function () {
-            dispatch(submitChangeSuccess({rawAuctionItems: fakeItems}));
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             expect(selectConfirmDiscard(getState())).toBe(false);
             dispatch(inputChange('New title', InputKey.title));
             dispatch(itemFocus(1));
             expect(selectConfirmDiscard(getState())).toBe(true);            
+        });
+
+        it('clear confirm discard without changing focus', function () {
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
+            dispatch(inputChange('New title', InputKey.title));
+            dispatch(itemFocus(1));
+            expect(selectConfirmDiscard(getState())).toBe(true);
+            dispatch(closeModal());
+            expect(selectConfirmDiscard(getState())).toBe(false);
+            expect(selectFocusedIndex(getState())).toBe(0);
+            // Trying again will bring up confirm discard modal again
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(0);
+            expect(selectConfirmDiscard(getState())).toBe(true);
+        });
+
+        it('save saves changes, allows focus on new item', function () {
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
+            dispatch(inputChange('New title', InputKey.title));
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(0);
+            expect(selectConfirmDiscard(getState())).toBe(true);
+            const item = selectFocusedItem(getState());
+            dispatch(submitChangeSuccess(item));
+            expect(selectConfirmDiscard(getState())).toBe(false);
+            // Focus still index 0 after modal closes
+            expect(selectFocusedIndex(getState())).toBe(0);
+            // Now other items can be focused
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(1);            
+        });
+
+        it('discard reverts changes, allows focus on other items', function () {
+            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
+            dispatch(inputChange('New title', InputKey.title));
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(0);
+            expect(selectConfirmDiscard(getState())).toBe(true);
+            dispatch(discardChange());
+            expect(selectConfirmDiscard(getState())).toBe(false);
+            // Focus still index 0 after modal closes
+            expect(selectFocusedIndex(getState())).toBe(0);
+            // Now other items can be focused
+            dispatch(itemFocus(1));
+            expect(selectFocusedIndex(getState())).toBe(1);                        
         });
     });
 

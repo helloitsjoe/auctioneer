@@ -17,10 +17,11 @@ export type Bid = {
 export type StoreState = {
     error: Error;
     dirty: boolean;
+    focusedIndex: number;
+    origItem: ItemData;
     confirmDiscard: boolean;
     isLoaded: boolean;
     auctionItems: ItemData[];
-    focusedIndex: number;
     userTotal: number;
 }
 
@@ -31,6 +32,8 @@ export const FETCH_AUCTION_SUCCESS = 'FETCH_AUCTION_SUCCESS';
 export const FETCH_AUCTION_ERROR = 'FETCH_AUCTION_ERROR';
 
 export const QUICK_BID = 'QUICK_BID';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const DISCARD_CHANGE = 'DISCARD_CHANGE';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 
 export const ADD_ITEM = 'ADD_ITEM';
@@ -42,10 +45,11 @@ export const INPUT_CHANGE = 'INPUT_CHANGE';
 const initialState: StoreState = {
     error: null,
     dirty: false,
+    focusedIndex: 0,
+    origItem: null,
     confirmDiscard: false,
     isLoaded: false,
     auctionItems: [],
-    focusedIndex: 0,
     userTotal: 0,
 }
 
@@ -66,6 +70,14 @@ export const auctionItems = (state = initialState, action) => {
         case ITEM_FOCUSED:
             return state.dirty ? {...state, confirmDiscard: true }
                 : { ...state, focusedIndex: action.itemIndex };
+        case DISCARD_CHANGE:
+            const origItem = selectOrigItem(state);
+            const origAuctionItems = origItem
+                ? selectAuctionItems(state).map(item => item.id === origItem.id ? origItem : item)
+                : selectAuctionItems(state);
+            return {...state, dirty: false, confirmDiscard: false, auctionItems: origAuctionItems}
+        case CLOSE_MODAL:
+            return {...state, confirmDiscard: false }
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -123,7 +135,13 @@ const item = (state: StoreState, action: any) => {
             const { updatedItem } = action;
             const itemsAfterUpdate = auctionItems.map(item =>
                 item.id === updatedItem.id ? { ...item, ...updatedItem } : item);
-            return { ...state, dirty: false, auctionItems: itemsAfterUpdate };
+            return {
+                ...state,
+                dirty: false,
+                confirmDiscard: false,
+                auctionItems: itemsAfterUpdate,
+                origItem: null
+            };
         case ADD_ITEM:
             const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
             if (blankItemIndex > -1) {
@@ -138,6 +156,7 @@ const item = (state: StoreState, action: any) => {
             };
         case INPUT_CHANGE:
             const { key, value } = action;
+            const origItem = selectOrigItem(state) || selectFocusedItem(state);
             const itemsWithInputChange = auctionItems.map((item, index) => {
                 if (index === focusedIndex) {
                     if (key === 'minBid') {
@@ -148,22 +167,26 @@ const item = (state: StoreState, action: any) => {
                     return { ...item, [key]: value};
                 }
                 return item;
-            })
+            });
+            if (origItem) {
+                return { ...state, dirty: true, auctionItems: itemsWithInputChange, origItem };
+            }
             return { ...state, dirty: true, auctionItems: itemsWithInputChange };
     }
 }
 
-export const selectError = state => state.error;
-export const selectIsLoaded = state => state.isLoaded;
-export const selectUserTotal = state => state.userTotal;
-export const selectAuctionItems = state => state.auctionItems;
-export const selectFocusedIndex = state => state.focusedIndex;
-export const selectConfirmDiscard = state => state.confirmDiscard;
+export const selectError = (state: StoreState) => state.error;
+export const selectOrigItem = (state: StoreState) => state.origItem;
+export const selectIsLoaded = (state: StoreState) => state.isLoaded;
+export const selectUserTotal = (state: StoreState) => state.userTotal;
+export const selectAuctionItems = (state: StoreState) => state.auctionItems;
+export const selectFocusedIndex = (state: StoreState) => state.focusedIndex;
+export const selectConfirmDiscard = (state: StoreState) => state.confirmDiscard;
 
-export const selectFocusedItem = state => selectAuctionItems(state)[selectFocusedIndex(state)];
-export const selectLastItem = state => selectAuctionItems(state).slice(-1)[0];
-export const selectFirstItem = state => selectAuctionItems(state)[0];
-export const selectItem = (state, itemID) => selectAuctionItems(state).find(({id}) => id === itemID);
-export const selectItemBids = (state, itemID) => selectItem(state, itemID).bids;
-export const selectItemHighBid = (state, itemID) => getHighBid(selectItem(state, itemID).bids);
-export const selectItemID = (state, itemID) => selectItem(state, itemID).id;
+export const selectItem = (state: StoreState, itemID: number) => selectAuctionItems(state).find(({id}) => id === itemID);
+export const selectItemID = (state: StoreState, itemID: number) => selectItem(state, itemID).id;
+export const selectItemBids = (state: StoreState, itemID: number) => selectItem(state, itemID).bids;
+export const selectItemHighBid = (state: StoreState, itemID: number) => getHighBid(selectItem(state, itemID).bids);
+export const selectLastItem = (state: StoreState) => selectAuctionItems(state).slice(-1)[0];
+export const selectFirstItem = (state: StoreState) => selectAuctionItems(state)[0];
+export const selectFocusedItem = (state: StoreState) => selectAuctionItems(state)[selectFocusedIndex(state)];

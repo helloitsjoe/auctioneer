@@ -17,8 +17,8 @@ type Props = {
     deleteRequest: (id: number) => void;
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;
-    onChangeDescription: (e: any) => void;
     onSubmitChanges: (e: any) => void;
+    onChangeDescription: (e: any) => void;
 }
 
 export const ItemEditor = ({
@@ -30,8 +30,6 @@ export const ItemEditor = ({
     deleteRequest
 }: Props) => {
 
-    // FIXME: Sidebar title changes remain after clicking on another item
-    // TODO: Warn if user is going to click away from changes...
     // TODO: Warn if user is trying to add a second item without adding a title/description
     // TODO: Prohibit addItem submit without title and description
 
@@ -68,7 +66,7 @@ export const ItemEditor = ({
 }
 
 const mapStateToProps = (state) => ({
-    itemData: selectFocusedItem(state)
+    itemData: selectFocusedItem(state),
 })
 
 const mapDispatchToProps = {
@@ -79,7 +77,7 @@ const mapDispatchToProps = {
 
 export const mergeProps = (stateProps, dispatchProps) => {
     const {itemData} = stateProps;
-    const { submitChange, deleteRequest, inputChange} = dispatchProps;
+    const {submitChange, deleteRequest, inputChange} = dispatchProps;
     return {
         itemData,
         deleteRequest,
