@@ -24,12 +24,13 @@ export class AdminPage extends React.Component<Props> {
         poller: new Poller()
     }
 
+    // TODO: Maybe move temp item state from Redux into this component
+
     componentDidMount() {
         this.props.poller.stop();
     }
 
     handleCloseModal = (e) => {
-        // e.stopPropagation();
         if (!e.key || e.key === 'Escape') {
             this.props.closeModal();
         }

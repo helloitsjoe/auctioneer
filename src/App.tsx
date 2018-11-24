@@ -48,7 +48,6 @@ export class App extends React.Component<Props> {
             auctionItems,
             poller,
             router: Router,
-            confirmDiscard,
         } = this.props;
 
         if (error) {

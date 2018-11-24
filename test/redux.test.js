@@ -55,10 +55,6 @@ describe("redux duck tests", () => {
         dispatch = store.dispatch;
     });
 
-    afterEach(() => {
-        // moxios.put.mockClear();
-    });
-
     it("initial state", function () {
         expect(getState()).toEqual(initialState);
     });

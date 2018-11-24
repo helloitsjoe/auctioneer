@@ -1,12 +1,5 @@
 import * as React from 'react';
-import { Provider } from 'react-redux';
-import { shallow, mount } from 'enzyme';
-import { Poller } from '../src/Poller';
-import App from '../src/App';
-import ConnectedAdminPage from '../src/admin/AdminPage';
-import { initStore } from '../src/store';
-import { fetchAuctionSuccess } from '../src/actions/auctionItemActions';
-import { fakeItems, AdminRouter } from './testUtils';
+import { mount } from 'enzyme';
 import { ConfirmDiscard } from '../src/admin/ConfirmDiscard';
 
 describe('ConfirmDiscard', function () {
