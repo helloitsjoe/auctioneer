@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { getMinBidValue } from '../utils';
 import { ItemData, selectFocusedItem } from '../reducers';
-import { inputChange, deleteRequest, submitChange } from '../actions/adminActions';
+import { inputChange, deleteRequest, submitChange, missingInfo } from '../actions/adminActions';
 
 export enum InputKey {
     title = 'title',
@@ -23,11 +23,11 @@ type Props = {
 
 export const ItemEditor = ({
     itemData,
+    deleteRequest,
     onChangeTitle,
-    onChangeDescription,
     onChangeMinBid,
     onSubmitChanges,
-    deleteRequest
+    onChangeDescription,
 }: Props) => {
 
     // TODO: Warn if user is trying to add a second item without adding a title/description
@@ -70,14 +70,15 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
+    inputChange,
+    missingInfo,
     submitChange,
     deleteRequest,
-    inputChange,
 };
 
 export const mergeProps = (stateProps, dispatchProps) => {
     const {itemData} = stateProps;
-    const {submitChange, deleteRequest, inputChange} = dispatchProps;
+    const {submitChange, deleteRequest, inputChange, missingInfo} = dispatchProps;
     return {
         itemData,
         deleteRequest,
@@ -86,6 +87,9 @@ export const mergeProps = (stateProps, dispatchProps) => {
         onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
         onSubmitChanges(e) {
             e.preventDefault();
+            if (!(itemData.title.trim() && itemData.description.trim())) {
+                return missingInfo();
+            }
             submitChange(itemData);
         },
     }

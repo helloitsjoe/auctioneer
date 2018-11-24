@@ -3,24 +3,26 @@ import {
     addItem,
     itemFocus,
     closeModal,
-    deleteItemSuccess,
     inputChange,
+    discardChange,
+    deleteItemSuccess,
     submitChangeSuccess,
-    discardChange
 } from "../src/actions/adminActions";
 import { toggleDescription,
     quickBid,
     fetchAuctionError,
     fetchAuctionSuccess } from "../src/actions/auctionItemActions";
 import { TESTER_1, fakeItems } from "./testUtils";
-import { BID_INCREMENT,
-    selectAuctionItems,
-    selectFocusedIndex,
-    selectIsLoaded,
+import {
+    BID_INCREMENT,
+    Modal,
+    selectItem,
     selectError,
-    selectItem, 
+    selectIsLoaded,
     selectFirstItem,
     selectFocusedItem,
+    selectAuctionItems,
+    selectFocusedIndex,
     selectConfirmDiscard } from "../src/reducers";
 import { InputKey } from "../src/admin/ItemEditor";
 import { createNewAuctionItem } from "../src/utils";
@@ -28,22 +30,23 @@ import { createNewAuctionItem } from "../src/utils";
 describe("redux duck tests", () => {
 
     const initialState = {
-        auctionItems: [],
         error: null,
-        confirmDiscard: false,
-        origItem: null,
         dirty: false,
+        userTotal: 0,
+        origItem: null,
         isLoaded: false,
         focusedIndex: 0,
-        userTotal: 0
+        auctionItems: [],
+        missingInfo: false,
+        confirmDiscard: false,
     }
 
     const newItem = {
         id: 0,
         title: '',
-        bids: [{name: 'min', value: 0}],
         description: '',
-        viewDetails: false
+        viewDetails: false,
+        bids: [{name: 'min', value: 0}],
     };
 
     let getState;
@@ -121,13 +124,7 @@ describe("redux duck tests", () => {
             expect(selectFocusedItem(getState()).title).toBe('');
         });
 
-        // it('save requires title', function () {
-        //     dispatch(addItem());
-        //     dispatch()
-        // });
-
         // it('save is disabled if no changes', function () {
-            
         // });
 
         it('select item', function () {
@@ -205,7 +202,7 @@ describe("redux duck tests", () => {
             dispatch(inputChange('New title', InputKey.title));
             dispatch(itemFocus(1));
             expect(selectConfirmDiscard(getState())).toBe(true);
-            dispatch(closeModal());
+            dispatch(closeModal(Modal.confirmDiscard));
             expect(selectConfirmDiscard(getState())).toBe(false);
             expect(selectFocusedIndex(getState())).toBe(0);
             // Trying again will bring up confirm discard modal again

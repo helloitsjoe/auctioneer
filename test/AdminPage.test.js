@@ -7,6 +7,7 @@ import { AdminHeader } from '../src/admin/AdminHeader';
 import { initStore } from '../src/store';
 import { fetchAuctionSuccess } from '../src/actions/auctionItemActions';
 import { fakeItems, AdminRouter } from './testUtils';
+import { selectFocusedItem } from '../src/reducers';
 
 describe('AdminPage', function () {
 
@@ -58,6 +59,45 @@ describe('AdminPage', function () {
         expect(wrapper.find('.confirm-discard').length).toBe(1);
     });
 
+    it.each`
+    titleValue | descriptionValue | missingInfoLength
+    ${''}      | ${''}            | ${1}
+    ${' '}     | ${''}            | ${1}
+    ${''}      | ${' '}           | ${1}
+    ${' '}     | ${' '}           | ${1}
+    ${'Foo'}   | ${' '}           | ${1}
+    ${''}      | ${'Bar'}         | ${1}
+    ${'Foo'}   | ${'Bar'}         | ${0}
+    `('requires title and description to save | $titleValue | $descriptionValue',
+    ({titleValue, descriptionValue, missingInfoLength}) => {
+        const store = initStore({ axios: { put: jest.fn().mockResolvedValue()}});
+        store.dispatch(fetchAuctionSuccess({ rawAuctionItems: fakeItems }));
+        wrapper = mount(
+            <Provider store={store}>
+                <AdminRouter>
+                    <ConnectedAdminPage />
+                </AdminRouter>
+            </Provider>
+        )
+        const addItem = wrapper.find('.sidebar-add-item');
+
+        expect(wrapper.find('.missing-info').length).toBe(0);
+
+        addItem.prop('onClick')();
+        wrapper.update();
+
+        const title = wrapper.find('#title');
+        const description = wrapper.find('#description');
+        title.prop('onChange')({target: {value: titleValue}});
+        description.prop('onChange')({target: {value: descriptionValue}});
+
+        wrapper.update();
+        wrapper.find('.save').prop('onClick')({preventDefault: jest.fn()});
+
+        wrapper.update();
+        expect(wrapper.find('.missing-info').length).toBe(missingInfoLength);
+    });
+
     it('clicking outside modal clears modal with no change', function () {
         const store = initStore();
         store.dispatch(fetchAuctionSuccess({ rawAuctionItems: fakeItems }));
@@ -77,7 +117,7 @@ describe('AdminPage', function () {
         wrapper.update();
         expect(wrapper.find('.confirm-discard').length).toBe(1);
 
-        wrapper.find('.confirm-discard-background').prop('onClick')({stopPropagation: jest.fn()});
+        wrapper.find('.modal-background').prop('onClick')({stopPropagation: jest.fn()});
         wrapper.update();
         expect(wrapper.find('.confirm-discard').length).toBe(0);
     });

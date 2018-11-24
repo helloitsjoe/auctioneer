@@ -632,7 +632,7 @@ ______________________________________________________________________ */
   border-color: green;
 }
 
-.confirm-discard-background {
+.modal-background {
   background-color: rgba(0, 0, 0, 0.6);
   position: absolute;
   display: flex;
@@ -641,14 +641,13 @@ ______________________________________________________________________ */
   height: 100%;
 }
 
-.confirm-discard {
+.modal {
   position: absolute;
   top: 110px;
   text-align: center;
   background-color: white;
   border-radius: 3px;
   width: 200px;
-  height: 150px;
   padding: 30px 40px;
 }
 

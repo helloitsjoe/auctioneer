@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Modal } from '../Modal';
 
 type Props = {
     onCloseModal: (e: any) => void;
@@ -6,30 +7,19 @@ type Props = {
     onDiscardChanges: (e: any) =>  void;
 }
 
-export class ConfirmDiscard extends React.Component<Props> {
-
-    componentDidMount() {
-        document.addEventListener('keydown', this.props.onCloseModal);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.props.onCloseModal);
-    }
-
-    render() {
-        return (
-            <div className="confirm-discard-background" onClick={this.props.onCloseModal}>
-                <div className="confirm-discard">
-                    <p>You have unsaved changes!</p>
-                    <br />
-                    <button
-                        className="save"
-                        onClick={this.props.onSaveChanges}>Save changes</button>
-                    <button
-                        className="delete discard"
-                        onClick={this.props.onDiscardChanges}>Discard changes</button>
-                </div>
+export function ConfirmDiscard({onSaveChanges, onDiscardChanges, onCloseModal}: Props) {
+    return (
+        <Modal onCloseModal={onCloseModal}>
+            <div className="confirm-discard">
+                <p>You have unsaved changes!</p>
+                <br />
+                <button
+                    className="save"
+                    onClick={onSaveChanges}>Save changes</button>
+                <button
+                    className="delete discard"
+                    onClick={onDiscardChanges}>Discard changes</button>
             </div>
-        )
-    }
+        </Modal>
+    )
 }

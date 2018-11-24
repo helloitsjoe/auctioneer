@@ -18,11 +18,17 @@ export type StoreState = {
     error: Error;
     dirty: boolean;
     focusedIndex: number;
+    missingInfo: boolean;
     origItem: ItemData;
     confirmDiscard: boolean;
     isLoaded: boolean;
     auctionItems: ItemData[];
     userTotal: number;
+}
+
+export enum Modal {
+    confirmDiscard = 'confirmDiscard',
+    missingInfo = 'missingInfo',
 }
 
 // TODO: Make this configurable by auction host
@@ -33,6 +39,7 @@ export const FETCH_AUCTION_ERROR = 'FETCH_AUCTION_ERROR';
 
 export const QUICK_BID = 'QUICK_BID';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const MISSING_INFO = 'MISSING_INFO';
 export const DISCARD_CHANGE = 'DISCARD_CHANGE';
 export const TOGGLE_DESCRIPTION = 'TOGGLE_DESCRIPTION';
 
@@ -47,6 +54,7 @@ const initialState: StoreState = {
     dirty: false,
     focusedIndex: 0,
     origItem: null,
+    missingInfo: false,
     confirmDiscard: false,
     isLoaded: false,
     auctionItems: [],
@@ -77,7 +85,10 @@ export const auctionItems = (state = initialState, action) => {
                 : selectAuctionItems(state);
             return {...state, dirty: false, confirmDiscard: false, auctionItems: origAuctionItems}
         case CLOSE_MODAL:
-            return {...state, confirmDiscard: false }
+            const { name } = action;
+            return {...state, [name]: false }
+        case MISSING_INFO:
+            return {...state, missingInfo: true }
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -168,10 +179,10 @@ const item = (state: StoreState, action: any) => {
                 }
                 return item;
             });
-            if (origItem) {
-                return { ...state, dirty: true, auctionItems: itemsWithInputChange, origItem };
-            }
-            return { ...state, dirty: true, auctionItems: itemsWithInputChange };
+            // if (origItem) {
+            //     return { ...state, dirty: true, auctionItems: itemsWithInputChange, origItem };
+            // }
+            return { ...state, dirty: true, missingInfo: false, auctionItems: itemsWithInputChange, origItem };
     }
 }
 
@@ -179,6 +190,7 @@ export const selectError = (state: StoreState) => state.error;
 export const selectOrigItem = (state: StoreState) => state.origItem;
 export const selectIsLoaded = (state: StoreState) => state.isLoaded;
 export const selectUserTotal = (state: StoreState) => state.userTotal;
+export const selectMissingInfo = (state: StoreState) => state.missingInfo;
 export const selectAuctionItems = (state: StoreState) => state.auctionItems;
 export const selectFocusedIndex = (state: StoreState) => state.focusedIndex;
 export const selectConfirmDiscard = (state: StoreState) => state.confirmDiscard;
