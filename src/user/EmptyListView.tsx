@@ -1,9 +1,11 @@
 import * as React from 'react';
 
-export const EmptyList = ({}) => (
-    <div className="item-group clearfix">
-        <div className="item-container">
-            <span>No bids yet!</span>
+export function EmptyList({}) {
+    return (
+        <div className="item-group clearfix">
+            <div className="item-container">
+                <span>No bids yet!</span>
+            </div>
         </div>
-    </div>
-)
+    )
+}

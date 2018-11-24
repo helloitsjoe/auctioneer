@@ -7,7 +7,6 @@ import { AdminHeader } from '../src/admin/AdminHeader';
 import { initStore } from '../src/store';
 import { fetchAuctionSuccess } from '../src/actions/auctionItemActions';
 import { fakeItems, AdminRouter } from './testUtils';
-import { selectFocusedItem } from '../src/reducers';
 
 describe('AdminPage', function () {
 
@@ -70,7 +69,8 @@ describe('AdminPage', function () {
     ${'Foo'}   | ${'Bar'}         | ${0}
     `('requires title and description to save | $titleValue | $descriptionValue',
     ({titleValue, descriptionValue, missingInfoLength}) => {
-        const store = initStore({ axios: { put: jest.fn().mockResolvedValue()}});
+        const put = jest.fn().mockResolvedValue({data: {updatedItem: fakeItems[0]}});
+        const store = initStore({ axios: { put }});
         store.dispatch(fetchAuctionSuccess({ rawAuctionItems: fakeItems }));
         wrapper = mount(
             <Provider store={store}>

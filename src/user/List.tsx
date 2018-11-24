@@ -10,7 +10,7 @@ type Props = {
     filter?: boolean;
 }
 
-export const List = ({ user, auctionItems, filter }: Props) => {
+export function List({ user, auctionItems, filter }: Props) {
 
     const filteredItems = filter
         ? auctionItems.filter(item => item.bids.some(({name}) => name === user))

@@ -11,7 +11,7 @@ type Props = {
     auctionItems: any;
 }
 
-export const BidsPage = ({ user, filter, auctionItems, poller }: Props) => {
+export function BidsPage({ user, filter, auctionItems, poller }: Props) {
 
     poller.start();
 

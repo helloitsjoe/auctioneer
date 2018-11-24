@@ -21,17 +21,14 @@ type Props = {
     onChangeDescription: (e: any) => void;
 }
 
-export const ItemEditor = ({
+export function ItemEditor({
     itemData,
     deleteRequest,
     onChangeTitle,
     onChangeMinBid,
     onSubmitChanges,
     onChangeDescription,
-}: Props) => {
-
-    // TODO: Warn if user is trying to add a second item without adding a title/description
-    // TODO: Prohibit addItem submit without title and description
+}: Props) {
 
     return (
         <div className="main-item">

@@ -12,18 +12,20 @@ type Props = {
     itemFocus: (i: number) => void
 }
 
-export const Sidebar = ({ auctionItems, focusedIndex, addItem, itemFocus }: Props) => (
-    <div className="sidebar">
-        {auctionItems.map((item, i) => (
-            <SidebarItem
-                key={item.id}
-                itemData={item}
-                focused={i === focusedIndex}
-                onSelect={() => itemFocus(i)} />
-        ))}
-        <AddItem onSelect={addItem} />
-    </div>
-)
+export function Sidebar({ auctionItems, focusedIndex, addItem, itemFocus }: Props) {
+    return (
+        <div className="sidebar">
+            {auctionItems.map((item, i) => (
+                <SidebarItem
+                    key={item.id}
+                    itemData={item}
+                    focused={i === focusedIndex}
+                    onSelect={() => itemFocus(i)} />
+            ))}
+            <AddItem onSelect={addItem} />
+        </div>
+    )
+}
 
 const mapState = state => ({
     auctionItems: selectAuctionItems(state),
