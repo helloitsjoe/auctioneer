@@ -16,11 +16,11 @@ export type Bid = {
 
 export type StoreState = {
     error: Error;
-    dirty: boolean;
-    focusedIndex: number;
-    missingInfo: boolean;
-    origItem: ItemData;
-    confirmDiscard: boolean;
+    // dirty: boolean;
+    // focusedIndex: number;
+    // missingInfo: boolean;
+    // origItem: ItemData;
+    // confirmDiscard: boolean;
     isLoaded: boolean;
     auctionItems: ItemData[];
     userTotal: number;
@@ -51,11 +51,11 @@ export const INPUT_CHANGE = 'INPUT_CHANGE';
 
 const initialState: StoreState = {
     error: null,
-    dirty: false,
-    focusedIndex: 0,
-    origItem: null,
-    missingInfo: false,
-    confirmDiscard: false,
+    // dirty: false,
+    // focusedIndex: 0,
+    // origItem: null,
+    // missingInfo: false,
+    // confirmDiscard: false,
     isLoaded: false,
     auctionItems: [],
     userTotal: 0,
@@ -76,19 +76,19 @@ export const auctionItems = (state = initialState, action) => {
         case FETCH_AUCTION_ERROR:
             return { ...state, error: action.err, isLoaded: true };
         case ITEM_FOCUSED:
-            return state.dirty ? {...state, confirmDiscard: true }
-                : { ...state, focusedIndex: action.itemIndex };
-        case DISCARD_CHANGE:
-            const origItem = selectOrigItem(state);
-            const origAuctionItems = origItem
-                ? selectAuctionItems(state).map(item => item.id === origItem.id ? origItem : item)
-                : selectAuctionItems(state);
-            return {...state, dirty: false, confirmDiscard: false, auctionItems: origAuctionItems}
-        case CLOSE_MODAL:
-            const { name } = action;
-            return {...state, [name]: false }
-        case MISSING_INFO:
-            return {...state, missingInfo: true }
+            // return state.dirty ? {...state, confirmDiscard: true }
+            return { ...state, focusedIndex: action.itemIndex };
+        // case DISCARD_CHANGE:
+        //     const origItem = selectOrigItem(state);
+        //     const origAuctionItems = origItem
+        //         ? selectAuctionItems(state).map(item => item.id === origItem.id ? origItem : item)
+        //         : selectAuctionItems(state);
+        //     return {...state, dirty: false, confirmDiscard: false, auctionItems: origAuctionItems}
+        // case CLOSE_MODAL:
+        //     const { name } = action;
+        //     return {...state, [name]: false }
+        // case MISSING_INFO:
+        //     return {...state, missingInfo: true }
         case ADD_ITEM:
         case QUICK_BID:
         case INPUT_CHANGE:
@@ -103,7 +103,7 @@ export const auctionItems = (state = initialState, action) => {
 
 const item = (state: StoreState, action: any) => {
     const { userName, itemID } = action;
-    const { focusedIndex, auctionItems } = state;
+    const { auctionItems } = state;
 
     const item = (itemID != null) && selectItem(state, itemID);
     switch (action.type) {
@@ -136,11 +136,11 @@ const item = (state: StoreState, action: any) => {
             const { deletedItemID } = action;
             const itemsAfterDelete = auctionItems.filter(item => item.id !== deletedItemID);
             const safeItemsAfterDelete = itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem()];
-            const newfocusedIndex = focusedIndex >= safeItemsAfterDelete.length ? safeItemsAfterDelete.length - 1 : focusedIndex;
+            // const newfocusedIndex = focusedIndex >= safeItemsAfterDelete.length ? safeItemsAfterDelete.length - 1 : focusedIndex;
             return {
                 ...state,
                 auctionItems: safeItemsAfterDelete,
-                focusedIndex: newfocusedIndex
+                // focusedIndex: newfocusedIndex
             };
         case SUBMIT_CHANGE_SUCCESS:
             const { updatedItem } = action;
@@ -153,47 +153,47 @@ const item = (state: StoreState, action: any) => {
                 auctionItems: itemsAfterUpdate,
                 origItem: null
             };
-        case ADD_ITEM:
-            const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
-            if (blankItemIndex > -1) {
-                return { ...state, focusedIndex: blankItemIndex };
-            }
-            const newItem = createNewAuctionItem(auctionItems);
-            const auctionItemsWithNew = [...auctionItems, newItem]
-            return {
-                ...state,
-                auctionItems: auctionItemsWithNew,
-                focusedIndex: auctionItemsWithNew.indexOf(newItem)
-            };
-        case INPUT_CHANGE:
-            const { key, value } = action;
-            const origItem = selectOrigItem(state) || selectFocusedItem(state);
-            const itemsWithInputChange = auctionItems.map((item, index) => {
-                if (index === focusedIndex) {
-                    if (key === 'minBid') {
-                        const bidsWithNewMin = item.bids.map(bid =>
-                            bid.name === 'min' ? { ...bid, value: parseInt(value)} : bid);
-                        return { ...item, bids: bidsWithNewMin};
-                    }
-                    return { ...item, [key]: value};
-                }
-                return item;
-            });
-            // if (origItem) {
-            //     return { ...state, dirty: true, auctionItems: itemsWithInputChange, origItem };
+        // case ADD_ITEM:
+            // const blankItemIndex = auctionItems.findIndex(item => !item.title.length);
+            // if (blankItemIndex > -1) {
+            //     return { ...state, focusedIndex: blankItemIndex };
             // }
-            return { ...state, dirty: true, missingInfo: false, auctionItems: itemsWithInputChange, origItem };
+            // const newItem = createNewAuctionItem(auctionItems);
+            // const auctionItemsWithNew = [...auctionItems, newItem]
+            // return {
+            //     ...state,
+            //     auctionItems: auctionItemsWithNew,
+            //     focusedIndex: auctionItemsWithNew.indexOf(newItem)
+            // };
+        // case INPUT_CHANGE:
+            // const { key, value } = action;
+            // const origItem = selectOrigItem(state) || selectFocusedItem(state);
+            // const itemsWithInputChange = auctionItems.map((item, index) => {
+            //     if (index === focusedIndex) {
+            //         if (key === 'minBid') {
+            //             const bidsWithNewMin = item.bids.map(bid =>
+            //                 bid.name === 'min' ? { ...bid, value: parseInt(value)} : bid);
+            //             return { ...item, bids: bidsWithNewMin};
+            //         }
+            //         return { ...item, [key]: value};
+            //     }
+            //     return item;
+            // });
+            // // if (origItem) {
+            // //     return { ...state, dirty: true, auctionItems: itemsWithInputChange, origItem };
+            // // }
+            // return { ...state, dirty: true, missingInfo: false, auctionItems: itemsWithInputChange, origItem };
     }
 }
 
 export const selectError = (state: StoreState) => state.error;
-export const selectOrigItem = (state: StoreState) => state.origItem;
+// export const selectOrigItem = (state: StoreState) => state.origItem;
 export const selectIsLoaded = (state: StoreState) => state.isLoaded;
 export const selectUserTotal = (state: StoreState) => state.userTotal;
-export const selectMissingInfo = (state: StoreState) => state.missingInfo;
+// export const selectMissingInfo = (state: StoreState) => state.missingInfo;
 export const selectAuctionItems = (state: StoreState) => state.auctionItems;
-export const selectFocusedIndex = (state: StoreState) => state.focusedIndex;
-export const selectConfirmDiscard = (state: StoreState) => state.confirmDiscard;
+// export const selectFocusedIndex = (state: StoreState) => state.focusedIndex;
+// export const selectConfirmDiscard = (state: StoreState) => state.confirmDiscard;
 
 export const selectItem = (state: StoreState, itemID: number) => selectAuctionItems(state).find(({id}) => id === itemID);
 export const selectItemID = (state: StoreState, itemID: number) => selectItem(state, itemID).id;
@@ -201,4 +201,4 @@ export const selectItemBids = (state: StoreState, itemID: number) => selectItem(
 export const selectItemHighBid = (state: StoreState, itemID: number) => getHighBid(selectItem(state, itemID).bids);
 export const selectLastItem = (state: StoreState) => selectAuctionItems(state).slice(-1)[0];
 export const selectFirstItem = (state: StoreState) => selectAuctionItems(state)[0];
-export const selectFocusedItem = (state: StoreState) => selectAuctionItems(state)[selectFocusedIndex(state)];
+// export const selectFocusedItem = (state: StoreState) => selectAuctionItems(state)[selectFocusedIndex(state)];

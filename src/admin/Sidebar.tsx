@@ -2,36 +2,42 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { AddItem } from './AddItem';
 import { SidebarItem } from './SidebarItem';
-import { addItem, itemFocus } from '../actions/adminActions';
-import { ItemData, selectAuctionItems, selectFocusedIndex } from '../reducers';
+// import { addItem, itemFocus } from '../actions/adminActions';
+import { ItemData/* , selectAuctionItems, selectFocusedIndex */ } from '../reducers';
 
 type Props = {
-    auctionItems: ItemData[];
+    title: string;
+    items: ItemData[];
     focusedIndex: number;
-    addItem: () => void,
-    itemFocus: (i: number) => void
+    onAddItem: () => void,
+    onItemFocus: (i: number) => void
 }
 
-export function Sidebar({ auctionItems, focusedIndex, addItem, itemFocus }: Props) {
+export function Sidebar({ items, focusedIndex, title, onAddItem, onItemFocus }: Props) {
     return (
         <div className="sidebar">
-            {auctionItems.map((item, i) => (
-                <SidebarItem
-                    key={item.id}
-                    itemData={item}
-                    focused={i === focusedIndex}
-                    onSelect={() => itemFocus(i)} />
-            ))}
-            <AddItem onSelect={addItem} />
+            {items.map((item, i) => {
+                const focused = i === focusedIndex;
+                return (
+                    <SidebarItem
+                        key={item.id}
+                        itemData={item}
+                        focused={focused}
+                        title={focused ? title : item.title}
+                        onSelect={() => onItemFocus(i)}
+                    />
+                )
+            })}
+            <AddItem onSelect={onAddItem} />
         </div>
     )
 }
 
-const mapState = state => ({
-    auctionItems: selectAuctionItems(state),
-    focusedIndex: selectFocusedIndex(state),
-})
+// const mapState = state => ({
+//     auctionItems: selectAuctionItems(state),
+//     focusedIndex: selectFocusedIndex(state),
+// })
 
-export const mapDispatchToProps = { addItem, itemFocus }
+// export const mapDispatchToProps = { addItem, itemFocus }
 
-export default connect(mapState, mapDispatchToProps)(Sidebar);
+// export default connect(mapState, mapDispatchToProps)(Sidebar);

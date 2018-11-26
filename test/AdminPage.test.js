@@ -21,7 +21,8 @@ describe('AdminPage', function () {
         const poller = new Poller();
         poller.init(() => {});
         expect(poller.isPolling).toBe(true);
-        wrapper = shallow(<AdminPage poller={poller} />);
+        wrapper = shallow(<AdminPage initialItems={fakeItems} poller={poller} />);
+        console.log(`wrapper:`, wrapper);
         expect(poller.isPolling).toBe(false);
     });
 
@@ -96,6 +97,18 @@ describe('AdminPage', function () {
 
         wrapper.update();
         expect(wrapper.find('.missing-info').length).toBe(missingInfoLength);
+    });
+
+    it.skip('title change updates sidebar', function () {
+        
+    });
+
+    it.skip('calls submitChange on submit', function () {
+        // TODO: test both button and enter
+    });
+
+    it.skip('handleInput on title, description, minBid change', function () {
+        
     });
 
     it('clicking outside modal clears modal with no change', function () {

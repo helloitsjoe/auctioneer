@@ -2,8 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { getMinBidValue } from '../utils';
-import { ItemData, selectFocusedItem } from '../reducers';
-import { inputChange, deleteRequest, submitChange, missingInfo } from '../actions/adminActions';
+// import { ItemData, selectFocusedItem } from '../reducers';
+// import { inputChange, deleteRequest, submitChange, missingInfo } from '../actions/adminActions';
 
 export enum InputKey {
     title = 'title',
@@ -12,37 +12,42 @@ export enum InputKey {
 }
 
 type Props = {
-    itemData: ItemData;
-    submitChange: (itemData: ItemData) => void;
-    deleteRequest: (id: number) => void;
+    // itemData: ItemData;
+    title: string;
+    minBid: number;
+    description: string;
+    onSubmit: (e: any) => void;
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;
-    onSubmitChanges: (e: any) => void;
     onChangeDescription: (e: any) => void;
+    onDeleteRequest: (e: any) => void;
 }
 
 export function ItemEditor({
-    itemData,
-    deleteRequest,
+    // itemData,
+    title,
+    minBid,
+    description,
+    onSubmit,
     onChangeTitle,
     onChangeMinBid,
-    onSubmitChanges,
     onChangeDescription,
+    onDeleteRequest,
 }: Props) {
 
     return (
         <div className="main-item">
-            <form action="submit" onSubmit={onSubmitChanges}>
+            <form action="submit" onSubmit={onSubmit}>
                 <div className="main-element">
                     Title:
-                    <input id="title" type="text" value={itemData.title} onChange={onChangeTitle} />
+                    <input id="title" type="text" value={title} onChange={onChangeTitle} />
                 </div>
                 <div className="main-element">
                     Minimum Bid: $
                     <input
                         id="minimum"
                         type="number"
-                        value={getMinBidValue(itemData.bids)}
+                        value={minBid}
                         onChange={onChangeMinBid}
                     />
                 </div>
@@ -52,44 +57,44 @@ export function ItemEditor({
                         form="item-form"
                         name="description"
                         id="description"
-                        value={itemData.description}
+                        value={description}
                         onChange={onChangeDescription} />
                 </div>
-                <button id="submit" className="save" type="submit" onClick={onSubmitChanges}>Save</button>
-                <button id="delete" className="u-pull-right delete" type="button" onClick={() => deleteRequest(itemData.id)}>Delete</button>
+                <button id="submit" className="save" type="submit" onClick={onSubmit}>Save</button>
+                <button id="delete" className="u-pull-right delete" type="button" onClick={onDeleteRequest}>Delete</button>
             </form>
         </div>
     )
 }
 
-const mapStateToProps = (state) => ({
-    itemData: selectFocusedItem(state),
-})
+// const mapStateToProps = (state) => ({
+//     itemData: selectFocusedItem(state),
+// })
 
-const mapDispatchToProps = {
-    inputChange,
-    missingInfo,
-    submitChange,
-    deleteRequest,
-};
+// const mapDispatchToProps = {
+//     inputChange,
+//     missingInfo,
+//     submitChange,
+//     deleteRequest,
+// };
 
-export const mergeProps = (stateProps, dispatchProps) => {
-    const {itemData} = stateProps;
-    const {submitChange, deleteRequest, inputChange, missingInfo} = dispatchProps;
-    return {
-        itemData,
-        deleteRequest,
-        onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
-        onChangeMinBid: (e) => inputChange(e.target.value, InputKey.minBid),
-        onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
-        onSubmitChanges(e) {
-            e.preventDefault();
-            if (!(itemData.title.trim() && itemData.description.trim())) {
-                return missingInfo();
-            }
-            submitChange(itemData);
-        },
-    }
-}
+// export const mergeProps = (stateProps, dispatchProps) => {
+//     const {itemData} = stateProps;
+//     const {submitChange, deleteRequest, inputChange, missingInfo} = dispatchProps;
+//     return {
+//         itemData,
+//         deleteRequest,
+//         onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
+//         onChangeMinBid: (e) => inputChange(e.target.value, InputKey.minBid),
+//         onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
+//         onSubmitChanges(e) {
+//             e.preventDefault();
+//             if (!(itemData.title.trim() && itemData.description.trim())) {
+//                 return missingInfo();
+//             }
+//             submitChange(itemData);
+//         },
+//     }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ItemEditor);
+// export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ItemEditor);
