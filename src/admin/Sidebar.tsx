@@ -21,7 +21,7 @@ export function Sidebar({ items, focusedIndex, title, onAddItem, onItemFocus }: 
                 return (
                     <SidebarItem
                         key={item.id}
-                        itemData={item}
+                        id={item.id}
                         focused={focused}
                         title={focused ? title : item.title}
                         onSelect={() => onItemFocus(i)}

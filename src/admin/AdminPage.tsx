@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {submitChange, deleteRequest } from '../actions/adminActions';
-import {/* selectConfirmDiscard, selectFocusedItem, selectMissingInfo,  */ItemData, Modal, selectAuctionItems} from '../reducers';
+import {ItemData, Modal, selectAuctionItems} from '../reducers';
 
 import { ItemEditor, InputKey } from './ItemEditor';
 import { Poller } from '../Poller';
@@ -14,11 +14,8 @@ import { createNewAuctionItem, getMinBidValue } from '../utils';
 type Props = {
     poller: Poller;
     initialItems: ItemData[];
-    missingInfo: boolean;
-    confirmDiscard: boolean;
-    // closeModal: (name: Modal) => void;
     submitChange: (item: ItemData) => void;
-    // discardChange: () => void;
+    deleteRequest: (id: number) => Promise<number>;
 }
 
 type State = {
@@ -66,13 +63,19 @@ export class AdminPage extends React.Component<Props, State> {
 
     componentDidUpdate(prevProps: Props, prevState: State) {
         const { focusedIndex } = this.state;
+        // console.log(`this.state.items.length:`, this.props.initialItems.length);
         // console.log(`this.state.title:`, this.state.title);
         // console.log(`missingInfo:`, this.state.missingInfo);
+        // if (this.state.items.length !== this.props.initialItems.length) {
+        //     return this.setState({ items: this.props.initialItems });
+        // }
+        // const itemDeleted = prevState.items.length !== this.props.initialItems.length;
         if (focusedIndex === prevState.focusedIndex) {
             return;
-        }
-        this.setState(prevState => {
-            const { items } = prevState;
+        }    
+        this.setState(_ => {
+            // const items = itemDeleted ? this.props.initialItems : prevState.items;
+            const items = this.state.items;
             const item = items[focusedIndex];
             const { description, title } = item;
             const minBid = getMinBidValue(item.bids);
@@ -138,6 +141,12 @@ export class AdminPage extends React.Component<Props, State> {
         this.setState({ dirty: false, missingInfo: false });
     }
 
+    handleDelete = (e: any) => {
+        const focusedItem = this.state.items[this.state.focusedIndex];
+        this.props.deleteRequest(focusedItem.id);
+        this.setState(prevState => ({ items: prevState.items.filter(({id}) => id !== focusedItem.id)}));
+    }
+
     closeModal = (name: Modal) => e => {
         if (!e.key || e.key === 'Escape') {
             switch (name) {
@@ -190,9 +199,8 @@ export class AdminPage extends React.Component<Props, State> {
                         title={title}
                         minBid={minBid}
                         description={description}
-                        // itemData={items[focusedIndex]}
                         onSubmit={this.handleSubmit}
-                        onDeleteRequest={() => deleteRequest(focusedItem.id)}
+                        onDelete={this.handleDelete}
                         onChangeTitle={this.handleInputChange(InputKey.title)}
                         onChangeMinBid={this.handleInputChange(InputKey.minBid)}
                         onChangeDescription={this.handleInputChange(InputKey.description)}
@@ -203,18 +211,7 @@ export class AdminPage extends React.Component<Props, State> {
     }
 }
 
-const mStP = state => ({
-    // focusedItem: selectFocusedItem(state),
-    initialItems: selectAuctionItems(state),
-    // missingInfo: selectMissingInfo(state),
-    // confirmDiscard: selectConfirmDiscard(state),
-});
-
-const mDtP = {
-    // closeModal,
-    submitChange,
-    // discardChange,
-    deleteRequest,
-};
+const mStP = state => ({ initialItems: selectAuctionItems(state) });
+const mDtP = { submitChange, deleteRequest };
 
 export default connect(mStP, mDtP)(AdminPage);

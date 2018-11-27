@@ -12,7 +12,6 @@ export enum InputKey {
 }
 
 type Props = {
-    // itemData: ItemData;
     title: string;
     minBid: number;
     description: string;
@@ -20,11 +19,10 @@ type Props = {
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;
     onChangeDescription: (e: any) => void;
-    onDeleteRequest: (e: any) => void;
+    onDelete: (e: any) => void;
 }
 
 export function ItemEditor({
-    // itemData,
     title,
     minBid,
     description,
@@ -32,7 +30,7 @@ export function ItemEditor({
     onChangeTitle,
     onChangeMinBid,
     onChangeDescription,
-    onDeleteRequest,
+    onDelete,
 }: Props) {
 
     return (
@@ -61,7 +59,7 @@ export function ItemEditor({
                         onChange={onChangeDescription} />
                 </div>
                 <button id="submit" className="save" type="submit" onClick={onSubmit}>Save</button>
-                <button id="delete" className="u-pull-right delete" type="button" onClick={onDeleteRequest}>Delete</button>
+                <button id="delete" className="u-pull-right delete" type="button" onClick={onDelete}>Delete</button>
             </form>
         </div>
     )

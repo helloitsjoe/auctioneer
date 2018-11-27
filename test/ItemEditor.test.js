@@ -9,7 +9,7 @@ describe('ItemEditor', function () {
     const onChangeDescription = jest.fn();
     const onChangeMinBid = jest.fn();
     const onChangeTitle = jest.fn();
-    const deleteRequest = jest.fn();
+    const onDelete = jest.fn();
     const onSubmit = jest.fn();
 
     const fakeItem = {
@@ -49,11 +49,6 @@ describe('ItemEditor', function () {
         expect(func).toBeCalledWith({ target: { value: 'X' }});
     });
 
-    it('save disabled until user changes input', function () {
-        // test click
-        // test enter
-    });
-
     it('calls onSubmit when user clicks save or hits enter', function () {
         const itemEditor = shallow(<ItemEditor
             onSubmit={onSubmit}
@@ -71,63 +66,14 @@ describe('ItemEditor', function () {
         expect(onSubmit).toBeCalledTimes(1);
     });
 
-    it.skip('calls onChangeTitle', function () {
-        
-    });
-
-    it.skip('calls onChangeMinBid', function () {
-        
-    });
-
-    it.skip('calls onChangeDescription', function () {
-        
-    });
-
-    it('calls deleteRequest when user clicks delete', function () {
+    it('calls onDelete when user clicks delete', function () {
         const itemEditor = shallow(<ItemEditor
-            deleteRequest={deleteRequest}
+            onDelete={onDelete}
             itemData={fakeItem}
         />);
         const deleteButton = itemEditor.find(`#delete`);
+        expect(onDelete).toBeCalledTimes(0);
         deleteButton.prop('onClick')();
-        expect(deleteRequest).toBeCalledWith('FakeID');
+        expect(onDelete).toBeCalledTimes(1);
     });
-
-    // it('mergeProps', function () {
-    //     const preventDefault = jest.fn();
-    //     const inputChange = jest.fn();
-    //     const itemData = fakeItem;
-
-    //     const stateProps = { itemData };
-    //     const dispatchProps = {
-    //         deleteRequest,
-    //         inputChange,
-    //         submitChange,
-    //     }
-    //     const {
-    //         onChangeDescription,
-    //         onSubmitChanges,
-    //         onChangeMinBid,
-    //         onChangeTitle,
-    //         ...rest
-    //     } = mergeProps(stateProps, dispatchProps);
-
-    //     expect(rest).toEqual({ itemData, deleteRequest });
-    //     expect(preventDefault).not.toBeCalled();
-    //     expect(inputChange).not.toBeCalled();
-    //     expect(submitChange).not.toBeCalled();
-
-    //     const e = { preventDefault, target: { value: 'Bla' }};
-    //     onSubmitChanges(e);
-    //     expect(preventDefault).toBeCalledTimes(1);
-    //     expect(submitChange).toBeCalledTimes(1);
-
-    //     onChangeDescription(e);
-    //     onChangeMinBid(e);
-    //     onChangeTitle(e);
-    //     expect(inputChange).toBeCalledTimes(3);
-    //     expect(inputChange).toBeCalledWith('Bla', InputKey.title);
-    //     expect(inputChange).toBeCalledWith('Bla', InputKey.minBid);
-    //     expect(inputChange).toBeCalledWith('Bla', InputKey.description);
-    // });
 });

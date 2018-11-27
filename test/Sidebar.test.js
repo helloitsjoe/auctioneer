@@ -13,6 +13,7 @@ describe('Sidebar', function() {
         const props = {
             focusedIndex: 0,
             items: fakeItems,
+            title: 'Title From Prop',
             onItemFocus,
             onAddItem,
             ...propOverrides,
@@ -34,18 +35,10 @@ describe('Sidebar', function() {
         const { sidebar } = setup();
         const sidebarItems = sidebar.find('SidebarItem');
         expect(sidebarItems).toHaveLength(2);
-        expect(sidebarItems.at(0).prop('itemData')).toEqual(fakeItems[0]);
-        expect(sidebarItems.at(1).prop('itemData')).toEqual(fakeItems[1]);
         expect(sidebarItems.at(0).prop('focused')).toBe(true);
+        expect(sidebarItems.at(0).prop('title')).toBe('Title From Prop');
         expect(sidebarItems.at(1).prop('focused')).toBe(false);
-    });
-
-    it.skip('focused SidebarItem title is temp title', function () {
-        
-    });
-
-    it.skip('non-focused SidebarItem is item title', function () {
-        
+        expect(sidebarItems.at(1).prop('title')).toBe(fakeItems[1].title);
     });
 
     it('calls onItemClick when selected', function() {
