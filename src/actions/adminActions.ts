@@ -1,24 +1,10 @@
 import { DATA_URL } from '../utils';
 import {
-    Modal,
     ItemData,
-    ADD_ITEM,
-    ITEM_FOCUSED,
-    INPUT_CHANGE,
     SUBMIT_CHANGE_SUCCESS,
     DELETE_ITEM_SUCCESS,
-    DISCARD_CHANGE,
-    MISSING_INFO,
-    CLOSE_MODAL,
 } from '../reducers';
-import { InputKey } from '../admin/ItemEditor';
 
-// export const addItem = () => ({ type: ADD_ITEM });
-// export const closeModal = (name: Modal) => ({ type: CLOSE_MODAL, name });
-// export const missingInfo = () => ({ type: MISSING_INFO });
-// export const itemFocus = (itemIndex: number) => ({ type: ITEM_FOCUSED, itemIndex });
-// export const inputChange = (value: string, key: InputKey) => ({ type: INPUT_CHANGE, key, value });
-// export const discardChange = () => ({ type: DISCARD_CHANGE });
 export const submitChange = (
     body: ItemData,
     dataURL: string = DATA_URL,

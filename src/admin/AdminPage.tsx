@@ -61,33 +61,6 @@ export class AdminPage extends React.Component<Props, State> {
         });
     }
 
-    componentDidUpdate(prevProps: Props, prevState: State) {
-        const { focusedIndex } = this.state;
-        // console.log(`this.state.items.length:`, this.props.initialItems.length);
-        // console.log(`this.state.title:`, this.state.title);
-        // console.log(`missingInfo:`, this.state.missingInfo);
-        // if (this.state.items.length !== this.props.initialItems.length) {
-        //     return this.setState({ items: this.props.initialItems });
-        // }
-        // const itemDeleted = prevState.items.length !== this.props.initialItems.length;
-        if (focusedIndex === prevState.focusedIndex) {
-            return;
-        }    
-        this.setState(_ => {
-            // const items = itemDeleted ? this.props.initialItems : prevState.items;
-            const items = this.state.items;
-            const item = items[focusedIndex];
-            const { description, title } = item;
-            const minBid = getMinBidValue(item.bids);
-            return {
-                items,
-                description,
-                minBid,
-                title,
-            }
-        });
-    }
-
     handleInputChange = (inputType: InputKey) => e => {
         const { value } = e.target;
         const baseState = { dirty: true, missingInfo: false };
@@ -101,50 +74,100 @@ export class AdminPage extends React.Component<Props, State> {
         }
     }
 
-    handleAddItem = () => {
-        const {items} = this.state;
-        const blankItemIndex = items.findIndex(item => !item.title.length);
-        if (blankItemIndex > -1) {
-            return this.setState({ focusedIndex: blankItemIndex });
-        }
-        const newItem = createNewAuctionItem(items);
-        const itemsWithNew = [...items, newItem];
-
-        this.setState({
-            items: itemsWithNew,
-            focusedIndex: itemsWithNew.indexOf(newItem)
-        });
-    }
-
     handleItemFocus = (i: number) => {
         if (this.state.dirty) {
             return this.setState({ confirmDiscard: true });
         }
-        this.setState({ focusedIndex: i });
+        this.setState(prevState => {
+            const item = prevState.items[i];
+            // TODO: Clean up all repeated instances of title, minBid, description.
+            // Eiter extract into a function or save focusedItem in state
+            return {
+                focusedIndex: i,
+                title: item.title,
+                minBid: getMinBidValue(item.bids),
+                description: item.description,
+            };
+        });
     }
 
-    handleDiscardChanges = () => {
-        
+    handleAddItem = () => {
+        const {items} = this.state;
+        const newItem = createNewAuctionItem(items);
+        const newItemValues = {
+            title: newItem.title,
+            description: newItem.description,
+            minBid: getMinBidValue(newItem.bids),
+        }
+        const blankItemIndex = items.findIndex(item => !item.title.length);
+        if (blankItemIndex > -1) {
+            return this.setState({
+                focusedIndex: blankItemIndex,
+                ...newItemValues,
+            });
+        }
+        const itemsWithNew = [...items, newItem];
+
+        this.setState({
+            items: itemsWithNew,
+            focusedIndex: itemsWithNew.indexOf(newItem),
+            ...newItemValues
+        });
+    }
+
+    handleSaveChanges = (focusedItem: ItemData) => e => {
+        this.props.submitChange(focusedItem);
+        this.setState({ dirty: false, confirmDiscard: false });
+    }
+
+    handleDiscardChanges = e => {
+        this.setState(prevState => {
+            const { items, focusedIndex } = prevState
+            const { title, description, bids } = items[focusedIndex];
+            return {
+                title,
+                description,
+                minBid: getMinBidValue(bids),
+                dirty: false,
+                confirmDiscard: false
+            }
+        });
     }
 
     handleSubmit = (e: any) => {
         e.preventDefault();
         const { items, focusedIndex, title, description, minBid } = this.state;
+        if (!(title.trim() && description.trim())) {
+            return this.setState({ missingInfo: true });
+        }
         const item = items[focusedIndex];
         const bids = item.bids.map(bid => 
             bid.name === 'min' ? { ...bid, value: minBid } : bid);
         const newItem = { ...item, title, description, bids };
-        if (!(item.title.trim() && item.description.trim())) {
-            return this.setState({ missingInfo: true });
-        }
         this.props.submitChange(newItem);
         this.setState({ dirty: false, missingInfo: false });
     }
 
     handleDelete = (e: any) => {
-        const focusedItem = this.state.items[this.state.focusedIndex];
-        this.props.deleteRequest(focusedItem.id);
-        this.setState(prevState => ({ items: prevState.items.filter(({id}) => id !== focusedItem.id)}));
+        this.setState(prevState => {
+            const { items, focusedIndex} = prevState;
+            const focusedItem = items[focusedIndex];
+            this.props.deleteRequest(focusedItem.id);
+            // TODO: I shouldn't need to filter both here and in reducer?
+            const filteredItems = items.filter(({id}) => id !== focusedItem.id);
+            const safeItemsAfterDelete = filteredItems.length ? filteredItems : [createNewAuctionItem()];
+            const safeFocusedIndex = focusedIndex >= safeItemsAfterDelete.length
+                ? safeItemsAfterDelete.length - 1
+                : focusedIndex;
+            const safeItemAfterDelete = safeItemsAfterDelete[safeFocusedIndex];
+            return {
+                focusedIndex: safeFocusedIndex,
+                items: safeItemsAfterDelete,
+                title: safeItemAfterDelete.title,
+                description: safeItemAfterDelete.description,
+                minBid: getMinBidValue(safeItemAfterDelete.bids),
+            }
+        });
     }
 
     closeModal = (name: Modal) => e => {
@@ -159,8 +182,6 @@ export class AdminPage extends React.Component<Props, State> {
     }
 
     render() {
-        const { submitChange } = this.props;
-
         const {
             items,
             title,
@@ -170,14 +191,13 @@ export class AdminPage extends React.Component<Props, State> {
             missingInfo,
             confirmDiscard
         } = this.state;
-        const focusedItem = items[focusedIndex];
 
         return (
             <div>
                 {confirmDiscard &&
                     <ConfirmDiscard
                         onCloseModal={this.closeModal(Modal.confirmDiscard)}
-                        onSaveChanges={() => submitChange(focusedItem)}
+                        onSaveChanges={this.handleSaveChanges(items[focusedIndex])}
                         onDiscardChanges={this.handleDiscardChanges}
                     />
                 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ItemData } from '../reducers';
 
 type Props = {
     id: number;

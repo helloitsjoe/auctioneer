@@ -29,7 +29,7 @@ describe('ConfirmDiscard', function () {
         wrapper = mount(<ConfirmDiscard
             onSaveChanges={onSaveChanges}
             onCloseModal={() => {}} />)
-        const save = wrapper.find('.save');
+        const save = wrapper.find('.confirm-save');
         save.prop('onClick')();
         expect(onSaveChanges).toBeCalledTimes(1);
     });

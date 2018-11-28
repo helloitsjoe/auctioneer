@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { initStore } from '../src/store';
 import { Poller } from '../src/Poller';
 import App from '../src/App';

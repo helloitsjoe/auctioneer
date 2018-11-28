@@ -1,10 +1,5 @@
 import { initStore } from "../src/store";
 import {
-    addItem,
-    itemFocus,
-    closeModal,
-    inputChange,
-    discardChange,
     deleteItemSuccess,
     submitChangeSuccess,
 } from "../src/actions/adminActions";
@@ -15,14 +10,11 @@ import { toggleDescription,
 import { TESTER_1, fakeItems } from "./testUtils";
 import {
     BID_INCREMENT,
-    Modal,
     selectItem,
     selectError,
     selectIsLoaded,
     selectFirstItem,
-    selectAuctionItems,
-    selectConfirmDiscard } from "../src/reducers";
-import { InputKey } from "../src/admin/ItemEditor";
+    selectAuctionItems } from "../src/reducers";
 import { createNewAuctionItem } from "../src/utils";
 
 describe("redux duck tests", () => {
@@ -89,37 +81,6 @@ describe("redux duck tests", () => {
             expect(selectFirstItem(getState())).toEqual(newItem);
             dispatch(submitChangeSuccess(fakeItem));
             expect(selectFirstItem(getState())).toEqual(fakeItem);
-        });
-
-        it.skip('save saves changes, allows focus on new item', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            expect(selectConfirmDiscard(getState())).toBe(true);
-            const item = selectFocusedItem(getState());
-            dispatch(submitChangeSuccess(item));
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            // Focus still index 0 after modal closes
-            expect(selectFocusedIndex(getState())).toBe(0);
-            // Now other items can be focused
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(1);            
-        });
-
-        it.skip('discard reverts changes, allows focus on other items', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            expect(selectConfirmDiscard(getState())).toBe(true);
-            dispatch(discardChange());
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            // Focus still index 0 after modal closes
-            expect(selectFocusedIndex(getState())).toBe(0);
-            // Now other items can be focused
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(1);                        
         });
     });
 

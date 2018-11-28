@@ -1,9 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-
-import { getMinBidValue } from '../utils';
-// import { ItemData, selectFocusedItem } from '../reducers';
-// import { inputChange, deleteRequest, submitChange, missingInfo } from '../actions/adminActions';
 
 export enum InputKey {
     title = 'title',
@@ -64,35 +59,3 @@ export function ItemEditor({
         </div>
     )
 }
-
-// const mapStateToProps = (state) => ({
-//     itemData: selectFocusedItem(state),
-// })
-
-// const mapDispatchToProps = {
-//     inputChange,
-//     missingInfo,
-//     submitChange,
-//     deleteRequest,
-// };
-
-// export const mergeProps = (stateProps, dispatchProps) => {
-//     const {itemData} = stateProps;
-//     const {submitChange, deleteRequest, inputChange, missingInfo} = dispatchProps;
-//     return {
-//         itemData,
-//         deleteRequest,
-//         onChangeTitle: (e) => inputChange(e.target.value, InputKey.title),
-//         onChangeMinBid: (e) => inputChange(e.target.value, InputKey.minBid),
-//         onChangeDescription: (e) => inputChange(e.target.value, InputKey.description),
-//         onSubmitChanges(e) {
-//             e.preventDefault();
-//             if (!(itemData.title.trim() && itemData.description.trim())) {
-//                 return missingInfo();
-//             }
-//             submitChange(itemData);
-//         },
-//     }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ItemEditor);

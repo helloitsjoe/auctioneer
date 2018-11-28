@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { mount, shallow } from 'enzyme';
-import { getHighBid, getMinBidValue } from '../src/utils';
-import { fakeItems } from './testUtils';
-import { ItemEditor, InputKey, mergeProps } from '../src/admin/ItemEditor';
+import { shallow } from 'enzyme';
+import { getMinBidValue } from '../src/utils';
+import { ItemEditor } from '../src/admin/ItemEditor';
 
 describe('ItemEditor', function () {
 

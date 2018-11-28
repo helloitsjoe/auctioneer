@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { AddItem } from './AddItem';
 import { SidebarItem } from './SidebarItem';
-// import { addItem, itemFocus } from '../actions/adminActions';
-import { ItemData/* , selectAuctionItems, selectFocusedIndex */ } from '../reducers';
+import { ItemData } from '../reducers';
 
 type Props = {
     title: string;
@@ -32,12 +30,3 @@ export function Sidebar({ items, focusedIndex, title, onAddItem, onItemFocus }: 
         </div>
     )
 }
-
-// const mapState = state => ({
-//     auctionItems: selectAuctionItems(state),
-//     focusedIndex: selectFocusedIndex(state),
-// })
-
-// export const mapDispatchToProps = { addItem, itemFocus }
-
-// export default connect(mapState, mapDispatchToProps)(Sidebar);
