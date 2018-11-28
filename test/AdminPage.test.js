@@ -128,16 +128,16 @@ describe('AdminPage', function () {
     });
 
     it.each`
-    titleValue | descriptionValue | missingInfoLength
-    ${''}      | ${''}            | ${1}
-    ${' '}     | ${''}            | ${1}
-    ${''}      | ${' '}           | ${1}
-    ${' '}     | ${' '}           | ${1}
-    ${'Foo'}   | ${' '}           | ${1}
-    ${''}      | ${'Bar'}         | ${1}
-    ${'Foo'}   | ${'Bar'}         | ${0}
+    titleValue | descriptionValue | modalLength | callCount
+    ${''}      | ${''}            | ${1}              | ${0}
+    ${' '}     | ${''}            | ${1}              | ${0}
+    ${''}      | ${' '}           | ${1}              | ${0}
+    ${' '}     | ${' '}           | ${1}              | ${0}
+    ${'Foo'}   | ${' '}           | ${1}              | ${0}
+    ${''}      | ${'Bar'}         | ${1}              | ${0}
+    ${'Foo'}   | ${'Bar'}         | ${0}              | ${1}
     `('requires title and description to save | $titleValue | $descriptionValue',
-    ({titleValue, descriptionValue, missingInfoLength}) => {
+    ({titleValue, descriptionValue, modalLength, callCount}) => {
         expect(wrapper.find('.missing-info').length).toBe(0);
 
         wrapper.find('AddItem').prop('onSelect')();
@@ -148,7 +148,8 @@ describe('AdminPage', function () {
         wrapper.find('.save').prop('onClick')({preventDefault: jest.fn()});
         wrapper.update();
 
-        expect(wrapper.find('.missing-info').length).toBe(missingInfoLength);
+        expect(submitChange).toBeCalledTimes(callCount);
+        expect(wrapper.find('.missing-info').length).toBe(modalLength);
     });
 
     describe('input change', function () {
