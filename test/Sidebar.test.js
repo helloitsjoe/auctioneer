@@ -13,7 +13,8 @@ describe('Sidebar', function() {
         const props = {
             focusedIndex: 0,
             items: fakeItems,
-            title: 'Title From Prop',
+            focusedItem: fakeItems[0],
+            // title: 'Title From Prop',
             onItemFocus,
             onAddItem,
             ...propOverrides,
@@ -36,7 +37,7 @@ describe('Sidebar', function() {
         const sidebarItems = sidebar.find('SidebarItem');
         expect(sidebarItems).toHaveLength(2);
         expect(sidebarItems.at(0).prop('focused')).toBe(true);
-        expect(sidebarItems.at(0).prop('title')).toBe('Title From Prop');
+        expect(sidebarItems.at(0).prop('title')).toBe(fakeItems[0].title);
         expect(sidebarItems.at(1).prop('focused')).toBe(false);
         expect(sidebarItems.at(1).prop('title')).toBe(fakeItems[1].title);
     });

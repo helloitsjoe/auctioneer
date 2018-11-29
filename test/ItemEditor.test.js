@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { getMinBidValue } from '../src/utils';
 import { ItemEditor } from '../src/admin/ItemEditor';
 
 describe('ItemEditor', function () {
@@ -23,11 +22,8 @@ describe('ItemEditor', function () {
         ['description', 'Blah blah blah'],
         ['minimum', 42],
     ])(`display itemData %s`, function (field, expected) {
-        const { title, description, bids } = fakeItem;
         const itemEditor = shallow(<ItemEditor
-            title={title}
-            description={description}
-            minBid={getMinBidValue(bids)}
+            item={fakeItem}
         />);
         const field = itemEditor.find(`#${field}`);
         expect(field.prop('value')).toBe(expected);
@@ -42,7 +38,7 @@ describe('ItemEditor', function () {
             onChangeTitle={onChangeTitle}
             onChangeDescription={onChangeDescription}
             onChangeMinBid={onChangeMinBid}
-            itemData={fakeItem} />);
+            item={fakeItem} />);
         const field = itemEditor.find(`#${field}`);
         field.prop('onChange')({ target: { value: 'X' }});
         expect(func).toBeCalledWith({ target: { value: 'X' }});
@@ -51,9 +47,7 @@ describe('ItemEditor', function () {
     it('calls onSubmit when user clicks save or hits enter', function () {
         const itemEditor = shallow(<ItemEditor
             onSubmit={onSubmit}
-            title="Foo"
-            description="Bar"
-            minBid={45}
+            item={fakeItem}
         />);
         const saveButton = itemEditor.find(`#submit`);
         saveButton.prop('onClick')();
@@ -68,7 +62,7 @@ describe('ItemEditor', function () {
     it('calls onDelete when user clicks delete', function () {
         const itemEditor = shallow(<ItemEditor
             onDelete={onDelete}
-            itemData={fakeItem}
+            item={fakeItem}
         />);
         const deleteButton = itemEditor.find(`#delete`);
         expect(onDelete).toBeCalledTimes(0);

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { ItemData } from '../reducers';
+import { getMinBidValue } from '../utils';
 
 export enum InputKey {
     title = 'title',
@@ -7,9 +9,7 @@ export enum InputKey {
 }
 
 type Props = {
-    title: string;
-    minBid: number;
-    description: string;
+    item: ItemData;
     onSubmit: (e: any) => void;
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;
@@ -18,9 +18,7 @@ type Props = {
 }
 
 export function ItemEditor({
-    title,
-    minBid,
-    description,
+    item,
     onSubmit,
     onChangeTitle,
     onChangeMinBid,
@@ -33,14 +31,14 @@ export function ItemEditor({
             <form action="submit" onSubmit={onSubmit}>
                 <div className="main-element">
                     Title:
-                    <input id="title" type="text" value={title} onChange={onChangeTitle} />
+                    <input id="title" type="text" value={item.title} onChange={onChangeTitle} />
                 </div>
                 <div className="main-element">
                     Minimum Bid: $
                     <input
                         id="minimum"
                         type="number"
-                        value={minBid}
+                        value={getMinBidValue(item.bids)}
                         onChange={onChangeMinBid}
                     />
                 </div>
@@ -50,7 +48,7 @@ export function ItemEditor({
                         form="item-form"
                         name="description"
                         id="description"
-                        value={description}
+                        value={item.description}
                         onChange={onChangeDescription} />
                 </div>
                 <button id="submit" className="save" type="submit" onClick={onSubmit}>Save</button>

@@ -4,14 +4,14 @@ import { SidebarItem } from './SidebarItem';
 import { ItemData } from '../reducers';
 
 type Props = {
-    title: string;
     items: ItemData[];
     focusedIndex: number;
+    focusedItem: ItemData;
     onAddItem: () => void,
     onItemFocus: (i: number) => void
 }
 
-export function Sidebar({ items, focusedIndex, title, onAddItem, onItemFocus }: Props) {
+export function Sidebar({ items, focusedItem, focusedIndex, onAddItem, onItemFocus }: Props) {
     return (
         <div className="sidebar">
             {items.map((item, i) => {
@@ -21,7 +21,7 @@ export function Sidebar({ items, focusedIndex, title, onAddItem, onItemFocus }: 
                         key={item.id}
                         id={item.id}
                         focused={focused}
-                        title={focused ? title : item.title}
+                        title={focused ? focusedItem.title : item.title}
                         onSelect={() => onItemFocus(i)}
                     />
                 )

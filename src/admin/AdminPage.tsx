@@ -9,7 +9,7 @@ import { Sidebar } from './Sidebar';
 import { AdminHeader } from './AdminHeader';
 import { ConfirmDiscard } from './ConfirmDiscard';
 import { MissingInfoNotice } from './MissingInfoNotice';
-import { createNewAuctionItem, getMinBidValue } from '../utils';
+import { createNewAuctionItem } from '../utils';
 
 type Props = {
     poller: Poller;
@@ -20,15 +20,12 @@ type Props = {
 
 type State = {
     items: ItemData[];
-    title: string;
+    currentItem: ItemData;
     dirty: boolean;
-    minBid: number;
-    description: string;
     focusedIndex: number;
     missingInfo: boolean;
     confirmDiscard: boolean;
 }
-
 
 export class AdminPage extends React.Component<Props, State> {
 
@@ -37,41 +34,32 @@ export class AdminPage extends React.Component<Props, State> {
     }
 
     state = {
-        items: [],
-        title: '',
+        items: this.props.initialItems,
         dirty: false,
-        minBid: 0,
-        description: '',
         focusedIndex: 0,
+        currentItem: this.props.initialItems[0],
         missingInfo: false,
         confirmDiscard: false,
     }
 
     componentDidMount() {
         this.props.poller.stop();
-        const { initialItems } = this.props;
-        const item = initialItems[this.state.focusedIndex];
-        const { title, description } = item;
-        const minBid = getMinBidValue(item.bids);
-        this.setState({
-            items: initialItems,
-            description,
-            minBid,
-            title,
-        });
     }
 
     handleInputChange = (inputType: InputKey) => e => {
-        const { value } = e.target;
-        const baseState = { dirty: true, missingInfo: false };
-        switch(inputType) {
-            case InputKey.title:
-                return this.setState({ ...baseState, [inputType]: value,  });
-            case InputKey.description:
-                return this.setState({ ...baseState, description: value });
-            case InputKey.minBid:
-                return this.setState({ ...baseState, minBid: parseInt(value, 10) });
-        }
+        this.setState(prevState => {
+            const { value } = e.target;
+            const { currentItem } = prevState;
+            const bids = currentItem.bids.map(bid =>
+                bid.name === 'min' ? { ...bid, value: parseInt(value) } : bid)
+            const inputMap = {
+                title: { title: value },
+                description: { description: value },
+                minBid: { bids }
+            }
+            const newItem = { ...currentItem, ...inputMap[inputType] };
+            return { dirty: true, missingInfo: false, currentItem: newItem }
+        });
     }
 
     handleItemFocus = (i: number) => {
@@ -79,39 +67,31 @@ export class AdminPage extends React.Component<Props, State> {
             return this.setState({ confirmDiscard: true });
         }
         this.setState(prevState => {
-            const item = prevState.items[i];
-            // TODO: Clean up all repeated instances of title, minBid, description.
-            // Eiter extract into a function or save focusedItem in state
             return {
                 focusedIndex: i,
-                title: item.title,
-                minBid: getMinBidValue(item.bids),
-                description: item.description,
+                currentItem: prevState.items[i],
             };
         });
     }
 
     handleAddItem = () => {
-        const {items} = this.state;
-        const newItem = createNewAuctionItem(items);
-        const newItemValues = {
-            title: newItem.title,
-            description: newItem.description,
-            minBid: getMinBidValue(newItem.bids),
-        }
-        const blankItemIndex = items.findIndex(item => !item.title.length);
-        if (blankItemIndex > -1) {
-            return this.setState({
-                focusedIndex: blankItemIndex,
-                ...newItemValues,
-            });
-        }
-        const itemsWithNew = [...items, newItem];
-
-        this.setState({
-            items: itemsWithNew,
-            focusedIndex: itemsWithNew.indexOf(newItem),
-            ...newItemValues
+        this.setState(prevState => {
+            const { items } = prevState;
+            const blankItemIndex = items.findIndex(item => !item.title.length);
+            if (blankItemIndex > -1) {
+                return {
+                    items,
+                    focusedIndex: blankItemIndex,
+                    currentItem: items[blankItemIndex],
+                }
+            }
+            const newItem = createNewAuctionItem(items);
+            const itemsWithNew = [...items, newItem];
+            return {
+                items: itemsWithNew,
+                currentItem: newItem,
+                focusedIndex: itemsWithNew.indexOf(newItem)
+            };
         });
     }
 
@@ -121,30 +101,20 @@ export class AdminPage extends React.Component<Props, State> {
     }
 
     handleDiscardChanges = e => {
-        this.setState(prevState => {
-            const { items, focusedIndex } = prevState
-            const { title, description, bids } = items[focusedIndex];
-            return {
-                title,
-                description,
-                minBid: getMinBidValue(bids),
-                dirty: false,
-                confirmDiscard: false
-            }
-        });
+        this.setState(prevState => ({
+            currentItem: prevState.items[prevState.focusedIndex],
+            dirty: false,
+            confirmDiscard: false
+        }));
     }
 
     handleSubmit = (e: any) => {
         e.preventDefault();
-        const { items, focusedIndex, title, description, minBid } = this.state;
-        if (!(title.trim() && description.trim())) {
+        const { currentItem } = this.state;
+        if (!(currentItem.title.trim() && currentItem.description.trim())) {
             return this.setState({ missingInfo: true });
         }
-        const item = items[focusedIndex];
-        const bids = item.bids.map(bid => 
-            bid.name === 'min' ? { ...bid, value: minBid } : bid);
-        const newItem = { ...item, title, description, bids };
-        this.props.submitChange(newItem);
+        this.props.submitChange(currentItem);
         this.setState({ dirty: false, missingInfo: false });
     }
 
@@ -163,9 +133,7 @@ export class AdminPage extends React.Component<Props, State> {
             return {
                 focusedIndex: safeFocusedIndex,
                 items: safeItemsAfterDelete,
-                title: safeItemAfterDelete.title,
-                description: safeItemAfterDelete.description,
-                minBid: getMinBidValue(safeItemAfterDelete.bids),
+                currentItem: safeItemAfterDelete,
             }
         });
     }
@@ -184,9 +152,7 @@ export class AdminPage extends React.Component<Props, State> {
     render() {
         const {
             items,
-            title,
-            minBid,
-            description,
+            currentItem,
             focusedIndex,
             missingInfo,
             confirmDiscard
@@ -197,7 +163,7 @@ export class AdminPage extends React.Component<Props, State> {
                 {confirmDiscard &&
                     <ConfirmDiscard
                         onCloseModal={this.closeModal(Modal.confirmDiscard)}
-                        onSaveChanges={this.handleSaveChanges(items[focusedIndex])}
+                        onSaveChanges={this.handleSaveChanges(currentItem)}
                         onDiscardChanges={this.handleDiscardChanges}
                     />
                 }
@@ -210,15 +176,13 @@ export class AdminPage extends React.Component<Props, State> {
                 <div className="admin-page">
                     <Sidebar
                         items={items}
-                        title={title}
+                        focusedItem={currentItem}
                         focusedIndex={focusedIndex}
                         onAddItem={this.handleAddItem}
                         onItemFocus={this.handleItemFocus}
                     />
                     <ItemEditor
-                        title={title}
-                        minBid={minBid}
-                        description={description}
+                        item={currentItem}
                         onSubmit={this.handleSubmit}
                         onDelete={this.handleDelete}
                         onChangeTitle={this.handleInputChange(InputKey.title)}
