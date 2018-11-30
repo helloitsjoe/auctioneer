@@ -14,7 +14,7 @@ export function ConfirmDiscard({onSaveChanges, onDiscardChanges, onCloseModal}: 
                 <p>You have unsaved changes!</p>
                 <br />
                 <button
-                    className="save"
+                    className="confirm-save"
                     onClick={onSaveChanges}>Save changes</button>
                 <button
                     className="delete discard"

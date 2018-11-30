@@ -17,7 +17,7 @@ export function Item({ user, highBid, itemData, onToggleDescription, onQuickBid 
     let itemClass = '';
     let bidClass = '';
     let bidSuffix = '';
-// TODO: Pass this in as a prop
+
     if (highBid.name === user) {
         itemClass = 'bid-bg';
         bidClass = 'user-high-bid';

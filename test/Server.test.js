@@ -119,13 +119,14 @@ describe('Server', function () {
         });
     
         it('submitChange', async function () {
+            const name = 'me';
             const fakeItem = {
                 id: 123,
                 title: 'Blah',
                 description: 'Babababa',
-                bids: [{name: 'me', value: 1}],
+                bids: [{name, value: 1}],
             };
-            const putResponse = await dispatch(submitChange(fakeItem, dataURL, adapter));
+            const putResponse = await dispatch(submitChange(fakeItem, name, dataURL, adapter));
             expect(putResponse).toEqual({ updatedItem: fakeItem });
         });
     

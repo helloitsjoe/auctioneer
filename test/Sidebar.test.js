@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { fakeItems } from './testUtils';
-import { Sidebar, mapDispatchToProps } from '../src/admin/Sidebar';
+import { Sidebar } from '../src/admin/Sidebar';
 import { SidebarItem } from '../src/admin/SidebarItem';
 import { AddItem } from '../src/admin/AddItem';
 
 describe('Sidebar', function() {
-    const addItem = jest.fn();
-    const itemFocus = jest.fn();
+    const onAddItem = jest.fn();
+    const onItemFocus = jest.fn();
 
     const setup = propOverrides => {
         const props = {
             focusedIndex: 0,
-            auctionItems: fakeItems,
-            itemFocus,
-            addItem,
+            items: fakeItems,
+            focusedItem: fakeItems[0],
+            // title: 'Title From Prop',
+            onItemFocus,
+            onAddItem,
             ...propOverrides,
         };
 
@@ -34,10 +36,10 @@ describe('Sidebar', function() {
         const { sidebar } = setup();
         const sidebarItems = sidebar.find('SidebarItem');
         expect(sidebarItems).toHaveLength(2);
-        expect(sidebarItems.at(0).prop('itemData')).toEqual(fakeItems[0]);
-        expect(sidebarItems.at(1).prop('itemData')).toEqual(fakeItems[1]);
         expect(sidebarItems.at(0).prop('focused')).toBe(true);
+        expect(sidebarItems.at(0).prop('title')).toBe(fakeItems[0].title);
         expect(sidebarItems.at(1).prop('focused')).toBe(false);
+        expect(sidebarItems.at(1).prop('title')).toBe(fakeItems[1].title);
     });
 
     it('calls onItemClick when selected', function() {
@@ -45,41 +47,41 @@ describe('Sidebar', function() {
 
         const secondItem = sidebar.childAt(1);
         const addWrapper = sidebar.find('AddItem');
-        expect(addItem).not.toBeCalled();
-        expect(itemFocus).not.toBeCalled();
+        expect(onAddItem).not.toBeCalled();
+        expect(onItemFocus).not.toBeCalled();
 
         secondItem.prop('onSelect')();
-        expect(itemFocus).toBeCalledWith(1);
-        expect(addItem).not.toBeCalled();
+        expect(onItemFocus).toBeCalledWith(1);
+        expect(onAddItem).not.toBeCalled();
         jest.resetAllMocks();
 
         addWrapper.prop('onSelect')();
-        expect(itemFocus).not.toBeCalled();
-        expect(addItem).toBeCalledTimes(1);
+        expect(onItemFocus).not.toBeCalled();
+        expect(onAddItem).toBeCalledTimes(1);
     });
 
-    it('AddItem calls onSelect when clicked', function() {
-        const addItem = jest.fn();
-        const wrapper = shallow(<AddItem onSelect={addItem} />);
+    it('AddItem calls onItemFocus when clicked', function() {
+        const onAddItem = jest.fn();
+        const wrapper = shallow(<AddItem onSelect={onAddItem} />);
         expect(wrapper.text()).toBe('+');
-        expect(addItem).not.toBeCalled();
+        expect(onAddItem).not.toBeCalled();
         wrapper.prop('onClick')();
-        expect(addItem).toBeCalledTimes(1);
+        expect(onAddItem).toBeCalledTimes(1);
     });
 
     it('SidebarItem works as expected', function() {
         const [fakeItem] = fakeItems;
-        const itemFocus = jest.fn();
+        const onItemFocus = jest.fn();
         const sidebarItem = shallow(
             <SidebarItem
-                itemData={fakeItem}
+                title={fakeItem.title}
                 focused={false}
-                onSelect={itemFocus}
+                onSelect={onItemFocus}
             />
         );
-        expect(itemFocus).not.toBeCalled();
+        expect(onItemFocus).not.toBeCalled();
         sidebarItem.prop('onClick')();
-        expect(itemFocus).toBeCalledTimes(1);
+        expect(onItemFocus).toBeCalledTimes(1);
         expect(sidebarItem.text()).toBe(fakeItem.title);
         expect(sidebarItem.hasClass('focused')).toBe(false);
         sidebarItem.setProps({ focused: true });

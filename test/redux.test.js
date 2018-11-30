@@ -1,10 +1,5 @@
 import { initStore } from "../src/store";
 import {
-    addItem,
-    itemFocus,
-    closeModal,
-    inputChange,
-    discardChange,
     deleteItemSuccess,
     submitChangeSuccess,
 } from "../src/actions/adminActions";
@@ -15,30 +10,20 @@ import { toggleDescription,
 import { TESTER_1, fakeItems } from "./testUtils";
 import {
     BID_INCREMENT,
-    Modal,
     selectItem,
     selectError,
     selectIsLoaded,
     selectFirstItem,
-    selectFocusedItem,
-    selectAuctionItems,
-    selectFocusedIndex,
-    selectConfirmDiscard } from "../src/reducers";
-import { InputKey } from "../src/admin/ItemEditor";
+    selectAuctionItems } from "../src/reducers";
 import { createNewAuctionItem } from "../src/utils";
 
 describe("redux duck tests", () => {
 
     const initialState = {
         error: null,
-        dirty: false,
         userTotal: 0,
-        origItem: null,
         isLoaded: false,
-        focusedIndex: 0,
         auctionItems: [],
-        missingInfo: false,
-        confirmDiscard: false,
     }
 
     const newItem = {
@@ -64,46 +49,6 @@ describe("redux duck tests", () => {
 
     describe('Admin', function () {
 
-        it("add items to store", function () {
-            expect(selectAuctionItems(getState()).length).toBe(0);
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
-            dispatch(addItem());
-            dispatch(inputChange('Something Else', InputKey.title));
-            expect(selectAuctionItems(getState()).length).toBe(2);
-            expect(selectAuctionItems(getState())[0].id).toBe(0);
-            expect(selectAuctionItems(getState())[1].id).toBe(1);
-            expect(selectFocusedIndex(getState())).toBe(1);
-        });
-
-        it('add item no-op if current item has no title', function () {
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(1);
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(1);
-        });
-
-        it('add item selects item without title if one exists', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(3);
-            dispatch(itemFocus(0));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(3);
-            expect(selectFocusedIndex(getState())).toBe(2);
-        });
-
-        it('can add after deleting', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            expect(selectAuctionItems(getState()).length).toBe(2);
-            dispatch(deleteItemSuccess(0));
-            expect(selectAuctionItems(getState()).length).toBe(1);
-            dispatch(addItem());
-            expect(selectAuctionItems(getState()).length).toBe(2);
-            expect(selectAuctionItems(getState())[1].id).toBe(2);
-        });
-
         it('deleteItem removes item from store', function () {
             dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
             expect(selectAuctionItems(getState()).length).toBe(2);
@@ -114,57 +59,14 @@ describe("redux duck tests", () => {
         });
 
         it('deleting last item replaces item with blank item', function () {
-            dispatch(addItem());
-            dispatch(inputChange('Something', InputKey.title));
+            const [fakeItem] = fakeItems;
+            dispatch(fetchAuctionSuccess({rawAuctionItems: [fakeItem]}));
             expect(selectAuctionItems(getState()).length).toBe(1);
-            expect(selectFocusedItem(getState()).id).toBe(0);
-            expect(selectFocusedItem(getState()).title).toBe('Something');
-            dispatch(deleteItemSuccess(0));
+            expect(selectFirstItem(getState()).id).toBe(fakeItem.id);
+            expect(selectFirstItem(getState()).title).toBe(fakeItem.title);
+            dispatch(deleteItemSuccess(fakeItem.id));
             expect(selectAuctionItems(getState()).length).toBe(1);
-            expect(selectFocusedItem(getState()).title).toBe('');
-        });
-
-        // it('save is disabled if no changes', function () {
-        // });
-
-        it('select item', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(1);
-        });
-
-        it('input change', function () {
-            const bids = [{name: 'min', value: 0}];
-            dispatch(addItem());
-            dispatch(itemFocus(0));
-            expect(selectFocusedItem(getState()))
-                .toMatchObject({
-                    title: '',
-                    description: '',
-                    bids
-                });
-            dispatch(inputChange('Blah', InputKey.title));
-            expect(selectFocusedItem(getState()))
-                .toMatchObject({
-                    title: 'Blah',
-                    description: '',
-                    bids
-                });
-            dispatch(inputChange('Blah blah', InputKey.description));
-            expect(selectFocusedItem(getState()))
-                .toMatchObject({
-                    title: 'Blah',
-                    description: 'Blah blah',
-                    bids
-                });
-            dispatch(inputChange('42', InputKey.minBid));
-            expect(selectFocusedItem(getState()))
-                .toMatchObject({
-                    title: 'Blah',
-                    description: 'Blah blah',
-                    bids: [{name: 'min', value: 42}]
-                });
+            expect(selectFirstItem(getState()).title).toBe('');
         });
 
         it('submit updates store', function () {
@@ -175,71 +77,10 @@ describe("redux duck tests", () => {
                 description: 'Hello',
                 bids: [{name: 'Me', value: 5 }]
             };
-            dispatch(addItem());
+            dispatch(fetchAuctionSuccess({rawAuctionItems: [createNewAuctionItem()]}));
             expect(selectFirstItem(getState())).toEqual(newItem);
             dispatch(submitChangeSuccess(fakeItem));
             expect(selectFirstItem(getState())).toEqual(fakeItem);
-        });
-
-        it('select item does nothing if unsaved changes', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New description', InputKey.description));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-        });
-
-        it('confirm discard if unsaved changes', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectConfirmDiscard(getState())).toBe(true);            
-        });
-
-        it('clear confirm discard without changing focus', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectConfirmDiscard(getState())).toBe(true);
-            dispatch(closeModal(Modal.confirmDiscard));
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            expect(selectFocusedIndex(getState())).toBe(0);
-            // Trying again will bring up confirm discard modal again
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            expect(selectConfirmDiscard(getState())).toBe(true);
-        });
-
-        it('save saves changes, allows focus on new item', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            expect(selectConfirmDiscard(getState())).toBe(true);
-            const item = selectFocusedItem(getState());
-            dispatch(submitChangeSuccess(item));
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            // Focus still index 0 after modal closes
-            expect(selectFocusedIndex(getState())).toBe(0);
-            // Now other items can be focused
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(1);            
-        });
-
-        it('discard reverts changes, allows focus on other items', function () {
-            dispatch(fetchAuctionSuccess({rawAuctionItems: fakeItems}));
-            dispatch(inputChange('New title', InputKey.title));
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(0);
-            expect(selectConfirmDiscard(getState())).toBe(true);
-            dispatch(discardChange());
-            expect(selectConfirmDiscard(getState())).toBe(false);
-            // Focus still index 0 after modal closes
-            expect(selectFocusedIndex(getState())).toBe(0);
-            // Now other items can be focused
-            dispatch(itemFocus(1));
-            expect(selectFocusedIndex(getState())).toBe(1);                        
         });
     });
 
@@ -317,7 +158,7 @@ describe("redux duck tests", () => {
         });
 
         it('quick bid increments bid', function () {
-            dispatch(addItem())
+            dispatch(fetchAuctionSuccess({rawAuctionItems: [createNewAuctionItem()]}));
             expect(selectFirstItem(getState()).bids.length).toBe(1)
             dispatch(quickBid(TESTER_1, 0, true));
             const bids = selectFirstItem(getState()).bids;
@@ -332,7 +173,7 @@ describe("redux duck tests", () => {
             }
             const { dispatch } = initStore({axios: moxios});
             expect(moxios.put).not.toBeCalled();
-            dispatch(addItem());
+            dispatch(fetchAuctionSuccess({rawAuctionItems: [createNewAuctionItem()]}));
             dispatch(quickBid(TESTER_1, 0));
             expect(moxios.put).toBeCalledTimes(1);
         });
