@@ -56,9 +56,9 @@ describe('AdminPage', function () {
         expect(submitChange).toBeCalledTimes(1);
     });
 
-    it.skip('save is disabled if no changes', function () {
+    // it('save is disabled if no changes', function () {
         // TODO: test both button and enter
-    });
+    // });
 
     it('calls deleteRequest on delete', function () {
         expect(deleteRequest).not.toBeCalled();

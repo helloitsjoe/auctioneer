@@ -45,80 +45,62 @@ const initialState: StoreState = {
     userTotal: 0,
 }
 
-export const auctionItems = (state = initialState, action) => {
+export const auctionReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_AUCTION_SUCCESS:
             const { rawAuctionItems } = action;
             const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item) => {
-                // Is there a better way to do this?
+                // Need to set viewDetails state on client side
                 const itemInState = selectItem(state, item.id)
                 const viewDetails = !!(itemInState && itemInState.viewDetails);
-                return {...item, viewDetails};
+                return { ...item, viewDetails };
             }) : [createNewAuctionItem()];
-            const userTotalMaybeOutbid = getUserTotal(auctionItems, action.userName);
-            return {...state, auctionItems, userTotal: userTotalMaybeOutbid, isLoaded: true };
+            const userTotal = getUserTotal(auctionItems, action.userName);
+            return { ...state, auctionItems, userTotal, isLoaded: true };
         case FETCH_AUCTION_ERROR:
             return { ...state, error: action.err, isLoaded: true };
-        case QUICK_BID:
         case DELETE_ITEM_SUCCESS:
         case SUBMIT_CHANGE_SUCCESS:
         case TOGGLE_DESCRIPTION:
-            return item(state, action);
+        case QUICK_BID:
+            const updatedItems = updateItems(selectAuctionItems(state), action)
+            return {
+                ...state,
+                auctionItems: updatedItems,
+                userTotal: getUserTotal(updatedItems, action.userName),
+            }
         default:
             return state;
     }
 }
 
-const item = (state: StoreState, action: any) => {
-    const { userName, itemID } = action;
-    const { auctionItems } = state;
+const updateItems = (auctionItems: ItemData[], action: any) => {
+    const { userName: name, itemID } = action;
 
-    const item = (itemID != null) && selectItem(state, itemID);
+    const item = (itemID != null) && auctionItems.find(({id}) => id === itemID);
     switch (action.type) {
         case QUICK_BID:
             if (!item) {
                 console.error('Item not found in auctionItems!');
-                return state;
+                return auctionItems;
             }
-            const newHighBid = getHighBid(item.bids).value + BID_INCREMENT;
-            const bids = [...item.bids, {name: userName, value: newHighBid }];
-            const itemsWithBid = auctionItems.map(item => item.id === itemID ? { ...item, bids} : item);
-            const userTotal = getUserTotal(itemsWithBid, userName);
-            return {
-                ...state,
-                auctionItems: itemsWithBid,
-                userTotal
-            };
+            const value = getHighBid(item.bids).value + BID_INCREMENT;
+            const bids = [...item.bids, { name, value }];
+            return auctionItems.map(item => item.id === itemID ? { ...item, bids} : item);
         case TOGGLE_DESCRIPTION:
             if (!item) {
                 console.error('Item not found in auctionItems!');
-                return state;
+                return auctionItems;
             }
             const viewDetails = !item.viewDetails;
-            const itemsWithToggledDetails = auctionItems.map(item => item.id === itemID ? { ...item, viewDetails} : item);
-            return {
-                ...state,
-                auctionItems: itemsWithToggledDetails
-            };
+            return auctionItems.map(item => item.id === itemID ? { ...item, viewDetails} : item);
         case DELETE_ITEM_SUCCESS:
             const { deletedItemID } = action;
             const itemsAfterDelete = auctionItems.filter(item => item.id !== deletedItemID);
-            const safeItemsAfterDelete = itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem()];
-            return {
-                ...state,
-                auctionItems: safeItemsAfterDelete,
-            };
+            return itemsAfterDelete.length ? itemsAfterDelete : [createNewAuctionItem()];
         case SUBMIT_CHANGE_SUCCESS:
             const { updatedItem } = action;
-            const itemsAfterUpdate = auctionItems.map(item =>
-                item.id === updatedItem.id ? { ...item, ...updatedItem } : item);
-            return {
-                ...state,
-                dirty: false,
-                confirmDiscard: false,
-                auctionItems: itemsAfterUpdate,
-                origItem: null
-            };
+            return auctionItems.map(item => item.id === updatedItem.id ? updatedItem : item);
     }
 }
 
@@ -128,8 +110,4 @@ export const selectUserTotal = (state: StoreState) => state.userTotal;
 export const selectAuctionItems = (state: StoreState) => state.auctionItems;
 
 export const selectItem = (state: StoreState, itemID: number) => selectAuctionItems(state).find(({id}) => id === itemID);
-export const selectItemID = (state: StoreState, itemID: number) => selectItem(state, itemID).id;
-export const selectItemBids = (state: StoreState, itemID: number) => selectItem(state, itemID).bids;
-export const selectItemHighBid = (state: StoreState, itemID: number) => getHighBid(selectItem(state, itemID).bids);
-export const selectLastItem = (state: StoreState) => selectAuctionItems(state).slice(-1)[0];
 export const selectFirstItem = (state: StoreState) => selectAuctionItems(state)[0];

@@ -97,11 +97,19 @@ describe('App', function () {
             expect(listHTMLTester2).toEqual(listHTMLTester1);
         });
 
-        it('bid updates when user clicks button', async function () {
+        it('bid updates when user clicks button', function () {
             const firstButton = app.find('button.btn').at(0);
             expect(firstButton.text()).toEqual('Bid 155');
             firstButton.prop('onClick')({ stopPropagation: jest.fn() });
             expect(firstButton.text()).toEqual('Bid 160');
+        });
+    
+        it('user total updates when user clicks button', function () {
+            const userTotal = app.find('Footer');
+            const firstButton = app.find('button.btn').at(0);
+            expect(userTotal.text()).toMatch('$ 0');
+            firstButton.prop('onClick')({ stopPropagation: jest.fn() });
+            expect(userTotal.text()).toMatch('$ 155');
         });
     
         it('item has bid-bg class when clicked', function () {

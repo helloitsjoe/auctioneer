@@ -33,7 +33,7 @@ export class App extends React.Component<Props> {
         const userName = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
         sessionStorage.setItem('userName', userName);
 
-        // Kick off poll every second for new auction data... TODO: Make this a socket?
+        // Kick off poll every second for new auction data
         this.props.poller.init(this.props.fetchAuctionData);
     }
 

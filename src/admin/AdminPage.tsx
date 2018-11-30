@@ -123,7 +123,7 @@ export class AdminPage extends React.Component<Props, State> {
             const { items, focusedIndex} = prevState;
             const focusedItem = items[focusedIndex];
             this.props.deleteRequest(focusedItem.id);
-            // TODO: I shouldn't need to filter both here and in reducer?
+            // TODO: Don't filter both here and in reducer
             const filteredItems = items.filter(({id}) => id !== focusedItem.id);
             const safeItemsAfterDelete = filteredItems.length ? filteredItems : [createNewAuctionItem()];
             const safeFocusedIndex = focusedIndex >= safeItemsAfterDelete.length
