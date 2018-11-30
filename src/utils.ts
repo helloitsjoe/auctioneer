@@ -49,7 +49,6 @@ export const getUserTotal = (auctionItems, user) => auctionItems.reduce((userTot
     return (highBid.name === user) ? (userTotal + highBid.value) : userTotal;
 }, 0);
 
-
 export const createNewAuctionItem = (items: ItemData[] = []): ItemData => {
     const id = items.length ? (Math.max(...items.map(item => item.id)) + 1) : 0;
     return {

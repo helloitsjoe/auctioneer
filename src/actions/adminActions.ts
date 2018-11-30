@@ -7,6 +7,7 @@ import {
 
 export const submitChange = (
     body: ItemData,
+    userName: string,
     dataURL: string = DATA_URL,
     adapter: any = null
 ) => (dispatch, getState, services) => {
@@ -15,11 +16,13 @@ export const submitChange = (
         { adapter }
     ).then(response => {
         const { updatedItem } = response.data;
-        dispatch(submitChangeSuccess(updatedItem));
+        dispatch(submitChangeSuccess(updatedItem, userName));
         return { updatedItem };
     }).catch(err => console.error(err.message));
 }
-export const submitChangeSuccess = (updatedItem: ItemData) => ({ type: SUBMIT_CHANGE_SUCCESS, updatedItem });
+export const submitChangeSuccess = (updatedItem: ItemData, userName: string) =>
+    ({ type: SUBMIT_CHANGE_SUCCESS, updatedItem, userName });
+
 export const deleteRequest = (
     itemID: number,
     dataURL: string = DATA_URL,

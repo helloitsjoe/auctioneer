@@ -28,7 +28,7 @@ export const quickBid = (userName: string, itemID: number, unitTest: boolean = f
     dispatch({ type: QUICK_BID, userName, itemID });
     const updatedItem = selectItem(getState(), itemID);
     if (updatedItem && !unitTest) {
-        dispatch(submitChange(updatedItem));
+        dispatch(submitChange(updatedItem, userName));
     }
 };
 export const toggleDescription = (itemID: number) => ({ type: TOGGLE_DESCRIPTION, itemID });
