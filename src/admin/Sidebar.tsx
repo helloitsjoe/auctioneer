@@ -18,11 +18,11 @@ export function Sidebar({ items, focusedItem, focusedIndex, onAddItem, onItemFoc
                 const focused = i === focusedIndex;
                 return (
                     <SidebarItem
-                        key={item.id}
                         id={item.id}
+                        key={item.id}
                         focused={focused}
-                        title={focused ? focusedItem.title : item.title}
                         onSelect={() => onItemFocus(i)}
+                        title={focused ? focusedItem.title : item.title}
                     />
                 )
             })}
