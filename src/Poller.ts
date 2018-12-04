@@ -2,14 +2,14 @@ export class Poller {
 
     public isPolling = false;
     private interval = null;
-    private func: () => any = () => {};
+    private func: () => void = () => {};
 
-    init(func) {
+    init(func): void {
         this.func = func;
         this.start();
     }
 
-    start() {
+    start(): void {
         if (this.isPolling) {
             return;
         }
@@ -20,7 +20,7 @@ export class Poller {
         }, 1000);
     }
 
-    stop() {
+    stop(): void {
         clearInterval(this.interval);
         this.interval = null;
         this.isPolling = false;

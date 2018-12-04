@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { AddItem } from './AddItem';
 import { SidebarItem } from './SidebarItem';
-import { ItemData } from '../reducers';
+import { AuctionItem } from '../reducers';
 
 type Props = {
-    items: ItemData[];
+    items: AuctionItem[];
     focusedIndex: number;
-    focusedItem: ItemData;
+    focusedItem: AuctionItem;
     onAddItem: () => void,
     onItemFocus: (i: number) => void
 }

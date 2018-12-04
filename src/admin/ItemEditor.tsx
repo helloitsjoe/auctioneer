@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ItemData } from '../reducers';
+import { AuctionItem } from '../reducers';
 import { getMinBidValue } from '../utils';
 
 export enum InputKey {
@@ -9,7 +9,7 @@ export enum InputKey {
 }
 
 type Props = {
-    item: ItemData;
+    item: AuctionItem;
     onSubmit: (e: any) => void;
     onChangeTitle: (e: any) => void;
     onChangeMinBid: (e: any) => void;

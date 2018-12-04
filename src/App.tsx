@@ -8,14 +8,19 @@ import { BidsPage } from './user/BidsPage';
 import { randFromArr, DEFAULT_NAMES } from './utils';
 import AdminPage from './admin/AdminPage';
 import { fetchAuctionData } from './actions/auctionItemActions';
-import { ItemData, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
+import { AuctionItem, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
 
-type Props = {
+type StoreProps = {
     error: Error,
     isLoaded: boolean,
-    auctionItems: ItemData[],
-    confirmDiscard: boolean,
-    fetchAuctionData: (userName: string) => void;
+    auctionItems: AuctionItem[],
+}
+
+type DispatchProps = {
+    fetchAuctionData: () => void,
+}
+
+type Props = StoreProps & DispatchProps & {
     axios?: any
     poller?: Poller,
     router?: Router,
@@ -24,9 +29,9 @@ type Props = {
 export class App extends React.Component<Props> {
 
     static defaultProps = {
-        poller: new Poller(),
         axios: axios,
         router: Router,
+        poller: new Poller(),
     }
 
     componentDidMount() {
@@ -78,13 +83,13 @@ export class App extends React.Component<Props> {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state): StoreProps => ({
   error: selectError(state),
   isLoaded: selectIsLoaded(state),
   auctionItems: selectAuctionItems(state),
 });
 
-const mapDispatchToProps = {
+const mapDispatchToProps: DispatchProps = {
     fetchAuctionData: () => fetchAuctionData(sessionStorage.getItem('userName'))
 };
 

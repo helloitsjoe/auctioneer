@@ -1,13 +1,13 @@
 import { DATA_URL } from '../utils';
 import {
-    ItemData,
+    AuctionItem,
     SUBMIT_CHANGE_SUCCESS,
     DELETE_ITEM_SUCCESS,
 } from '../reducers';
 
 export const submitChange = (
-    body: ItemData,
-    userName: string,
+    body: AuctionItem,
+    userName?: string,
     dataURL: string = DATA_URL,
     adapter: any = null
 ) => (dispatch, getState, services) => {
@@ -20,7 +20,7 @@ export const submitChange = (
         return { updatedItem };
     }).catch(err => console.error(err.message));
 }
-export const submitChangeSuccess = (updatedItem: ItemData, userName: string) =>
+export const submitChangeSuccess = (updatedItem: AuctionItem, userName: string) =>
     ({ type: SUBMIT_CHANGE_SUCCESS, updatedItem, userName });
 
 export const deleteRequest = (

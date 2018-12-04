@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Item from './Item';
 import { EmptyList } from './EmptyListView';
-import { ItemData } from '../reducers';
+import { AuctionItem } from '../reducers';
 import { getHighBid } from '../utils';
 
 type Props = {
     user: string;
-    auctionItems: ItemData[];
+    auctionItems: AuctionItem[];
     filter?: boolean;
 }
 

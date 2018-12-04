@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { selectUserTotal } from '../reducers';
 
-type Props = {
+type StoreProps = {
     userTotal: number;
 }
 
-export function Footer({ userTotal }: Props) {
+export function Footer({ userTotal }: StoreProps) {
     return (
         <div className="footer centered">
             <p className="user-total">Your total bids:</p>
@@ -17,6 +17,6 @@ export function Footer({ userTotal }: Props) {
     )
 }
 
-const mapStateToProps = state => ({ userTotal: selectUserTotal(state) });
+const mapStateToProps = (state): StoreProps => ({ userTotal: selectUserTotal(state) });
 
 export default connect(mapStateToProps)(Footer);

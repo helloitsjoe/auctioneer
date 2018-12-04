@@ -1,6 +1,6 @@
 import { getHighBid, createNewAuctionItem, getUserTotal } from './utils';
 
-export type ItemData = {
+export type AuctionItem = {
     id: number;
     bids: Bid[];
     title: string;
@@ -17,7 +17,7 @@ export type Bid = {
 export type StoreState = {
     error: Error;
     isLoaded: boolean;
-    auctionItems: ItemData[];
+    auctionItems: AuctionItem[];
     userTotal: number;
 }
 
@@ -45,11 +45,11 @@ const initialState: StoreState = {
     userTotal: 0,
 }
 
-export const auctionReducer = (state = initialState, action) => {
+export const auctionReducer = (state = initialState, action): StoreState => {
     switch (action.type) {
         case FETCH_AUCTION_SUCCESS:
             const { rawAuctionItems } = action;
-            const auctionItems = rawAuctionItems.length ? rawAuctionItems.map((item) => {
+            const auctionItems: AuctionItem[] = rawAuctionItems.length ? rawAuctionItems.map((item) => {
                 // Need to set viewDetails state on client side
                 const itemInState = selectItem(state, item.id)
                 const viewDetails = !!(itemInState && itemInState.viewDetails);
@@ -74,7 +74,7 @@ export const auctionReducer = (state = initialState, action) => {
     }
 }
 
-const updateItems = (auctionItems: ItemData[], action: any) => {
+const updateItems = (auctionItems: AuctionItem[], action: any): AuctionItem[] => {
     const { userName: name, itemID } = action;
 
     const item = (itemID != null) && auctionItems.find(({id}) => id === itemID);

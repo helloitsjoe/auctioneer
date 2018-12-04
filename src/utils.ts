@@ -1,4 +1,4 @@
-import { Bid, ItemData } from './reducers';
+import { Bid, AuctionItem } from './reducers';
 
 export const DEFAULT_NAMES = [
     'Sally',
@@ -44,12 +44,15 @@ export const getMinBidValue = (bids: Bid[]): number => {
     return minBid ? minBid.value : 0;
 }
 
-export const getUserTotal = (auctionItems, user) => auctionItems.reduce((userTotal, item) => {
+export const getUserTotal = (
+    auctionItems: AuctionItem[],
+    user: string
+): number => auctionItems.reduce((userTotal: number, item: AuctionItem) => {
     const highBid = getHighBid(item.bids);
     return (highBid.name === user) ? (userTotal + highBid.value) : userTotal;
 }, 0);
 
-export const createNewAuctionItem = (items: ItemData[] = []): ItemData => {
+export const createNewAuctionItem = (items: AuctionItem[] = []): AuctionItem => {
     const id = items.length ? (Math.max(...items.map(item => item.id)) + 1) : 0;
     return {
         id,

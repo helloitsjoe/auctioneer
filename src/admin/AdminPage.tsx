@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {submitChange, deleteRequest } from '../actions/adminActions';
-import {ItemData, Modal, selectAuctionItems} from '../reducers';
+import {AuctionItem, Modal, selectAuctionItems} from '../reducers';
 
 import { ItemEditor, InputKey } from './ItemEditor';
 import { Poller } from '../Poller';
@@ -11,16 +11,23 @@ import { ConfirmDiscard } from './ConfirmDiscard';
 import { MissingInfoNotice } from './MissingInfoNotice';
 import { createNewAuctionItem } from '../utils';
 
-type Props = {
+type StoreProps = {
+    initialItems: AuctionItem[];
+}
+
+type DispatchProps = {
+    submitChange: (item: AuctionItem) => void;
+    deleteRequest: (id: number) => void;
+}
+
+type Props = StoreProps & DispatchProps & {
     poller: Poller;
-    initialItems: ItemData[];
-    submitChange: (item: ItemData) => void;
-    deleteRequest: (id: number) => Promise<number>;
+    initialItems: AuctionItem[];
 }
 
 type State = {
-    items: ItemData[];
-    currentItem: ItemData;
+    items: AuctionItem[];
+    currentItem: AuctionItem;
     dirty: boolean;
     focusedIndex: number;
     missingInfo: boolean;
@@ -95,7 +102,7 @@ export class AdminPage extends React.Component<Props, State> {
         });
     }
 
-    handleSaveChanges = (focusedItem: ItemData) => e => {
+    handleSaveChanges = (focusedItem: AuctionItem) => e => {
         this.props.submitChange(focusedItem);
         this.setState({ dirty: false, confirmDiscard: false });
     }
@@ -195,7 +202,7 @@ export class AdminPage extends React.Component<Props, State> {
     }
 }
 
-const mStP = state => ({ initialItems: selectAuctionItems(state) });
-const mDtP = { submitChange, deleteRequest };
+const mStP = (state): StoreProps => ({ initialItems: selectAuctionItems(state) });
+const mDtP: DispatchProps = { submitChange, deleteRequest };
 
 export default connect(mStP, mDtP)(AdminPage);

@@ -1,5 +1,5 @@
 import {
-    ItemData,
+    AuctionItem,
     FETCH_AUCTION_SUCCESS,
     FETCH_AUCTION_ERROR,
     QUICK_BID,
@@ -12,7 +12,7 @@ import { DATA_URL } from '../utils';
 export const fetchAuctionData = (userName: string, dataURL: string = DATA_URL, adapter: any = null) =>
     (dispatch, getState, services) => {
         return services.axios.get(dataURL, { adapter }).then(res => {
-            const rawAuctionItems: ItemData[] = res && res.data;
+            const rawAuctionItems: AuctionItem[] = res && res.data;
             if (!rawAuctionItems) {
                 throw new Error('No auction data!');
             };
