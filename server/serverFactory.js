@@ -11,14 +11,14 @@ const createServer = async (host, port) => {
 
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, '../')));
-    
+
     const dataPath = path.join(__dirname, './data.json');
     let auctionData = null;
-    
+
     app.get('/data', (req, res) => {
         res.send(auctionData);
     });
-    
+
     // Route all GET requests other than /data to index
     // to handle 'cannot get /users' error
     app.get('/*', (req, res) => {
@@ -35,7 +35,7 @@ const createServer = async (host, port) => {
         }
         res.status(200).send(auctionData);
     });
-    
+
     app.put('/data/:id', (req, res) => {
         const body = JSON.parse(req.body.body);
         const id = Number(req.params.id);
@@ -70,13 +70,13 @@ const createServer = async (host, port) => {
     });
 
     logIPAddress(port);
-    
+
     try {
         const fileContents = await readFile(dataPath, 'utf-8');
         auctionData = JSON.parse(fileContents);
-        
+
         const server = app.listen(port, () => {
-            console.log(`Listening on ${host}:${port}`);
+            console.log(`Listening on http://${host}:${port}`);
         });
 
         return server;
@@ -92,9 +92,9 @@ function logIPAddress(port) {
         const config = ifaces[curr].find(config => config.address.includes('192.168'));
         return config ? config.address : final;
     }, '');
-    console.log(`To bid on your phone, go to ${ip}:${port}`);
+    console.log(`To bid on your phone, go to http://${ip}:${port}`);
 }
 
 module.exports = {
-    createServer 
+    createServer
 };
