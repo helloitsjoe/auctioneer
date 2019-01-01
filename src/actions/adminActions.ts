@@ -12,7 +12,7 @@ export const submitChange = (
     adapter: any = null
 ) => (dispatch, getState, services) => {
     return services.axios.put(`${dataURL}/${body.id}`,
-        { body: JSON.stringify(body) },
+        { body },
         { adapter }
     ).then(response => {
         const { updatedItem } = response.data;

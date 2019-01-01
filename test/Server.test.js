@@ -10,7 +10,7 @@ const lib = path.join(path.dirname(require.resolve('axios')),'lib/adapters/http'
 const adapter = require(lib);
 
 describe('Server', function () {
-    
+
     let server;
     let dispatch;
     const host = 'localhost';
@@ -52,19 +52,19 @@ describe('Server', function () {
         const getResBefore = await axios.get(dataURL, { adapter });
         const badPutRes = await axios.put(
             url + '/data/0',
-            { body: JSON.stringify({foo: 1}) },
+            { body: {foo: 1} },
             { adapter }).catch(err => err.response);
         expect(badPutRes.status).toBe(400);
 
         const [origItem] = getResBefore.data;
 
         const updatedItem = { ...origItem, title: 'Banana' };
-        await axios.put(url + '/data/0', { body: JSON.stringify(updatedItem) }, { adapter });
+        await axios.put(url + '/data/0', { body: updatedItem }, { adapter });
         const getResAfter = await axios.get(dataURL, { adapter });
         expect(getResAfter.data[0]).toEqual(updatedItem);
 
         const newItem = { ...origItem, id: 5000 };
-        await axios.put(url + '/data/5000', { body: JSON.stringify(newItem) }, { adapter });
+        await axios.put(url + '/data/5000', { body: newItem }, { adapter });
         const getResAdded = await axios.get(dataURL, { adapter });
         expect(getResAdded.data.slice(-1)[0]).toEqual(newItem);
     });
@@ -110,14 +110,14 @@ describe('Server', function () {
     });
 
     describe('integration', function () {
-        
+
         it('fetch auctionData', async function () {
             const auctionData = await axios.get(dataURL, { adapter });
 
             const fetchResponse = await dispatch(fetchAuctionData('Joe', dataURL, adapter));
             expect(fetchResponse.data).toEqual(auctionData.data);
         });
-    
+
         it('submitChange', async function () {
             const name = 'me';
             const fakeItem = {
@@ -129,7 +129,7 @@ describe('Server', function () {
             const putResponse = await dispatch(submitChange(fakeItem, name, dataURL, adapter));
             expect(putResponse).toEqual({ updatedItem: fakeItem });
         });
-    
+
         it('deleteRequest returns id of deleted item', async function () {
             const deleteResponse = await dispatch(deleteRequest(1, dataURL, adapter));
             expect(deleteResponse).toEqual({ deletedItemID: 1 });

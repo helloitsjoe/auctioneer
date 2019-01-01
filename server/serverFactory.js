@@ -37,7 +37,7 @@ const createServer = async (host, port) => {
     });
 
     app.put('/data/:id', (req, res) => {
-        const body = JSON.parse(req.body.body);
+        const body = req.body.body;
         const id = Number(req.params.id);
 
         try {
