@@ -6,13 +6,11 @@
   "scripts": {
     "start": "webpack --watch",
     "server": "nodemon server/server.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest --coverage",
+    "test:watch": "npm t -- --watch"
   },
   "husky": {
-    "hooks": {
-      "pre-push": "npm test"
-    }
+    "hooks": { "pre-push": "npm t -- --silent" }
   },
   "author": "Joe Boyle",
   "license": "ISC",
