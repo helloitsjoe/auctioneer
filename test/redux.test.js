@@ -11,7 +11,7 @@ import {
     fetchAuctionError,
     fetchAuctionSuccess,
 } from '../src/actions/auctionItemActions';
-import { TESTER_1, fakeItems } from './testUtils';
+import { TESTER_1, fakeItems, wait } from './testUtils';
 import {
     BID_INCREMENT,
     selectItem,
@@ -20,7 +20,7 @@ import {
     selectFirstItem,
     selectAuctionItems,
 } from '../src/reducers';
-import { createNewAuctionItem, wait } from '../src/utils';
+import { createNewAuctionItem } from '../src/utils';
 
 describe('redux duck tests', () => {
     const initialState = {
