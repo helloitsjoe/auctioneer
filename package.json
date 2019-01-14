@@ -10,7 +10,9 @@
     "test:watch": "npm t -- --watch"
   },
   "husky": {
-    "hooks": { "pre-push": "npm t -- --silent" }
+    "hooks": {
+      "pre-push": "npm t -- --silent"
+    }
   },
   "author": "Joe Boyle",
   "license": "ISC",
@@ -25,7 +27,7 @@
     "nodemon": "^1.18.2",
     "prettier": "^1.14.3",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.7.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
