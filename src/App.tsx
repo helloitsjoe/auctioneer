@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -21,7 +20,6 @@ type DispatchProps = {
 }
 
 type Props = StoreProps & DispatchProps & {
-    axios?: any
     poller?: Poller,
     router?: Router,
 }
@@ -29,7 +27,6 @@ type Props = StoreProps & DispatchProps & {
 export class App extends React.Component<Props> {
 
     static defaultProps = {
-        axios: axios,
         router: Router,
         poller: new Poller(),
     }
@@ -64,12 +61,12 @@ export class App extends React.Component<Props> {
             : (
                 <Router>
                     <Switch>
-                        <Route exact path="/admin" render={() => 
+                        <Route exact path="/admin" render={() =>
                             <AdminPage
                                 poller={this.props.poller}
                             />
                         } />
-                        <Route path="/" render={({location}) => 
+                        <Route path="/" render={({location}) =>
                             <BidsPage
                                 poller={this.props.poller}
                                 auctionItems={auctionItems}
