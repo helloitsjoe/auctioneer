@@ -10,11 +10,10 @@ import {
 export const submitChange = (
     body: AuctionItem,
     userName?: string,
-    dataURL: string = DATA_URL,
-    adapter: any = null
-) => (dispatch, getState, services) => {
-    return services.axios
-        .put(`${dataURL}/${body.id}`, { body }, { adapter })
+    dataURL: string = DATA_URL
+) => (dispatch, _, fetchService) => {
+    return fetchService
+        .put(`${dataURL}/${body.id}`, { body })
         .then(response => {
             const { updatedItem } = response.data;
             dispatch(submitChangeSuccess(updatedItem, userName));
@@ -30,13 +29,13 @@ export const submitChangeSuccess = (
     userName: string
 ) => ({ type: SUBMIT_CHANGE_SUCCESS, updatedItem, userName });
 
-export const deleteRequest = (
-    itemID: number,
-    dataURL: string = DATA_URL,
-    adapter: any = null
-) => (dispatch, getState, services) => {
-    return services.axios
-        .delete(`${dataURL}/${itemID}`, { adapter })
+export const deleteRequest = (itemID: number, dataURL: string = DATA_URL) => (
+    dispatch,
+    _,
+    fetchService
+) => {
+    return fetchService
+        .delete(`${dataURL}/${itemID}`)
         .then(response => {
             const { deletedItemID } = response.data;
             dispatch(deleteItemSuccess(deletedItemID));

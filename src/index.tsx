@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import App from './App';
 import { initStore } from './store';
 
-import axios from 'axios';
-
 ReactDOM.render(
-    <Provider store={initStore({ axios })}>
+    <Provider store={initStore()}>
         <App />
-    </Provider>, document.getElementById('main'));
+    </Provider>,
+    document.getElementById('main')
+);

@@ -10,16 +10,16 @@ const auctionItems = require('../server/data.json');
 
 describe('App', function() {
     let store;
-    let moxios;
+    let mockFetchService;
     let auctionItemsCopy;
 
     beforeEach(async () => {
         auctionItemsCopy = clone(auctionItems);
-        moxios = {
+        mockFetchService = {
             get: jest.fn().mockResolvedValue({ data: auctionItemsCopy }),
             put: jest.fn().mockResolvedValue({ data: { updatedItem: {} } }),
         };
-        store = initStore({ axios: moxios });
+        store = initStore(mockFetchService);
     });
 
     afterEach(() => {
@@ -39,8 +39,8 @@ describe('App', function() {
 
     it('error from data', async function() {
         const poller = new Poller();
-        moxios.get = jest.fn().mockRejectedValue('Poop!');
-        store = initStore({ axios: moxios });
+        mockFetchService.get = jest.fn().mockRejectedValue('Poop!');
+        store = initStore(mockFetchService);
         const provider = mount(
             <Provider store={store}>
                 <App poller={poller} />
@@ -57,13 +57,13 @@ describe('App', function() {
         let app;
 
         beforeEach(async () => {
-            expect(moxios.get).not.toHaveBeenCalled();
+            expect(mockFetchService.get).not.toHaveBeenCalled();
             provider = mount(
                 <Provider store={store}>
                     <App poller={poller} />
                 </Provider>
             );
-            await wait(); // Wait for async moxios call to return
+            await wait(); // Wait for async mockFetchService call to return
             provider.update();
             app = provider.find('App');
         });
@@ -73,7 +73,7 @@ describe('App', function() {
         });
 
         it('isLoaded = true after data returns', function() {
-            expect(moxios.get).toHaveBeenCalled();
+            expect(mockFetchService.get).toHaveBeenCalled();
             expect(app.prop('isLoaded')).toEqual(true);
             expect(app.prop('auctionItems')).toEqual(auctionItems);
         });

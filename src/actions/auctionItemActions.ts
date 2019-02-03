@@ -11,11 +11,10 @@ import { DATA_URL } from '../utils';
 
 export const fetchAuctionData = (
     userName: string,
-    dataURL: string = DATA_URL,
-    adapter: any = null
-) => (dispatch, getState, services) => {
-    return services.axios
-        .get(dataURL, { adapter })
+    dataURL: string = DATA_URL
+) => (dispatch, _, fetchService) => {
+    return fetchService
+        .get(dataURL)
         .then(res => {
             const rawAuctionItems: AuctionItem[] = res && res.data;
             if (!rawAuctionItems) {

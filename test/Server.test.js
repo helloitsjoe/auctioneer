@@ -4,6 +4,7 @@ import { submitChange, deleteRequest } from '../src/actions/adminActions';
 import { initStore } from '../src/store';
 import { createServer } from '../server/serverFactory';
 import { fetchAuctionData } from '../src/actions/auctionItemActions';
+import FetchService from '../src/fetchService';
 
 // This nonsense is required to get around jest CORS issue with localhost
 const lib = path.join(
@@ -21,7 +22,7 @@ describe('Server', function() {
     const dataURL = `${url}/data`;
 
     beforeAll(async () => {
-        const store = initStore({ axios });
+        const store = initStore(new FetchService(adapter));
         dispatch = store.dispatch;
 
         server = await createServer(host, port);
@@ -29,7 +30,6 @@ describe('Server', function() {
 
     afterEach(async () => {
         // Restore original data on server
-        jest.restoreAllMocks();
         await axios.post(dataURL, {}, { adapter });
     });
 
@@ -130,7 +130,7 @@ describe('Server', function() {
             const auctionData = await axios.get(dataURL, { adapter });
 
             const fetchResponse = await dispatch(
-                fetchAuctionData('Joe', dataURL, adapter)
+                fetchAuctionData('Joe', dataURL)
             );
             expect(fetchResponse.data).toEqual(auctionData.data);
         });
@@ -144,29 +144,23 @@ describe('Server', function() {
                 bids: [{ name, value: 1 }],
             };
             const putResponse = await dispatch(
-                submitChange(fakeItem, name, dataURL, adapter)
+                submitChange(fakeItem, name, dataURL)
             );
             expect(putResponse).toEqual({ updatedItem: fakeItem });
         });
 
         it('deleteRequest returns id of deleted item', async function() {
-            const deleteResponse = await dispatch(
-                deleteRequest(1, dataURL, adapter)
-            );
+            const deleteResponse = await dispatch(deleteRequest(1, dataURL));
             expect(deleteResponse).toEqual({ deletedItemID: 1 });
         });
 
         it('deleteRequest returns id if item not in auctionItems', async function() {
-            const deleteResponse = await dispatch(
-                deleteRequest(5000, dataURL, adapter)
-            );
+            const deleteResponse = await dispatch(deleteRequest(5000, dataURL));
             expect(deleteResponse).toEqual({ deletedItemID: 5000 });
         });
 
         it('deleteRequest returns undefined if item not found', async function() {
-            const deleteResponse = await dispatch(
-                deleteRequest(null, dataURL, adapter)
-            );
+            const deleteResponse = await dispatch(deleteRequest(null, dataURL));
             expect(deleteResponse).toBeUndefined();
         });
     });

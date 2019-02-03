@@ -54,8 +54,8 @@ export class AdminPage extends React.Component<Props, State> {
     }
 
     handleInputChange = (inputType: InputKey) => e => {
+        const { value } = e.target;
         this.setState(prevState => {
-            const { value } = e.target;
             const { currentItem } = prevState;
             const bids = currentItem.bids.map(bid =>
                 bid.name === 'min' ? { ...bid, value: parseInt(value) } : bid)

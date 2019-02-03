@@ -64,8 +64,10 @@ describe('redux duck tests', () => {
         });
 
         it('deleteItem error does NOT remove item', async function() {
-            const moxios = { delete: jest.fn().mockRejectedValue('nope') };
-            store = initStore({ axios: moxios });
+            const mockFetchService = {
+                delete: jest.fn().mockRejectedValue('nope'),
+            };
+            store = initStore(mockFetchService);
             getState = store.getState;
             dispatch = store.dispatch;
 
@@ -109,8 +111,10 @@ describe('redux duck tests', () => {
         });
 
         it('submit error does NOT update store', async function() {
-            const moxios = { put: jest.fn().mockRejectedValue('nope') };
-            store = initStore({ axios: moxios });
+            const mockFetchService = {
+                put: jest.fn().mockRejectedValue('nope'),
+            };
+            store = initStore(mockFetchService);
             getState = store.getState;
             dispatch = store.dispatch;
             const fakeItem = {
@@ -229,28 +233,28 @@ describe('redux duck tests', () => {
         });
 
         it('quick bid calls put', function() {
-            const moxios = {
+            const mockFetchService = {
                 put: jest.fn().mockResolvedValue({ data: { updatedItem: {} } }),
             };
-            const { dispatch } = initStore({ axios: moxios });
-            expect(moxios.put).not.toBeCalled();
+            const { dispatch } = initStore(mockFetchService);
+            expect(mockFetchService.put).not.toBeCalled();
             dispatch(
                 fetchAuctionSuccess({
                     rawAuctionItems: [createNewAuctionItem()],
                 })
             );
             dispatch(quickBid(TESTER_1, 0));
-            expect(moxios.put).toBeCalledTimes(1);
+            expect(mockFetchService.put).toBeCalledTimes(1);
         });
 
         it('quick bid does nothing if item not in store', function() {
-            const moxios = { put: jest.fn() };
-            const { dispatch, getState } = initStore({ axios: moxios });
-            expect(moxios.put).not.toBeCalled();
+            const mockFetchService = { put: jest.fn() };
+            const { dispatch, getState } = initStore(mockFetchService);
+            expect(mockFetchService.put).not.toBeCalled();
             expect(selectAuctionItems(getState()).length).toBe(0);
             dispatch(quickBid(TESTER_1, 0));
             expect(getState()).toEqual(initialState);
-            expect(moxios.put).not.toBeCalled();
+            expect(mockFetchService.put).not.toBeCalled();
         });
     });
 });
