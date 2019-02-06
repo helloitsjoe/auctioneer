@@ -22,7 +22,7 @@ describe('Server', function() {
     const dataURL = `${url}/data`;
 
     beforeAll(async () => {
-        const store = initStore(new FetchService(adapter));
+        const store = initStore(new FetchService(dataURL, adapter));
         dispatch = store.dispatch;
 
         server = await createServer(host, port);
@@ -129,9 +129,7 @@ describe('Server', function() {
         it('fetch auctionData', async function() {
             const auctionData = await axios.get(dataURL, { adapter });
 
-            const fetchResponse = await dispatch(
-                fetchAuctionData('Joe', dataURL)
-            );
+            const fetchResponse = await dispatch(fetchAuctionData('Joe'));
             expect(fetchResponse.data).toEqual(auctionData.data);
         });
 
@@ -143,9 +141,7 @@ describe('Server', function() {
                 description: 'Babababa',
                 bids: [{ name, value: 1 }],
             };
-            const putResponse = await dispatch(
-                submitChange(fakeItem, name, dataURL)
-            );
+            const putResponse = await dispatch(submitChange(fakeItem, name));
             expect(putResponse).toEqual({ updatedItem: fakeItem });
         });
 

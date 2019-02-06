@@ -10,16 +10,18 @@ const auctionItems = require('../server/data.json');
 
 describe('App', function() {
     let store;
-    let mockFetchService;
+    let serviceMock;
     let auctionItemsCopy;
 
     beforeEach(async () => {
         auctionItemsCopy = clone(auctionItems);
-        mockFetchService = {
-            get: jest.fn().mockResolvedValue({ data: auctionItemsCopy }),
-            put: jest.fn().mockResolvedValue({ data: { updatedItem: {} } }),
+        serviceMock = {
+            fetchItems: jest.fn().mockResolvedValue({ data: auctionItemsCopy }),
+            updateItem: jest
+                .fn()
+                .mockResolvedValue({ data: { updatedItem: {} } }),
         };
-        store = initStore(mockFetchService);
+        store = initStore(serviceMock);
     });
 
     afterEach(() => {
@@ -39,8 +41,8 @@ describe('App', function() {
 
     it('error from data', async function() {
         const poller = new Poller();
-        mockFetchService.get = jest.fn().mockRejectedValue('Poop!');
-        store = initStore(mockFetchService);
+        serviceMock.fetchItems = jest.fn().mockRejectedValue('Poop!');
+        store = initStore(serviceMock);
         const provider = mount(
             <Provider store={store}>
                 <App poller={poller} />
@@ -57,7 +59,7 @@ describe('App', function() {
         let app;
 
         beforeEach(async () => {
-            expect(mockFetchService.get).not.toHaveBeenCalled();
+            expect(serviceMock.fetchItems).not.toHaveBeenCalled();
             provider = mount(
                 <Provider store={store}>
                     <App poller={poller} />
@@ -73,7 +75,7 @@ describe('App', function() {
         });
 
         it('isLoaded = true after data returns', function() {
-            expect(mockFetchService.get).toHaveBeenCalled();
+            expect(serviceMock.fetchItems).toHaveBeenCalled();
             expect(app.prop('isLoaded')).toEqual(true);
             expect(app.prop('auctionItems')).toEqual(auctionItems);
         });

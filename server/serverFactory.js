@@ -56,7 +56,7 @@ const createServer = async (host, port) => {
             // console.log('bids:', body.bids);
             // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
             const updatedItem = auctionData.find(item => item.id === id);
-            res.status(200).send({ updatedItem });
+            res.status(200).send(updatedItem);
         } catch (err) {
             // console.error(err);
             res.status(400).send(err);

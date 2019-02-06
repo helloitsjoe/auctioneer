@@ -65,7 +65,7 @@ describe('redux duck tests', () => {
 
         it('deleteItem error does NOT remove item', async function() {
             const mockFetchService = {
-                delete: jest.fn().mockRejectedValue('nope'),
+                deleteItem: jest.fn().mockRejectedValue('nope'),
             };
             store = initStore(mockFetchService);
             getState = store.getState;
@@ -112,7 +112,7 @@ describe('redux duck tests', () => {
 
         it('submit error does NOT update store', async function() {
             const mockFetchService = {
-                put: jest.fn().mockRejectedValue('nope'),
+                updateItem: jest.fn().mockRejectedValue('nope'),
             };
             store = initStore(mockFetchService);
             getState = store.getState;
@@ -232,29 +232,31 @@ describe('redux duck tests', () => {
             expect(bids[1].value).toBe(bids[0].value + BID_INCREMENT);
         });
 
-        it('quick bid calls put', function() {
+        it('quick bid calls updateItem', function() {
             const mockFetchService = {
-                put: jest.fn().mockResolvedValue({ data: { updatedItem: {} } }),
+                updateItem: jest
+                    .fn()
+                    .mockResolvedValue({ data: { updatedItem: {} } }),
             };
             const { dispatch } = initStore(mockFetchService);
-            expect(mockFetchService.put).not.toBeCalled();
+            expect(mockFetchService.updateItem).not.toBeCalled();
             dispatch(
                 fetchAuctionSuccess({
                     rawAuctionItems: [createNewAuctionItem()],
                 })
             );
             dispatch(quickBid(TESTER_1, 0));
-            expect(mockFetchService.put).toBeCalledTimes(1);
+            expect(mockFetchService.updateItem).toBeCalledTimes(1);
         });
 
         it('quick bid does nothing if item not in store', function() {
-            const mockFetchService = { put: jest.fn() };
+            const mockFetchService = { updateItem: jest.fn() };
             const { dispatch, getState } = initStore(mockFetchService);
-            expect(mockFetchService.put).not.toBeCalled();
+            expect(mockFetchService.updateItem).not.toBeCalled();
             expect(selectAuctionItems(getState()).length).toBe(0);
             dispatch(quickBid(TESTER_1, 0));
             expect(getState()).toEqual(initialState);
-            expect(mockFetchService.put).not.toBeCalled();
+            expect(mockFetchService.updateItem).not.toBeCalled();
         });
     });
 });

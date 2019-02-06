@@ -1,21 +1,23 @@
-import { DATA_URL } from '../utils';
 import {
     AuctionItem,
     SUBMIT_CHANGE_SUCCESS,
     SUBMIT_CHANGE_ERROR,
     DELETE_ITEM_SUCCESS,
     DELETE_ITEM_ERROR,
+    StoreState,
 } from '../reducers';
+import { Dispatch } from 'redux';
+import FetchService from '../fetchService';
 
-export const submitChange = (
-    body: AuctionItem,
-    userName?: string,
-    dataURL: string = DATA_URL
-) => (dispatch, _, fetchService) => {
+export const submitChange = (item: AuctionItem, userName?: string) => (
+    dispatch: Dispatch,
+    getState: () => StoreState,
+    fetchService: FetchService
+) => {
     return fetchService
-        .put(`${dataURL}/${body.id}`, { body })
+        .updateItem(item)
         .then(response => {
-            const { updatedItem } = response.data;
+            const updatedItem = response.data;
             dispatch(submitChangeSuccess(updatedItem, userName));
             return { updatedItem };
         })
@@ -29,13 +31,13 @@ export const submitChangeSuccess = (
     userName: string
 ) => ({ type: SUBMIT_CHANGE_SUCCESS, updatedItem, userName });
 
-export const deleteRequest = (itemID: number, dataURL: string = DATA_URL) => (
-    dispatch,
-    _,
-    fetchService
+export const deleteRequest = (itemID: number) => (
+    dispatch: Dispatch,
+    getState: () => StoreState,
+    fetchService: FetchService
 ) => {
     return fetchService
-        .delete(`${dataURL}/${itemID}`)
+        .deleteItem(itemID)
         .then(response => {
             const { deletedItemID } = response.data;
             dispatch(deleteItemSuccess(deletedItemID));

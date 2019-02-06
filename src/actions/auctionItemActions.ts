@@ -1,4 +1,6 @@
+import { Dispatch } from 'redux';
 import {
+    StoreState,
     AuctionItem,
     FETCH_AUCTION_SUCCESS,
     FETCH_AUCTION_ERROR,
@@ -6,17 +8,18 @@ import {
     TOGGLE_DESCRIPTION,
     selectItem,
 } from '../reducers';
+import FetchService from '../fetchService';
 import { submitChange } from './adminActions';
-import { DATA_URL } from '../utils';
 
-export const fetchAuctionData = (
-    userName: string,
-    dataURL: string = DATA_URL
-) => (dispatch, _, fetchService) => {
+export const fetchAuctionData = (userName: string) => (
+    dispatch: Dispatch,
+    getState: () => StoreState,
+    fetchService: FetchService
+) => {
     return fetchService
-        .get(dataURL)
+        .fetchItems()
         .then(res => {
-            const rawAuctionItems: AuctionItem[] = res && res.data;
+            const rawAuctionItems = res && res.data;
             if (!rawAuctionItems) {
                 throw new Error('No auction data!');
             }
