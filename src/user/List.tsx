@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Item from './Item';
-import { EmptyList } from './EmptyListView';
+import NoItems from './NoItems';
 import { AuctionItem } from '../reducers';
 import { getHighBid } from '../utils';
 
@@ -20,14 +20,14 @@ export function List({ user, auctionItems, filter }: Props) {
         <div className="list">
             <hr />
             {filteredItems.length ? filteredItems
-                .map(item => 
+                .map(item =>
                     <Item
                         user={user}
                         key={item.id}
                         itemData={item}
                         highBid={getHighBid(item.bids)}
-                    />            
-                ) : <EmptyList />
+                    />
+                ) : <NoItems />
             }
         </div>
     )

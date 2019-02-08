@@ -9,18 +9,17 @@ type Props = {
     user: string;
     filter: boolean;
     auctionItems: any;
-}
+};
 
 export function BidsPage({ user, filter, auctionItems, poller }: Props) {
-
     poller.start();
 
     return (
         <div className="well container">
-            <UserNameForm user={user}/>
+            <UserNameForm user={user} />
             <Nav />
-            <List auctionItems={auctionItems} user={user} filter={filter}/>
+            <List auctionItems={auctionItems} user={user} filter={filter} />
             <Footer />
         </div>
-    )
+    );
 }

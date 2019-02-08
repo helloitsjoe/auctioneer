@@ -84,25 +84,23 @@ const updateItems = (
     auctionItems: AuctionItem[],
     action: any
 ): AuctionItem[] => {
-    const { userName: name, itemID } = action;
+    const { userName: name, itemID, type } = action;
 
     const item = itemID != null && auctionItems.find(({ id }) => id === itemID);
+
+    if (!item && (type === QUICK_BID || type === TOGGLE_DESCRIPTION)) {
+        console.error('Item not found in auctionItems!');
+        return auctionItems;
+    }
+
     switch (action.type) {
         case QUICK_BID:
-            if (!item) {
-                console.error('Item not found in auctionItems!');
-                return auctionItems;
-            }
             const value = getHighBid(item.bids).value + BID_INCREMENT;
             const bids = [...item.bids, { name, value }];
             return auctionItems.map(
                 item => (item.id === itemID ? { ...item, bids } : item)
             );
         case TOGGLE_DESCRIPTION:
-            if (!item) {
-                console.error('Item not found in auctionItems!');
-                return auctionItems;
-            }
             const viewDetails = !item.viewDetails;
             return auctionItems.map(
                 item => (item.id === itemID ? { ...item, viewDetails } : item)

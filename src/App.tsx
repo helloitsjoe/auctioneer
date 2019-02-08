@@ -7,32 +7,37 @@ import { BidsPage } from './user/BidsPage';
 import { randFromArr, DEFAULT_NAMES } from './utils';
 import AdminPage from './admin/AdminPage';
 import { fetchAuctionData } from './actions/auctionItemActions';
-import { AuctionItem, selectError, selectIsLoaded, selectAuctionItems } from './reducers';
+import {
+    AuctionItem,
+    selectError,
+    selectIsLoaded,
+    selectAuctionItems,
+} from './reducers';
 
 type StoreProps = {
-    error: Error,
-    isLoaded: boolean,
-    auctionItems: AuctionItem[],
-}
+    error: Error;
+    isLoaded: boolean;
+    auctionItems: AuctionItem[];
+};
 
 type DispatchProps = {
-    fetchAuctionData: () => void,
-}
+    fetchAuctionData: () => void;
+};
 
-type Props = StoreProps & DispatchProps & {
-    poller?: Poller,
-    router?: Router,
-}
+type Props = StoreProps &
+    DispatchProps & {
+        poller?: Poller;
+    };
 
 export class App extends React.Component<Props> {
-
     static defaultProps = {
-        router: Router,
         poller: new Poller(),
-    }
+    };
 
     componentDidMount() {
-        const userName = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
+        const userName =
+            sessionStorage.getItem('userName') ||
+            randFromArr(DEFAULT_NAMES).toUpperCase();
         sessionStorage.setItem('userName', userName);
 
         // Kick off poll every second for new auction data
@@ -44,50 +49,53 @@ export class App extends React.Component<Props> {
     }
 
     render() {
-        const {
-            error,
-            isLoaded,
-            auctionItems,
-            poller,
-            router: Router,
-        } = this.props;
+        const { error, isLoaded, auctionItems, poller } = this.props;
 
         if (error) {
             poller.stop();
         }
 
-        return !isLoaded ? <div>Loading...</div>
-            : error ? <div>Error: {JSON.stringify(error)}</div>
-            : (
-                <Router>
-                    <Switch>
-                        <Route exact path="/admin" render={() =>
-                            <AdminPage
-                                poller={this.props.poller}
-                            />
-                        } />
-                        <Route path="/" render={({location}) =>
+        return !isLoaded ? (
+            <div>Loading...</div>
+        ) : error ? (
+            <div>Error: {JSON.stringify(error)}</div>
+        ) : (
+            <Router>
+                <Switch>
+                    <Route
+                        exact
+                        path="/admin"
+                        render={() => <AdminPage poller={poller} />}
+                    />
+                    <Route
+                        path="/"
+                        render={({ location }) => (
                             <BidsPage
-                                poller={this.props.poller}
+                                poller={poller}
                                 auctionItems={auctionItems}
                                 user={sessionStorage.getItem('userName')}
                                 filter={location.pathname === '/user'}
                             />
-                        } />
-                    </Switch>
-                </Router>
-            );
+                        )}
+                    />
+                </Switch>
+            </Router>
+        );
     }
 }
 
 const mapStateToProps = (state): StoreProps => ({
-  error: selectError(state),
-  isLoaded: selectIsLoaded(state),
-  auctionItems: selectAuctionItems(state),
+    error: selectError(state),
+    isLoaded: selectIsLoaded(state),
+    auctionItems: selectAuctionItems(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
-    fetchAuctionData: () => fetchAuctionData(sessionStorage.getItem('userName'))
+    fetchAuctionData: () =>
+        fetchAuctionData(sessionStorage.getItem('userName')),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);
