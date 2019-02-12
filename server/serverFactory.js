@@ -1,20 +1,16 @@
-const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const util = require('util');
 const express = require('express');
 const bodyParser = require('body-parser');
-const readFile = util.promisify(fs.readFile);
 const app = express();
+const LocalDbClient = require('./localDbClient');
 
-const createServer = async (host, port) => {
+const createServer = async (host, port, dbClient = new LocalDbClient()) => {
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, '../')));
 
-    const dataPath = path.join(__dirname, 'data.json');
-    let auctionData = null;
-
-    app.get('/data', (req, res) => {
+    app.get('/data', async (req, res) => {
+        const auctionData = await dbClient.getAuctionData();
         res.send(auctionData);
     });
 
@@ -24,65 +20,35 @@ const createServer = async (host, port) => {
         res.sendFile(path.join(__dirname, '../index.html'));
     });
 
-    // Currently only for unit tests to restore original auctionData
-    app.post('/data', async (req, res) => {
+    app.put('/data/:id', async (req, res) => {
+        const { body } = req.body;
         try {
-            if (req.body.testError) {
-                throw new Error('test!');
-            }
-            const fileContents = await readFile(dataPath, 'utf-8');
-            auctionData = JSON.parse(fileContents);
-            res.status(200).send(auctionData);
-        } catch (err) {
-            res.status(500).send({ error: 'Error reading data.json' });
-        }
-    });
-
-    app.put('/data/:id', (req, res) => {
-        const body = req.body.body;
-        const id = Number(req.params.id);
-
-        try {
-            if (body.id == null) {
-                throw new Error('ID is required');
-            }
-            if (!auctionData.find(item => item.id === id)) {
-                auctionData.push(body);
-            } else {
-                auctionData = auctionData.map(
-                    item => (item.id === id ? body : item)
-                );
-            }
-            // console.log('bids:', body.bids);
-            // console.log(`High bid for ${body.id}: ${body.bids.slice(-1)[0].value}`);
-            const updatedItem = auctionData.find(item => item.id === id);
-            res.status(200).send(updatedItem);
+            await dbClient.upsertAuctionItem(body);
+            res.status(200).send(body);
         } catch (err) {
             // console.error(err);
             res.status(400).send(err);
         }
     });
 
-    app.delete('/data/:id', (req, res) => {
+    app.delete('/data/:id', async (req, res) => {
         const incomingID = Number(req.params.id);
         if (isNaN(incomingID)) {
             return res.status(400).send('ID is NaN');
         }
-        auctionData = auctionData.filter(({ id }) => id !== incomingID);
-
+        await dbClient.deleteItem(incomingID);
         res.status(200).send({ deletedItemID: incomingID });
     });
 
     logIPAddress(port);
 
     try {
-        const fileContents = await readFile(dataPath, 'utf-8');
-        auctionData = JSON.parse(fileContents);
-
+        await dbClient.getAuctionData();
         const server = app.listen(port, () => {
             console.log(`Listening on http://${host}:${port}`);
         });
 
+        server.clearDbCache = dbClient.clearCache;
         return server;
     } catch (err) {
         console.error(err);

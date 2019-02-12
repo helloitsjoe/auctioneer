@@ -1,4 +1,4 @@
-describe('Auctioneer', function () {
+describe('Auctioneer', function() {
     require('./redux.test');
     require('./utils.test');
     require('./App.test');
@@ -7,9 +7,10 @@ describe('Auctioneer', function () {
     require('./Server.test');
     require('./Poller.test');
     require('./Sidebar.test');
+    require('./DbClient.test');
     require('./BidsPage.test');
-    require('./ConfirmDiscard');
     require('./AdminPage.test');
     require('./ItemEditor.test');
     require('./UserNameForm.test');
+    require('./ConfirmDiscard.test');
 });

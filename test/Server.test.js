@@ -20,6 +20,7 @@ describe('Server', function() {
     const port = 1234;
     const url = `http://${host}:${port}`;
     const dataURL = `${url}/data`;
+    const resetURL = `${url}/reset`;
 
     beforeAll(async () => {
         const store = initStore(new FetchService(dataURL, adapter));
@@ -28,9 +29,8 @@ describe('Server', function() {
         server = await createServer(host, port);
     });
 
-    afterEach(async () => {
-        // Restore original data on server
-        await axios.post(dataURL, {}, { adapter });
+    afterEach(() => {
+        server.clearDbCache();
     });
 
     afterAll(done => {
@@ -79,7 +79,7 @@ describe('Server', function() {
         expect(getResAfter.data).toEqual(getResBefore.data.slice(1));
     });
 
-    it('POST restores original', async function() {
+    it('clearDbCache restores original data', async function() {
         const getResBefore = await axios.get(dataURL, { adapter });
 
         const deleteRes = await axios.delete(`${dataURL}/0`, { adapter });
@@ -88,7 +88,7 @@ describe('Server', function() {
         const getResAfter = await axios.get(dataURL, { adapter });
         expect(getResAfter.data).not.toEqual(getResBefore.data);
 
-        await axios.post(dataURL, {}, { adapter });
+        server.clearDbCache();
 
         const getResRestored = await axios.get(dataURL, { adapter });
         expect(getResRestored.data).toEqual(getResBefore.data);
@@ -107,22 +107,6 @@ describe('Server', function() {
         res.data.forEach((auctionItem, i) => {
             expect(auctionItem.id).toEqual(i);
         });
-    });
-
-    it('throws if error reading data file', async function() {
-        try {
-            const res = await axios.post(
-                dataURL,
-                { testError: true },
-                { adapter }
-            );
-            expect(true).toBe(false); // Should not get here
-        } catch (err) {
-            expect(err.response.status).toBe(500);
-            expect(err.response.data.error).toMatchInlineSnapshot(
-                `"Error reading data.json"`
-            );
-        }
     });
 
     describe('integration', function() {
