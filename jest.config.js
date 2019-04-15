@@ -27,10 +27,7 @@ module.exports = {
   // coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: [
-    "/node_modules/",
-    "/test/"
-  ],
+  coveragePathIgnorePatterns: ['/node_modules/', '/test/', '/src/index.tsx'],
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -57,9 +54,9 @@ module.exports = {
 
   // A set of global variables that need to be available in all test environments
   globals: {
-    "ts-jest": {
-      "tsConfigFile": "tsconfig.json"
-    }
+    'ts-jest': {
+      tsConfigFile: 'tsconfig.json',
+    },
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location
@@ -68,11 +65,7 @@ module.exports = {
   // ],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: [
-    "ts",
-    "tsx",
-    "js"
-  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js'],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -128,7 +121,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-environment-jsdom",
+  testEnvironment: 'jest-environment-jsdom',
   // testEnvironment: "node",
 
   // Options that will be passed to the testEnvironment
@@ -140,14 +133,14 @@ module.exports = {
   // The glob patterns Jest uses to detect test files
   testMatch: [
     // "**/test/*.+(ts|tsx|js)"
-    "**/test/index.js"
+    '**/test/index.js',
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     // "/test/index.js",
-    "/test/setup.js",
-    "/test/utils.js"
+    '/test/setup.js',
+    '/test/utils.js',
   ],
 
   // The regexp pattern Jest uses to detect test files
@@ -160,14 +153,14 @@ module.exports = {
   // testRunner: "jasmine2",
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  testURL: "http://localhost",
+  testURL: 'http://localhost',
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.(js|ts|tsx)$": "ts-jest"
+    '^.+\\.(js|ts|tsx)$': 'ts-jest',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
