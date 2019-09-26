@@ -84,10 +84,7 @@ describe('App', function() {
       const link = provider.find('#admin-link');
       expect(link.exists()).toBe(true);
       console.log(`link.debug():`, link.debug());
-      console.log(
-        `link.hostNodes().props().onClick:`,
-        link.hostNodes().props().onClick
-      );
+      console.log(`link.hostNodes().props().onClick:`, link.hostNodes().props().onClick);
       link.first().simulate('click', { button: 0 });
       //   link
       //     .first()
@@ -101,7 +98,6 @@ describe('App', function() {
     it('isLoaded = true after data returns', function() {
       expect(serviceMock.fetchItems).toHaveBeenCalled();
       expect(app.prop('isLoaded')).toEqual(true);
-      expect(app.prop('auctionItems')).toEqual(auctionItems);
     });
 
     it('two users get the same initial data', function() {

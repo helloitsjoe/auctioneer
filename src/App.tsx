@@ -7,17 +7,11 @@ import { BidsPage } from './user/BidsPage';
 import { randFromArr, DEFAULT_NAMES } from './utils';
 import AdminPage from './admin/AdminPage';
 import { fetchAuctionData } from './actions/auctionItemActions';
-import {
-  AuctionItem,
-  selectError,
-  selectIsLoaded,
-  selectAuctionItems,
-} from './reducers';
+import { selectError, selectIsLoaded } from './reducers';
 
 type StoreProps = {
   error: Error;
   isLoaded: boolean;
-  auctionItems: AuctionItem[];
 };
 
 type DispatchProps = {
@@ -35,9 +29,7 @@ export class App extends React.Component<Props> {
   };
 
   componentDidMount() {
-    const userName =
-      sessionStorage.getItem('userName') ||
-      randFromArr(DEFAULT_NAMES).toUpperCase();
+    const userName = sessionStorage.getItem('userName') || randFromArr(DEFAULT_NAMES).toUpperCase();
     sessionStorage.setItem('userName', userName);
 
     // Kick off poll every second for new auction data
@@ -49,7 +41,7 @@ export class App extends React.Component<Props> {
   }
 
   render() {
-    const { error, isLoaded, auctionItems, poller } = this.props;
+    const { error, isLoaded, poller } = this.props;
 
     if (error) {
       poller.stop();
@@ -62,20 +54,11 @@ export class App extends React.Component<Props> {
     ) : (
       <Router>
         <Switch>
-          <Route
-            exact
-            path="/admin"
-            render={() => <AdminPage poller={poller} />}
-          />
+          <Route exact path="/admin" render={() => <AdminPage poller={poller} />} />
           <Route
             path="/"
             render={({ location }) => (
-              <BidsPage
-                poller={poller}
-                auctionItems={auctionItems}
-                user={sessionStorage.getItem('userName')}
-                filter={location.pathname === '/user'}
-              />
+              <BidsPage poller={poller} filter={location.pathname === '/user'} />
             )}
           />
         </Switch>
@@ -87,7 +70,7 @@ export class App extends React.Component<Props> {
 const mapStateToProps = (state): StoreProps => ({
   error: selectError(state),
   isLoaded: selectIsLoaded(state),
-  auctionItems: selectAuctionItems(state),
+  // auctionItems: selectAuctionItems(state),
 });
 
 const mapDispatchToProps: DispatchProps = {

@@ -13,14 +13,14 @@ describe('List', function () {
     const setup = propOverrides => {
         const auctionItemsCopy = clone(auctionItems);
         const props = {
-            user: TESTER_1,
+            getUser: () => TESTER_1,
             filter: false,
             ...propOverrides
         }
 
         const list = mount(
             <Provider store={initStore()}>
-                <List auctionItems={auctionItemsCopy} user={props.user} filter={props.filter} />
+                <List auctionItems={auctionItemsCopy} getUser={props.getUser} filter={props.filter} />
             </Provider>
         );
 
