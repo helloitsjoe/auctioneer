@@ -48,7 +48,7 @@ export const getMinBidValue = (bids: Bid[]): number => {
 };
 
 export const getUser = () => {
-  return sessionStorage ? sessionStorage.getItem('userName') : '';
+  return sessionStorage.getItem('userName') || '';
 };
 
 export const getUserTotal = (auctionItems: AuctionItem[], user: string): number =>
