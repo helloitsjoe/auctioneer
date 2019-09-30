@@ -2,18 +2,22 @@ import * as React from 'react';
 import { getUser } from '../utils';
 
 type Props = {
-  user?: string;
+  initialUserName?: string;
 };
 
-export class UserNameForm extends React.Component<Props, any> {
+type State = {
+  userName: string;
+};
+
+export class UserNameForm extends React.Component<Props, State> {
   nameInput = React.createRef<HTMLInputElement>();
 
   static defaultProps = {
-    user: getUser(),
+    initialUserName: getUser(),
   };
 
   state = {
-    userName: (this.props.user || getUser()).toUpperCase(),
+    userName: (this.props.initialUserName || getUser()).toUpperCase(),
   };
 
   changeUserName = e => {
